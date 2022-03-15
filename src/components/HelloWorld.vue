@@ -1,5 +1,5 @@
 <script>
-import { r_register } from '../utils'
+import { r_register, R_animate_config } from '../utils'
 
 export default {
   data() {
@@ -8,36 +8,19 @@ export default {
     }
   },
   methods: {
-    trans(element, start_style, end_style) {
-      Object.keys(start_style).forEach(key => {
-        element.style[key] = start_style[key]
+    make_cyliner_enter_config() {
+      return new R_animate_config({
+        start: {
+          opacity: 0,
+          transform: 'translate(0, -74px) rotateX(90deg)',
+          transition: '1s',
+          transitionDelay: `0ms`
+        },
+        end: {
+          opacity: 1,
+          transform: 'translate(0, -0) rotateX(0)',
+        }
       })
-      setTimeout(() => {
-        Object.keys(end_style).forEach(key => {
-          element.style[key] = end_style[key]
-        })
-      }, 0)
-    },
-    cyliner_enter_animation(element, delay = 0) {
-      // this.trans(element,
-      //     {
-      //       opacity: 0,
-      //       transform: 'translate(0, -74px) rotateX(90deg)',
-      //       transition: '1s',
-      //       transitionDelay: `${ delay }ms`
-      //     },
-      //     {
-      //       opacity: 1,
-      //       transform: 'translate(0, -0) rotateX(0)',
-      //     })
-      // return {
-      //   then: function (func) {
-      //     setTimeout(() => {
-      //       func()
-      //     }, delay)
-      //
-      //   }
-      // }
     }
   },
   mounted() {
@@ -50,23 +33,27 @@ export default {
       name_part3,
       dot
     } = this.$refs
-    console.log(r_register)
-    r_register(hello)
-    hello.r_animate(
-        {
-          opacity: 0,
-          transform: 'translate(0, -74px) rotateX(90deg)',
-          transition: '1s',
-          transitionDelay: `0ms`
-        },
-        {
-          opacity: 1,
-          transform: 'translate(0, -0) rotateX(0)',
-        })
-    // this.cyliner_enter_animation(hello)
-    // this.cyliner_enter_animation(dot, 250)
-    // this.cyliner_enter_animation(introduce, 500)
-    // this.cyliner_enter_animation(name_part1, 1500)
+    r_register([hello,
+      introduce,
+      name_part1,
+      name_part2,
+      name_part3,
+      dot])
+    const cyliner_enter_config = this.make_cyliner_enter_config()
+    const spread_width_config = {
+      start: {marginLeft: 0, marginRight: 0, transition: '0.5s'},
+      end: {marginLeft: '20px', marginRight: '20px'}
+    }
+    hello.r_animate(cyliner_enter_config)
+    dot.r_animate(cyliner_enter_config.delay(250))
+    introduce.r_animate(cyliner_enter_config.delay(500))
+    name_part1.r_animate(cyliner_enter_config.delay(1500))
+    console.log(cyliner_enter_config)
+    name_part2
+        .r_animate(cyliner_enter_config.delay(1500))
+        .r_animate(spread_width_config)
+    name_part3
+        .r_animate(cyliner_enter_config.delay(1500))
     // this.cyliner_enter_animation(name_part2, 1500).then(() => {
     //       console.log(this.trans, name_part2)
     //       this.trans(name_part2,
@@ -74,7 +61,6 @@ export default {
     //           {marginLeft: '20px', marginRight: '20px'})
     //     }
     // )
-    // this.cyliner_enter_animation(name_part3, 1500)
   }
 }
 

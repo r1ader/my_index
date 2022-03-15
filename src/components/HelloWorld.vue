@@ -1,5 +1,5 @@
 <script>
-import { r_register, R_animate_config } from '../utils'
+import {r_register, R_animate_config} from '../utils'
 
 export default {
   data() {
@@ -7,22 +7,7 @@ export default {
       message: 'Hello'
     }
   },
-  methods: {
-    make_cyliner_enter_config() {
-      return new R_animate_config({
-        start: {
-          opacity: 0,
-          transform: 'translate(0, -74px) rotateX(90deg)',
-          transition: '1s',
-          transitionDelay: `0ms`
-        },
-        end: {
-          opacity: 1,
-          transform: 'translate(0, -0) rotateX(0)',
-        }
-      })
-    }
-  },
+  methods: {},
   mounted() {
     console.clear()
     const {
@@ -39,21 +24,34 @@ export default {
       name_part2,
       name_part3,
       dot])
-    const cyliner_enter_config = this.make_cyliner_enter_config()
-    const spread_width_config = {
-      start: {marginLeft: 0, marginRight: 0, transition: '0.5s'},
-      end: {marginLeft: '20px', marginRight: '20px'}
+    const cyliner_enter_config = {
+      start: {
+        transform: 'translate(0, -74px) rotateX(90deg)',
+      },
+      end: {
+        transform: 'translate(0, -0) rotateX(0)',
+      },
+      duration: 1000,
+      delay: 50
     }
-    hello.r_animate(cyliner_enter_config)
-    dot.r_animate(cyliner_enter_config.delay(250))
-    introduce.r_animate(cyliner_enter_config.delay(500))
-    name_part1.r_animate(cyliner_enter_config.delay(1500))
-    console.log(cyliner_enter_config)
+    const spread_width_config = {
+      start: {marginLeft: 0, marginRight: 0},
+      end: {marginLeft: '20px', marginRight: '20px'},
+      duration: 400
+    }
+    // hello.r_animate(cyliner_enter_config)
+    // dot
+    //     .r_animate({duration: 250}) // todo make this line enable a delay
+    //     .r_animate(cyliner_enter_config)
+    //     // .r_animate(cyliner_enter_config)
+    // introduce.r_animate(cyliner_enter_config)
+    // name_part1.r_animate(cyliner_enter_config)
     name_part2
-        .r_animate(cyliner_enter_config.delay(1500))
-        .r_animate(spread_width_config)
-    name_part3
-        .r_animate(cyliner_enter_config.delay(1500))
+        .r_animate(cyliner_enter_config)
+        .r_animate(cyliner_enter_config)
+    // .r_animate(spread_width_config)
+    // name_part3
+    //     .r_animate(cyliner_enter_config)
     // this.cyliner_enter_animation(name_part2, 1500).then(() => {
     //       console.log(this.trans, name_part2)
     //       this.trans(name_part2,
@@ -61,6 +59,9 @@ export default {
     //           {marginLeft: '20px', marginRight: '20px'})
     //     }
     // )
+    // setTimeout(()=>{
+    //   location.reload()
+    // },5000)
   }
 }
 
@@ -77,16 +78,15 @@ export default {
         <div ref="introduce">
           here is
         </div>
-        <div>
-          <div style="margin-right: 0" ref="name_part1">
-            r
-          </div>
-          <div style="margin-right: 0;margin-left: 0" ref="name_part2">
-            e
-          </div>
-          <div style="margin-left: 0" ref="name_part3">
-            ader
-          </div>
+        <div style="margin-right: 0" ref="name_part1">
+          r
+        </div>
+        <div style="margin-right: 0;margin-left: 0;
+  transform: translate(0, -0) rotateX(0);" ref="name_part2">
+          e
+        </div>
+        <div style="margin-left: 0" ref="name_part3">
+          ader
         </div>
       </div>
     </div>
@@ -120,12 +120,14 @@ a {
 
 .hello_block div {
   /*font-family: Constantia;*/
-  font-family: fantasy;
+  /*font-family: fantasy;*/
+  font-weight: bolder;
   color: white;
   font-size: 60px;
   margin: 20px;
   letter-spacing: 5px;
   /*transform: scale(1.2,1);*/
 }
+
 
 </style>

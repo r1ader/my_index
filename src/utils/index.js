@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { v4 as uuidv4 } from 'uuid';
 import { parseCSSValue } from "./css_util";
+import { interpolation_functions } from "./math_util"
 
 const clog = console.log
 
@@ -63,7 +64,7 @@ export function r_register(args) {
 
 export class R_animate_config {
     constructor(config) {
-        const { start, end, duration, delay } = config
+        const { start, end, duration, delay, interpolation } = config
         Object.keys(config).forEach(key => {
             this[key] = config[key]
         })
@@ -71,6 +72,7 @@ export class R_animate_config {
         this.end = end || {}
         this.duration = _.isNumber(duration) ? Math.max(duration, 16) : 16
         this.delay = delay || 0
+        this.interpolation = interpolation || 'easeOutExpo'
 
     }
 
@@ -122,17 +124,18 @@ class R_registered_dom {
         const config = this.queue.shift()
         if (!config) return
         let frame_index = 0
-        // todo implement of beizer
         const render = () => {
             Object.keys(config).forEach(key => {
                 const extract_number_reg = /\[(-|\d|\.)+?~(-|\d||\.)+?\]/g
                 if (!_.isString(config[key])) return
                 const extract_res = config[key].match(extract_number_reg)
-                if (!extract_res.length) return
+                if (!_.isArray(extract_res) || !extract_res.length) return
                 let groove = config[key].replace(extract_number_reg, '{}')
                 const slots = extract_res.map(range => {
+                    const inter_func = interpolation_functions(config.interpolation)
                     const [start_value, end_value] = range.replace('[', '').replace(']', '').split('~').map(o => _.toNumber(o))
-                    return start_value + (end_value - start_value) * (frame_index * 16 / config.plan_duration)
+                    const ratio = inter_func(frame_index * 16 / config.plan_duration)
+                    return start_value + (end_value - start_value) * ratio
                 })
                 slots.forEach(value => {
                     groove = groove.replace('{}', Math.ceil(value * 10) / 10)

@@ -31,14 +31,12 @@ export default {
       const cylinder_enter = {
         transform: 'translate(0, [-50~0]px) rotateX([90~0]deg)',
         opacity: '[0~1]',
-        duration: 1000,
-        delay: 0
+        duration: 1000
       }
       const cylinder_out = {
         transform: 'translate(0, [0~50]px) rotateX([0~90]deg)',
         opacity: '[1~0]',
-        duration: 1000,
-        delay: 0
+        duration: 1000
       }
       const spread_width = {
         marginLeft: '[0~20]px',

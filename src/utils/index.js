@@ -44,6 +44,7 @@ export function r_register(args) {
         registered_dict[r_id] = new R_registered_dom(r_id, args)
         registered_queue.push(registered_dict[r_id])
     } else {
+        args = _.compact(args)
         args.forEach(item => {
             const r_id = uuidv4().replace(/-/g, "")
             wait_register_queue.push(r_id)
@@ -51,6 +52,7 @@ export function r_register(args) {
             registered_queue.push(registered_dict[r_id])
         })
     }
+
     wait_register_queue.forEach(r_id => {
         const registered_dom = registered_dict[r_id]
         const element = registered_dom.ref
@@ -70,7 +72,7 @@ export class R_animate_config {
         })
         this.start = start || {}
         this.end = end || {}
-        this.duration = _.isNumber(duration) ? Math.max(duration, 16) : 16
+        this.duration = _.isNumber(duration) ? duration : 0
         this.delay = delay || 0
         this.interpolation = interpolation || 'easeOutExpo'
 
@@ -157,7 +159,6 @@ class R_registered_dom {
         requestAnimationFrame(render)
 
     }
-
 
     r_same(target) {
         const { r_id } = target

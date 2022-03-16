@@ -2,7 +2,7 @@
 import { r_register } from '../utils'
 
 export default {
-  name: 'Hello',
+  name: 'Hello2',
   data() {
     return {
       message: 'Hello'
@@ -19,7 +19,8 @@ export default {
         name_part2_1,
         name_part3,
         dot,
-        right_top_ball
+        right_top_ball,
+        line_on_hello
       } = this.$refs
       r_register([hello,
         introduce,
@@ -29,7 +30,8 @@ export default {
         name_part2_1,
         name_part3,
         dot,
-        right_top_ball
+        right_top_ball,
+        line_on_hello
       ])
       const cylinder_enter = {
         transform: 'translate(0, [-50~0]px) rotateX([90~0]deg)',
@@ -80,6 +82,15 @@ export default {
           })
           .r_animate({ duration: 900 })
           .r_animate(shrink_width)
+
+      // right_top_ball
+      //     .r_animate({ duration: 6000 })
+      //     .r_animate({
+      //       opacity: '[0~1]',
+      //       transform: 'scale([0~1])',
+      //       duration: 1000
+      //     })
+
     }
   },
   mounted() {
@@ -97,6 +108,14 @@ export default {
     </div>
     <div class="main_block">
       <div class="hello_block">
+        <div style="
+             width: 100px;
+             height: 0;
+             border: 1px solid white;
+             position: absolute;
+            "
+             ref="line_on_hello"
+        />
         <div ref="hello">
           {{ message }}
         </div>
@@ -174,6 +193,13 @@ a {
   font-size: 60px;
   margin: 20px;
   letter-spacing: 5px;
+  /*transform: scale(1.2,1);*/
 }
 
+.github_logo {
+  width: 40px;
+  padding: 20px;
+  filter: invert(1);
+  opacity: 0;
+}
 </style>

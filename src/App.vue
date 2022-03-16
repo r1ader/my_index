@@ -1,5 +1,6 @@
 <script>
 import Hello from './components/Hello.vue'
+import Hello2 from './components/Hello2.vue'
 import Introduce from './components/Introduce.vue'
 import _ from "lodash";
 import { r_register } from "./utils";
@@ -8,6 +9,7 @@ const clog = console.log
 export default {
   components: {
     Hello,
+    Hello2,
     Introduce
   },
   data() {
@@ -52,7 +54,6 @@ export default {
         if (_this.$data.cursor_lock) return
         cursor.style.opacity = '1'
       })
-
       // cursor.r_sleep(1000)
       //     .r_animate({
       //       start: {opacity: 0, transform: 'scale(0.1)'},
@@ -73,11 +74,13 @@ export default {
       })
     },
     scroll_next() {
+      // todo use requestAnimationFrame control scroll
       window.scrollTo({
         top: window.scrollY + window.innerHeight,
         left: 0,
         behavior: 'smooth'
       })
+      this.$refs.hello2.beginning_motion()
     },
     scroll_last() {
       // this.
@@ -91,6 +94,7 @@ export default {
   mounted() {
     this.init_cursor()
     this.init_scroll()
+    this.$refs.hello.beginning_motion()
   }
 }
 </script>
@@ -98,7 +102,8 @@ export default {
 <template>
   <div>
     <div ref="cursor" class="cursor"></div>
-    <Hello/>
+    <Hello ref="hello"/>
+    <Hello2 ref="hello2"/>
     <Introduce/>
   </div>
 </template>
@@ -128,7 +133,7 @@ body {
   border: 3px solid #dedede;
   border-radius: 10px;
   background: #5d5d5d;
-
+  opacity: 0;
 }
 
 

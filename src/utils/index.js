@@ -54,6 +54,7 @@ export function r_register(args) {
         element.r_animate = registered_dom.r_animate.bind(registered_dom)
         element.r_same = registered_dom.r_same.bind(registered_dom)
         element.r_then = registered_dom.r_then.bind(registered_dom)
+        element.r_sleep = registered_dom.r_sleep.bind(registered_dom)
     })
 }
 
@@ -116,8 +117,9 @@ class R_registered_dom {
         // console.log('run', config)
         // console.log('run', JSON.stringify(config, null, 3))
         const start = config.start
-        const end = config.end
-
+        const end = config.end()
+        // todo use requestAnimationFrame to implement animation
+        // todo get rid of the shit style.transition
         this.ref.style.transition = `None`
         Object.keys(start).forEach(key => {
             this.ref.style[key] = start[key]
@@ -167,6 +169,18 @@ class R_registered_dom {
         setTimeout(() => {
             func()
         }, sum_duration)
+        return this.ref
+    }
+
+    r_sleep(delay_duration) {
+        this.queue.push(new R_animate_config({
+            delay: delay_duration
+        }))
+        if (!this.in_animation) {
+            setTimeout(() => {
+                this.run()
+            }, 16)
+        }
         return this.ref
     }
 }

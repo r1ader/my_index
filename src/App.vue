@@ -2,6 +2,7 @@
 import Hello from './components/Hello.vue'
 import Introduce from './components/Introduce.vue'
 import _ from "lodash";
+import { r_register } from "./utils";
 
 const clog = console.log
 export default {
@@ -15,6 +16,7 @@ export default {
   methods: {
     init_cursor() {
       const cursor = this.$refs.cursor
+      r_register(cursor)
       document.addEventListener('mousemove', function (e) {
         const {clientX, clientY, path} = e
         cursor.style.left = `${ clientX - 10 }px`
@@ -26,13 +28,22 @@ export default {
       document.addEventListener('mouseenter', function (e) {
         cursor.style.opacity = '1'
       })
+
+      // cursor.r_sleep(1000)
+      //     .r_animate({
+      //       start: {opacity: 0, transform: 'scale(0.1)'},
+      //       end: {opacity: 1, transform: 'scale(1)'},
+      //       duration: 200
+      //     }).r_then(() => {
+      //   console.log('NOne')
+      //   cursor.style.transition = 'None'
+      // })
     },
     init_scroll() {
       document.addEventListener('mousewheel', (e) => {
         if (e.deltaY > 0) {
           this.scroll_next()
-        }
-        else if (e.deltaY < 0) {
+        } else if (e.deltaY < 0) {
           this.scroll_last()
         }
       })
@@ -88,10 +99,12 @@ body {
 
 .cursor {
   position: fixed;
-  width: 20px;
-  height: 20px;
+  width: 14px;
+  height: 14px;
+  border: 3px solid #dedede;
   border-radius: 10px;
-  background: aliceblue;
+  background: #5d5d5d;
+
 }
 
 

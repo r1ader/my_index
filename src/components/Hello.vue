@@ -29,20 +29,8 @@ export default {
         name_part3,
         dot])
       const cylinder_enter = {
-        start: {
-          opacity: 0,
-          transform: {
-            translate: [0, -74],
-            rotateX: 90
-          }
-        },
-        end: {
-          opacity: 1,
-          transform: {
-            translate: [0, 0],
-            rotateX: 0
-          }
-        },
+        transform: 'translate(0, [-74~0]px) rotateX([90~0]deg)',
+        opacity: '[0~1]',
         duration: 1000,
         delay: 0
       }
@@ -81,30 +69,30 @@ export default {
           .r_animate({ duration: 1000 })
           .r_animate(cylinder_enter)
 
-      dot
-          .r_animate({ duration: 1500 })
-          .r_animate(cylinder_enter)
-
-
-      introduce
-          .r_animate({ duration: 2000 })
-          .r_animate(cylinder_enter)
-
-      name_part1
-          .r_animate({ duration: 3000 })
-          .r_animate(cylinder_enter)
-          .r_same(name_part2)
-          .r_same(name_part3)
-
-      name_part2
-          .r_animate(spread_width)
-          .r_animate({ duration: 100 })
-          .r_then(() => {
-            name_part2_1.r_animate(cylinder_enter)
-            name_part2_e.r_animate(cylinder_out)
-          })
-          .r_animate({ duration: 900 })
-          .r_animate(shrink_width)
+      // dot
+      //     .r_animate({ duration: 1500 })
+      //     .r_animate(cylinder_enter)
+      //
+      //
+      // introduce
+      //     .r_animate({ duration: 2000 })
+      //     .r_animate(cylinder_enter)
+      //
+      // name_part1
+      //     .r_animate({ duration: 3000 })
+      //     .r_animate(cylinder_enter)
+      //     .r_same(name_part2)
+      //     .r_same(name_part3)
+      //
+      // name_part2
+      //     .r_animate(spread_width)
+      //     .r_animate({ duration: 100 })
+      //     .r_then(() => {
+      //       name_part2_1.r_animate(cylinder_enter)
+      //       name_part2_e.r_animate(cylinder_out)
+      //     })
+      //     .r_animate({ duration: 900 })
+      //     .r_animate(shrink_width)
     }
   },
   mounted() {

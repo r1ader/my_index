@@ -2,6 +2,8 @@ import _ from "lodash";
 import { v4 as uuidv4 } from 'uuid';
 import { parseCSSValue } from "./css_util";
 
+const clog = console.log
+
 const registered_dict = {}
 
 const registered_queue = []
@@ -62,10 +64,14 @@ export function r_register(args) {
 export class R_animate_config {
     constructor(config) {
         const { start, end, duration, delay } = config
+        Object.keys(config).forEach(key => {
+            this[key] = config[key]
+        })
         this.start = start || {}
         this.end = end || {}
         this.duration = _.isNumber(duration) ? Math.max(duration, 16) : 16
         this.delay = delay || 0
+
     }
 
     replace(obj) {
@@ -115,18 +121,22 @@ class R_registered_dom {
         this.in_animation = true
         const config = this.queue.shift()
         if (!config) return
-        const start = config.start
-        const end = config.end
-        Object.keys(start).forEach(key => {
-            this.ref.style[key] = start[key]
-        })
         let frame_index = 0
         const render = () => {
-            Object.keys(start).forEach(key => {
-                if (_.isNumber(start[key]) && _.isNumber(end[key])) {
-                    const number_value = start[key] + (end[key] - start[key]) * (frame_index * 16 / config.plan_duration)
-                    this.ref.style[key] = parseCSSValue(key, number_value)
-                }
+            Object.keys(config).forEach(key => {
+                const extract_number_reg = /\[(-|\d|\.)+?~(-|\d||\.)+?\]/g
+                if (!_.isString(config[key])) return
+                const extract_res = config[key].match(extract_number_reg)
+                if (!extract_res.length) return
+                let groove = config[key].replace(extract_number_reg, '{}')
+                const slots = extract_res.map(range => {
+                    const [start_value, end_value] = range.replace('[', '').replace(']', '').split('~').map(o => _.toNumber(o))
+                    return start_value + (end_value - start_value) * (frame_index * 16 / config.plan_duration)
+                })
+                slots.forEach(value => {
+                    groove = groove.replace('{}', Math.ceil(value * 10) / 10)
+                })
+                this.ref.style[key] = groove
             })
             frame_index += 1
             if (frame_index * 16 < config.plan_duration) {

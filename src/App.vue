@@ -11,21 +11,45 @@ export default {
     Introduce
   },
   data() {
-    return {}
+    return {
+      cursor_lock: true,
+      clientX: 0,
+      clientY: 0
+    }
   },
   methods: {
     init_cursor() {
+      const _this = this
       const cursor = this.$refs.cursor
       r_register(cursor)
+      cursor
+          .r_animate({
+            opacity: '[0~0]',
+            top: `[0~${ window.innerHeight / 1.5 }]px`,
+            left: `[0~${ window.innerWidth / 2 }]px`,
+            duration: 0,
+          })
+          .r_animate({ duration: 6000 })
+          .r_animate({
+            opacity: '[0~1]',
+            transform: 'scale([0~1])',
+            duration: 1000
+          })
+          .r_then(() => {
+            this.$data.cursor_lock = false
+          })
       document.addEventListener('mousemove', function (e) {
         const { clientX, clientY, path } = e
+        if (_this.$data.cursor_lock) return
         cursor.style.left = `${ clientX - 10 }px`
         cursor.style.top = `${ clientY - 10 }px`
       })
       document.addEventListener('mouseleave', function (e) {
+        if (_this.$data.cursor_lock) return
         cursor.style.opacity = '0'
       })
       document.addEventListener('mouseenter', function (e) {
+        if (_this.$data.cursor_lock) return
         cursor.style.opacity = '1'
       })
 

@@ -134,6 +134,9 @@ class R_registered_dom {
                 const slots = extract_res.map(range => {
                     const inter_func = interpolation_functions(config.interpolation)
                     const [start_value, end_value] = range.replace('[', '').replace(']', '').split('~').map(o => _.toNumber(o))
+                    if ((frame_index) * 16 >= config.plan_duration) {
+                        return end_value
+                    }
                     const ratio = inter_func(frame_index * 16 / config.plan_duration)
                     return start_value + (end_value - start_value) * ratio
                 })

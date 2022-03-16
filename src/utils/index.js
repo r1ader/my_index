@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { v4 as uuidv4 } from 'uuid';
+import { parseCSSValue } from "./css_util";
 
 const registered_dict = {}
 
@@ -114,32 +115,32 @@ class R_registered_dom {
         this.in_animation = true
         const config = this.queue.shift()
         if (!config) return
-        // console.log('run', config)
-        // console.log('run', JSON.stringify(config, null, 3))
         const start = config.start
         const end = config.end
-        // todo use requestAnimationFrame to implement animation
-        // todo get rid of the shit style.transition
-        this.ref.style.transition = `None`
         Object.keys(start).forEach(key => {
             this.ref.style[key] = start[key]
         })
-        setTimeout(() => {
-            this.ref.style.transition = !!config.duration ? `${ config.duration }ms` : 'None'
-            this.ref.style.transitionDelay = !!config.delay ? `${ config.delay }ms` : 'None'
-            Object.keys(end).forEach(key => {
-                this.ref.style[key] = end[key]
+        let frame_index = 0
+        const render = () => {
+            Object.keys(start).forEach(key => {
+                if (_.isNumber(start[key]) && _.isNumber(end[key])) {
+                    const number_value = start[key] + (end[key] - start[key]) * (frame_index * 16 / config.plan_duration)
+                    this.ref.style[key] = parseCSSValue(key, number_value)
+                }
             })
-        }, 16)
+            frame_index += 1
+            if (frame_index * 16 < config.plan_duration) {
+                requestAnimationFrame(render)
+            } else {
+                this.in_animation = false
+                if (this.queue.length) this.run()
+            }
+        }
 
-        // todo find a better way to control css motion
-        // todo rather than using setTimeout
+        requestAnimationFrame(render)
 
-        setTimeout(() => {
-            this.in_animation = false
-            if (this.queue.length) this.run()
-        }, config.plan_duration + 16)
     }
+
 
     r_same(target) {
         const { r_id } = target

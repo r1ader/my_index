@@ -31,11 +31,17 @@ export default {
       const cylinder_enter = {
         start: {
           opacity: 0,
-          transform: 'translate(0, -54px) rotateX(90deg)',
+          transform: {
+            translate: [0, -74],
+            rotateX: 90
+          }
         },
         end: {
           opacity: 1,
-          transform: 'translate(0, 0) rotateX(0)',
+          transform: {
+            translate: [0, 0],
+            rotateX: 0
+          }
         },
         duration: 1000,
         delay: 0
@@ -54,11 +60,11 @@ export default {
       }
       const spread_width = {
         start: { marginLeft: 0, marginRight: 0 },
-        end: { marginLeft: '20px', marginRight: '20px' },
+        end: { marginLeft: 20, marginRight: 20 },
         duration: 400
       }
       const shrink_width = {
-        start: { marginLeft: '20px', marginRight: '20px' },
+        start: { marginLeft: 20, marginRight: 20 },
         end: { marginLeft: 0, marginRight: 0 },
         duration: 400
       }

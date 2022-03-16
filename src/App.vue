@@ -1,17 +1,37 @@
-<script setup>
-import { ref } from 'vue'
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+import Hello from './components/Hello.vue'
+
+export default {
+  data() {
+    return {
+      message: 'Hello'
+    }
+  },
+  mounted() {
+
+  }
+}
 </script>
 
 <template>
   <div>
-    <HelloWorld msg="Hello Vue 3 + Vite"/>
+    <div ref="cursor" class="cursor"></div>
+    <Hello msg="Hello Vue 3 + Vite"/>
   </div>
 </template>
 
 <style>
+body {
+}
+
+.cursor {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: aliceblue;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

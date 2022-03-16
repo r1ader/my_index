@@ -1,5 +1,5 @@
 import _ from "lodash";
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 const registered_dict = {}
 
@@ -37,27 +37,23 @@ export function r_register(args) {
     if (!_.isArray(args)) {
         const r_id = uuidv4().replace(/-/g, "")
         wait_register_queue.push(r_id)
-        args.r_id = r_id
         registered_dict[r_id] = new R_registered_dom(r_id, args)
         registered_queue.push(registered_dict[r_id])
     } else {
         args.forEach(item => {
             const r_id = uuidv4().replace(/-/g, "")
             wait_register_queue.push(r_id)
-            item.r_id = r_id
             registered_dict[r_id] = new R_registered_dom(r_id, item)
             registered_queue.push(registered_dict[r_id])
         })
     }
     wait_register_queue.forEach(r_id => {
-        const element = registered_dict[r_id].ref
-        element.r_animate = function (config) {
-            registered_dict[r_id].queue.push(new R_animate_config(config))
-            if (!registered_dict[r_id].in_animation) {
-                registered_dict[r_id].run()
-            }
-            return this
-        }
+        const registered_dom = registered_dict[r_id]
+        const element = registered_dom.ref
+        element.r_id = r_id
+        element.r_animate = registered_dom.r_animate.bind(registered_dom)
+        element.r_same = registered_dom.r_same.bind(registered_dom)
+        element.r_then = registered_dom.r_then.bind(registered_dom)
     })
 }
 
@@ -66,7 +62,7 @@ export class R_animate_config {
         const {start, end, duration, delay} = config
         this.start = start || {}
         this.end = end || {}
-        this.duration = duration || 1000
+        this.duration = _.isNumber(duration) ? Math.max(duration, 16) : 16
         this.delay = delay || 0
     }
 
@@ -75,8 +71,17 @@ export class R_animate_config {
     }
 
     r_delay(delay_duration) {
-        this.delay = delay_duration
-        return this
+        const res = _.cloneDeep(this)
+        res.delay = delay_duration
+        return res
+    }
+
+    r_reverse() {
+        return new R_animate_config({
+            start: this.end,
+            end: this.start,
+            ...this
+        })
     }
 
     get plan_duration() {
@@ -106,31 +111,62 @@ class R_registered_dom {
     run() {
         if (this.in_animation) return
         this.in_animation = true
-        const config = this.queue.pop()
+        const config = this.queue.shift()
         if (!config) return
         // console.log('run', config)
-        console.log('run', config)
+        // console.log('run', JSON.stringify(config, null, 3))
         const start = config.start
         const end = config.end
 
         this.ref.style.transition = `None`
-        // setTimeout(() => {
         Object.keys(start).forEach(key => {
             this.ref.style[key] = start[key]
         })
         setTimeout(() => {
-            this.ref.style.transition = `${config.duration}ms`
+            this.ref.style.transition = !!config.duration ? `${ config.duration }ms` : 'None'
+            this.ref.style.transitionDelay = !!config.delay ? `${ config.delay }ms` : 'None'
             Object.keys(end).forEach(key => {
                 this.ref.style[key] = end[key]
             })
-        }, 0)
-        // }, config.delay)
+        }, 16)
+
         // todo find a better way to control css motion
-        // todp rather than using setTimeout
+        // todo rather than using setTimeout
 
         setTimeout(() => {
             this.in_animation = false
             if (this.queue.length) this.run()
-        }, config.plan_duration)
+        }, config.plan_duration + 16)
+    }
+
+    r_same(target) {
+        const {r_id} = target
+        const registered_dom = registered_dict[r_id]
+        // const element = registered_dom.ref
+        registered_dom.queue = registered_dom.queue.concat(this.queue)
+        setTimeout(() => {
+            registered_dom.run()
+        }, 16)
+        return registered_dom.ref
+    }
+
+    r_animate(config) {
+        this.queue.push(new R_animate_config(config))
+        if (!this.in_animation) {
+            setTimeout(() => {
+                this.run()
+            }, 16)
+        }
+        return this.ref
+    }
+
+    r_then(func) {
+        const sum_duration = this.queue.reduce((pre, now) => {
+            return pre + now.plan_duration
+        }, 0)
+        setTimeout(() => {
+            func()
+        }, sum_duration)
+        return this.ref
     }
 }

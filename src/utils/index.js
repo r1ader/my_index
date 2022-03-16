@@ -60,7 +60,7 @@ export function r_register(args) {
 
 export class R_animate_config {
     constructor(config) {
-        const {start, end, duration, delay} = config
+        const { start, end, duration, delay } = config
         this.start = start || {}
         this.end = end || {}
         this.duration = _.isNumber(duration) ? Math.max(duration, 16) : 16
@@ -142,7 +142,7 @@ class R_registered_dom {
     }
 
     r_same(target) {
-        const {r_id} = target
+        const { r_id } = target
         const registered_dom = registered_dict[r_id]
         // const element = registered_dom.ref
         registered_dom.queue = registered_dom.queue.concat(this.queue)

@@ -18,7 +18,7 @@ export default {
       const cursor = this.$refs.cursor
       r_register(cursor)
       document.addEventListener('mousemove', function (e) {
-        const {clientX, clientY, path} = e
+        const { clientX, clientY, path } = e
         cursor.style.left = `${ clientX - 10 }px`
         cursor.style.top = `${ clientY - 10 }px`
       })

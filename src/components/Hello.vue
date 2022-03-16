@@ -154,10 +154,6 @@ a {
   width: 100vw;
 }
 
-.main_container div {
-
-}
-
 .main_container {
   background: #202020;
 }

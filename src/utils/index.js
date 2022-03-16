@@ -117,7 +117,7 @@ class R_registered_dom {
         // console.log('run', config)
         // console.log('run', JSON.stringify(config, null, 3))
         const start = config.start
-        const end = config.end()
+        const end = config.end
         // todo use requestAnimationFrame to implement animation
         // todo get rid of the shit style.transition
         this.ref.style.transition = `None`

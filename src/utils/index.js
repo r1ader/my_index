@@ -122,6 +122,7 @@ class R_registered_dom {
         const config = this.queue.shift()
         if (!config) return
         let frame_index = 0
+        // todo implement of beizer
         const render = () => {
             Object.keys(config).forEach(key => {
                 const extract_number_reg = /\[(-|\d|\.)+?~(-|\d||\.)+?\]/g
@@ -139,7 +140,7 @@ class R_registered_dom {
                 this.ref.style[key] = groove
             })
             frame_index += 1
-            if (frame_index * 16 < config.plan_duration) {
+            if ((frame_index - 1) * 16 < config.plan_duration) {
                 requestAnimationFrame(render)
             } else {
                 this.in_animation = false

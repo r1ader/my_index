@@ -1,12 +1,11 @@
 <script>
-import { r_register } from '../utils/r_nimate'
-import r_director from '../utils/r_nimate'
+import R_director from '../utils/r_nimate'
 
 export default {
   name: 'Hello2',
   data() {
     return {
-      message: 'Hello'
+      r_director: null
     }
   },
   methods: {
@@ -14,8 +13,6 @@ export default {
       const {
         hello
       } = this.$refs
-      r_register([hello
-      ])
       const cylinder_enter = {
         transform: 'translate(0, [-50~0]px) rotateX([90~0]deg)',
         opacity: '[0~1]',
@@ -43,8 +40,8 @@ export default {
     }
   },
   mounted() {
-    // this.beginning_motion()
-    console.log(r_director.read())
+    this.$data.r_director = new R_director()
+    this.$data.r_director.take(this)
   }
 }
 
@@ -58,7 +55,7 @@ export default {
     <div class="main_block">
       <div class="hello_block">
         <div ref="hello">
-          {{ message }}
+          Hello
         </div>
       </div>
     </div>

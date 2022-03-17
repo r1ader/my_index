@@ -2,14 +2,9 @@ import _ from "lodash";
 import { v4 as uuidv4 } from 'uuid';
 import { parseCSSValue } from "./css_util";
 import { interpolation_functions } from "./math_util"
+import { warn } from "vue";
 
 const clog = console.log
-
-const registered_dict = {}
-
-const registered_process = {}
-
-const registered_queue = []
 
 const deep_assign = (target, origin) => {
     Object.keys(origin).forEach(key => {
@@ -20,51 +15,6 @@ const deep_assign = (target, origin) => {
         }
     })
     return target
-}
-
-const get_time_duration_from_string = (time_string) => {
-    let res = 0
-    const s_regex = /(\d+)s/g
-    let found_res = time_string.match(s_regex)
-    if (found_res) {
-        res += parseFloat(found_res[0].replace('s', '')) * 1000
-    }
-    const ms_regex = /(\d+)ms/g
-    found_res = time_string.match(ms_regex)
-    if (found_res) {
-        res += parseFloat(found_res[0].replace('ms', ''))
-    }
-    res = res | 0
-    return res
-}
-
-export function r_register(args) {
-    // todo deal the situation that one dom was registered for more than one time
-    const wait_register_queue = []
-    if (!_.isArray(args)) {
-        const r_id = uuidv4().replace(/-/g, "")
-        wait_register_queue.push(r_id)
-        registered_dict[r_id] = new R_registered_dom(r_id, args)
-        registered_queue.push(registered_dict[r_id])
-    } else {
-        args = _.compact(args)
-        args.forEach(item => {
-            const r_id = uuidv4().replace(/-/g, "")
-            wait_register_queue.push(r_id)
-            registered_dict[r_id] = new R_registered_dom(r_id, item)
-            registered_queue.push(registered_dict[r_id])
-        })
-    }
-
-    wait_register_queue.forEach(r_id => {
-        const registered_dom = registered_dict[r_id]
-        const element = registered_dom.ref
-        element.r_id = r_id
-        element.r_animate = registered_dom.r_animate.bind(registered_dom)
-        element.r_same = registered_dom.r_same.bind(registered_dom)
-        element.r_then = registered_dom.r_then.bind(registered_dom)
-        element.r_sleep = registered_dom.r_sleep.bind(registered_dom)
-    })
 }
 
 class R_animate_config {
@@ -126,6 +76,9 @@ class R_registered_dom {
     run() {
         if (this.in_animation) return
         this.in_animation = true
+        if (this.queue.length === 0) {
+            warn(this.ref.toString() + '’s queue is empty')
+        }
         const config = this.queue.shift()
         if (!config) return
         let frame_index = 0
@@ -146,7 +99,7 @@ class R_registered_dom {
                     return start_value + (end_value - start_value) * ratio
                 })
                 slots.forEach(value => {
-                    groove = groove.replace('{}', Math.ceil(value * 10) / 10)
+                    groove = groove.replace('{}', Math.round(value * 1000) / 1000)
                 })
                 this.ref.style[key] = groove
             })
@@ -158,17 +111,23 @@ class R_registered_dom {
                 if (this.queue.length) this.run()
             }
         }
-        registered_process[this.r_id] = requestAnimationFrame(render)
+        this.render_process = requestAnimationFrame(render)
+    }
+
+    stop() {
+        if (this.render_process) {
+            cancelAnimationFrame(this.render_process)
+        }
+        this.in_animation = false
+        this.render_process = undefined
     }
 
     r_same(target) {
-        const { r_id } = target
-        const registered_dom = registered_dict[r_id]
-        registered_dom.queue = registered_dom.queue.concat(this.queue)
+        target.queue = target.queue.concat(this.queue)
         setTimeout(() => {
-            registered_dom.run()
+            target.run()
         }, 16)
-        return registered_dom.ref
+        return target
     }
 
     r_animate(config) {
@@ -205,15 +164,49 @@ class R_registered_dom {
 }
 
 // todo implement a director class to control all the registered dom
-//  make this class independent for every component
 class R_director {
     constructor() {
         this.id = uuidv4().replace(/-/g, "")
+
+        this.registered_dict = {}
+
+        this.registered_queue = []
+    }
+
+    register(args) {
+        // todo deal the situation that one dom was registered for more than one time
+        const wait_register_queue = []
+        if (!_.isArray(args)) {
+            const r_id = uuidv4().replace(/-/g, "")
+            wait_register_queue.push(r_id)
+            this.registered_dict[r_id] = new R_registered_dom(r_id, args)
+            this.registered_queue.push(this.registered_dict[r_id])
+        } else {
+            args = _.compact(args)
+            args.forEach(item => {
+                const r_id = uuidv4().replace(/-/g, "")
+                wait_register_queue.push(r_id)
+                this.registered_dict[r_id] = new R_registered_dom(r_id, item)
+                this.registered_queue.push(this.registered_dict[r_id])
+            })
+        }
+
+        wait_register_queue.forEach(r_id => {
+            const registered_dom = this.registered_dict[r_id]
+            const element = registered_dom.ref
+            element.r_id = r_id
+            element.queue = registered_dom.queue
+            element.run = registered_dom.run.bind(registered_dom)
+            element.r_animate = registered_dom.r_animate.bind(registered_dom)
+            element.r_same = registered_dom.r_same.bind(registered_dom)
+            element.r_then = registered_dom.r_then.bind(registered_dom)
+            element.r_sleep = registered_dom.r_sleep.bind(registered_dom)
+        })
     }
 
     take(env) {
         Object.keys(env.$refs).forEach(ref_name => {
-            r_register(env.$refs[ref_name])
+            this.register(env.$refs[ref_name])
         })
     }
 
@@ -226,13 +219,28 @@ class R_director {
     }
 
     cut() {
-
+        this.registered_queue.forEach(member => {
+            member.queue = []
+            member.stop()
+        })
     }
 
     read() {
         console.log('I am', this.id)
-        return registered_queue
+        return this.registered_queue
+    }
+
+    copy(origin, targets) {
+        const origin_dom = this.registered_dict[origin.r_id]
+        targets.forEach(target => {
+            const registered_dom = this.registered_dict[target.r_id]
+            registered_dom.queue = registered_dom.queue.concat(origin_dom.queue)
+            setTimeout(() => {
+                registered_dom.run()
+            }, 16)
+            return registered_dom.ref
+        })
     }
 }
 
-export default new R_director()
+export default R_director

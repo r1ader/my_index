@@ -4,7 +4,7 @@ import Hello2 from './components/Hello2.vue'
 import Introduce from './components/Introduce.vue'
 import { interpolation_functions } from "./utils/math_util";
 import _ from "lodash";
-import { r_register } from "./utils/r_nimate";
+import R_director from "./utils/r_nimate";
 
 const clog = console.log
 
@@ -35,7 +35,6 @@ export default {
     init_cursor() {
       const _this = this
       const cursor = this.$refs.cursor
-      r_register(cursor)
       cursor
           .r_animate({
             opacity: '[0~0]',
@@ -134,6 +133,8 @@ export default {
     //
   },
   mounted() {
+    const r_director = new R_director()
+    r_director.take(this)
     this.init_cursor()
     this.init_scroll()
     this.init_windows()

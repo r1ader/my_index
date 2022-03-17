@@ -1,12 +1,11 @@
 <script>
-import { r_register } from '../utils/r_nimate'
-import r_director from '../utils/r_nimate'
+import R_director from '../utils/r_nimate'
 
 export default {
   name: 'Hello',
   data() {
     return {
-      message: 'Hello'
+      r_director: null
     }
   },
   methods: {
@@ -58,8 +57,13 @@ export default {
       name_part1
           .r_animate({ duration: 3000 })
           .r_animate(cylinder_enter)
-          .r_same(name_part2)
-          .r_same(name_part3)
+
+      this.$data.r_director
+          .copy(name_part1,
+              [
+                name_part2,
+                name_part3
+              ])
 
       name_part2
           .r_animate(spread_width)
@@ -72,6 +76,7 @@ export default {
           .r_animate(shrink_width)
     },
     exit_motion() {
+      this.$data.r_director.cut()
       const {
         hello,
         introduce,
@@ -82,18 +87,37 @@ export default {
         dot
       } = this.$refs
       hello
-          .r_animate({ opacity: '[1~0]', duration: 1000 })
-          .r_same(introduce)
-          .r_same(name_part1)
-          .r_same(name_part2)
-          .r_same(name_part2_1)
-          .r_same(name_part3)
-          .r_same(dot)
+          .r_animate({ duration: 100 })
+          .r_animate({ opacity: `[${ hello.style.opacity }~0]`, duration: 1000 })
+
+      introduce
+          .r_animate({ duration: 100 })
+          .r_animate({ opacity: `[${ introduce.style.opacity }~0]`, duration: 1000 })
+
+      name_part1
+          .r_animate({ duration: 100 })
+          .r_animate({ opacity: `[${ name_part1.style.opacity }~0]`, duration: 1000 })
+
+      name_part2
+          .r_animate({ duration: 100 })
+          .r_animate({ opacity: `[${ name_part2.style.opacity }~0]`, duration: 1000 })
+
+      name_part2_1
+          .r_animate({ duration: 100 })
+          .r_animate({ opacity: `[${ name_part2_1.style.opacity }~0]`, duration: 1000 })
+
+      name_part3
+          .r_animate({ duration: 100 })
+          .r_animate({ opacity: `[${ name_part3.style.opacity }~0]`, duration: 1000 })
+
+      dot
+          .r_animate({ duration: 100 })
+          .r_animate({ opacity: `[${ dot.style.opacity }~0]`, duration: 1000 })
     }
   },
   mounted() {
-    r_director.take(this)
-    console.log(r_director.read())
+    this.$data.r_director = new R_director()
+    this.$data.r_director.take(this)
   }
 }
 
@@ -107,7 +131,7 @@ export default {
     <div class="main_block">
       <div class="hello_block">
         <div ref="hello">
-          {{ message }}
+          Hello
         </div>
         <div ref="dot">,</div>
         <div ref="introduce">

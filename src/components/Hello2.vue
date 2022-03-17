@@ -1,5 +1,6 @@
 <script>
-import { r_register } from '../utils'
+import { r_register } from '../utils/r_nimate'
+import r_director from '../utils/r_nimate'
 
 export default {
   name: 'Hello2',
@@ -11,27 +12,9 @@ export default {
   methods: {
     beginning_motion() {
       const {
-        hello,
-        introduce,
-        name_part1,
-        name_part2,
-        name_part2_e,
-        name_part2_1,
-        name_part3,
-        dot,
-        right_top_ball,
-        line_on_hello
+        hello
       } = this.$refs
-      r_register([hello,
-        introduce,
-        name_part1,
-        name_part2,
-        name_part2_e,
-        name_part2_1,
-        name_part3,
-        dot,
-        right_top_ball,
-        line_on_hello
+      r_register([hello
       ])
       const cylinder_enter = {
         transform: 'translate(0, [-50~0]px) rotateX([90~0]deg)',
@@ -57,44 +40,11 @@ export default {
       hello
           .r_animate({ duration: 1000 })
           .r_animate(cylinder_enter)
-
-      dot
-          .r_animate({ duration: 1500 })
-          .r_animate(cylinder_enter)
-
-
-      introduce
-          .r_animate({ duration: 2000 })
-          .r_animate(cylinder_enter)
-
-      name_part1
-          .r_animate({ duration: 3000 })
-          .r_animate(cylinder_enter)
-          .r_same(name_part2)
-          .r_same(name_part3)
-
-      name_part2
-          .r_animate(spread_width)
-          .r_animate({ duration: 100 })
-          .r_then(() => {
-            name_part2_1.r_animate(cylinder_enter)
-            name_part2_e.r_animate(cylinder_out)
-          })
-          .r_animate({ duration: 900 })
-          .r_animate(shrink_width)
-
-      // right_top_ball
-      //     .r_animate({ duration: 6000 })
-      //     .r_animate({
-      //       opacity: '[0~1]',
-      //       transform: 'scale([0~1])',
-      //       duration: 1000
-      //     })
-
     }
   },
   mounted() {
     // this.beginning_motion()
+    console.log(r_director.read())
   }
 }
 
@@ -107,32 +57,8 @@ export default {
     </div>
     <div class="main_block">
       <div class="hello_block">
-        <div style="
-             width: 100px;
-             height: 0;
-             border: 1px solid white;
-             position: absolute;
-            "
-             ref="line_on_hello"
-        />
         <div ref="hello">
           {{ message }}
-        </div>
-        <div ref="dot">,</div>
-        <div ref="introduce">
-          here is
-        </div>
-        <div style="margin-right: 0" ref="name_part1">
-          r
-        </div>
-        <div style="margin-right: 0;margin-left: 0;" ref="name_part2">
-          <span ref="name_part2_e">e</span>
-          <span style="position:absolute;opacity: 0" ref="name_part2_1">
-            1
-          </span>
-        </div>
-        <div style="margin-left: 0" ref="name_part3">
-          ader
         </div>
       </div>
     </div>

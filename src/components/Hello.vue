@@ -1,5 +1,6 @@
 <script>
-import { r_register } from '../utils'
+import { r_register } from '../utils/r_nimate'
+import r_director from '../utils/r_nimate'
 
 export default {
   name: 'Hello',
@@ -18,19 +19,8 @@ export default {
         name_part2_e,
         name_part2_1,
         name_part3,
-        dot,
-        right_top_ball
+        dot
       } = this.$refs
-      r_register([hello,
-        introduce,
-        name_part1,
-        name_part2,
-        name_part2_e,
-        name_part2_1,
-        name_part3,
-        dot,
-        right_top_ball
-      ])
       const cylinder_enter = {
         transform: 'translate(0, [-50~0]px) rotateX([90~0]deg)',
         opacity: '[0~1]',
@@ -87,35 +77,23 @@ export default {
         introduce,
         name_part1,
         name_part2,
-        name_part2_e,
         name_part2_1,
         name_part3,
-        dot,
-        right_top_ball
+        dot
       } = this.$refs
-      r_register([hello,
-        introduce,
-        name_part1,
-        name_part2,
-        name_part2_e,
-        name_part2_1,
-        name_part3,
-        dot,
-        right_top_ball
-      ])
       hello
-          .r_animate({ opacity: '[1~0]' })
+          .r_animate({ opacity: '[1~0]', duration: 1000 })
           .r_same(introduce)
           .r_same(name_part1)
           .r_same(name_part2)
           .r_same(name_part2_1)
           .r_same(name_part3)
           .r_same(dot)
-          .r_same(right_top_ball)
     }
   },
   mounted() {
-    // this.beginning_motion()
+    r_director.take(this)
+    console.log(r_director.read())
   }
 }
 

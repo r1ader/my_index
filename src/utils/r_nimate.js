@@ -7,6 +7,8 @@ const clog = console.log
 
 const registered_dict = {}
 
+const registered_process = {}
+
 const registered_queue = []
 
 const deep_assign = (target, origin) => {
@@ -37,6 +39,7 @@ const get_time_duration_from_string = (time_string) => {
 }
 
 export function r_register(args) {
+    // todo deal the situation that one dom was registered for more than one time
     const wait_register_queue = []
     if (!_.isArray(args)) {
         const r_id = uuidv4().replace(/-/g, "")
@@ -64,7 +67,7 @@ export function r_register(args) {
     })
 }
 
-export class R_animate_config {
+class R_animate_config {
     constructor(config) {
         const { start, end, duration, delay, interpolation } = config
         Object.keys(config).forEach(key => {
@@ -113,8 +116,8 @@ export class R_animate_config {
 }
 
 class R_registered_dom {
-    constructor(id, item) {
-        this.id = id
+    constructor(r_id, item) {
+        this.r_id = r_id
         this.ref = item
         this.in_animation = false
         this.queue = []
@@ -155,15 +158,12 @@ class R_registered_dom {
                 if (this.queue.length) this.run()
             }
         }
-
-        requestAnimationFrame(render)
-
+        registered_process[this.r_id] = requestAnimationFrame(render)
     }
 
     r_same(target) {
         const { r_id } = target
         const registered_dom = registered_dict[r_id]
-        // const element = registered_dom.ref
         registered_dom.queue = registered_dom.queue.concat(this.queue)
         setTimeout(() => {
             registered_dom.run()
@@ -203,3 +203,36 @@ class R_registered_dom {
         return this.ref
     }
 }
+
+// todo implement a director class to control all the registered dom
+//  make this class independent for every component
+class R_director {
+    constructor() {
+        this.id = uuidv4().replace(/-/g, "")
+    }
+
+    take(env) {
+        Object.keys(env.$refs).forEach(ref_name => {
+            r_register(env.$refs[ref_name])
+        })
+    }
+
+    stop() {
+
+    }
+
+    continue() {
+
+    }
+
+    cut() {
+
+    }
+
+    read() {
+        console.log('I am', this.id)
+        return registered_queue
+    }
+}
+
+export default new R_director()

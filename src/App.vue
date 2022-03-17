@@ -4,7 +4,7 @@ import Hello2 from './components/Hello2.vue'
 import Introduce from './components/Introduce.vue'
 import { interpolation_functions } from "./utils/math_util";
 import _ from "lodash";
-import { r_register } from "./utils";
+import { r_register } from "./utils/r_nimate";
 
 const clog = console.log
 
@@ -127,8 +127,11 @@ export default {
       requestAnimationFrame(render)
     },
   },
+  beforeCreate() {
+
+  },
   created() {
-    console.clear()
+    //
   },
   mounted() {
     this.init_cursor()

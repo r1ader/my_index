@@ -82,36 +82,24 @@ export default {
         introduce,
         name_part1,
         name_part2,
-        name_part2_1,
         name_part3,
         dot
       } = this.$refs
-      hello
-          .r_animate({ duration: 100 })
-          .r_animate({ opacity: `[${ hello.style.opacity }~0]`, duration: 1000 })
+      hello.r_animate({ opacity: `[${ hello.style.opacity }~0]`, duration: 1000 })
 
       introduce
-          .r_animate({ duration: 100 })
           .r_animate({ opacity: `[${ introduce.style.opacity }~0]`, duration: 1000 })
 
       name_part1
-          .r_animate({ duration: 100 })
           .r_animate({ opacity: `[${ name_part1.style.opacity }~0]`, duration: 1000 })
 
       name_part2
-          .r_animate({ duration: 100 })
           .r_animate({ opacity: `[${ name_part2.style.opacity }~0]`, duration: 1000 })
 
-      name_part2_1
-          .r_animate({ duration: 100 })
-          .r_animate({ opacity: `[${ name_part2_1.style.opacity }~0]`, duration: 1000 })
-
       name_part3
-          .r_animate({ duration: 100 })
           .r_animate({ opacity: `[${ name_part3.style.opacity }~0]`, duration: 1000 })
 
       dot
-          .r_animate({ duration: 100 })
           .r_animate({ opacity: `[${ dot.style.opacity }~0]`, duration: 1000 })
     }
   },
@@ -129,6 +117,9 @@ export default {
       <div ref="right_top_ball" class="ball"></div>
     </div>
     <div class="main_block">
+      <div class="paper_block">
+        <div class="paper"/>
+      </div>
       <div class="hello_block">
         <div ref="hello">
           Hello
@@ -209,4 +200,16 @@ a {
   letter-spacing: 5px;
 }
 
+.paper_block {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.paper{
+  width: 100px;
+  height: 100px;
+  background: white;
+  border-radius: 10px;
+}
 </style>

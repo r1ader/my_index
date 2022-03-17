@@ -41,29 +41,15 @@ export default {
         duration: 400
       }
 
-      hello
-          .r_animate({ duration: 500 })
-          .r_animate(cylinder_enter)
+      hello.r_animate({ duration: 500 }).r_animate(cylinder_enter)
+      dot.r_animate({ duration: 750 }).r_animate(cylinder_enter)
+      introduce.r_animate({ duration: 1500 }).r_animate(cylinder_enter)
+      name_part1.r_animate({ duration: 2500 }).r_animate(cylinder_enter)
 
-      dot
-          .r_animate({ duration: 750 })
-          .r_animate(cylinder_enter)
-
-
-      introduce
-          .r_animate({ duration: 1500 })
-          .r_animate(cylinder_enter)
-
-      name_part1
-          .r_animate({ duration: 2500 })
-          .r_animate(cylinder_enter)
-
-      this.$data.r_director
-          .copy(name_part1,
-              [
-                name_part2,
-                name_part3
-              ])
+      this.$data.r_director.copy(name_part1, [
+        name_part2,
+        name_part3
+      ])
 
       name_part2
           .r_animate(spread_width)
@@ -95,31 +81,7 @@ export default {
       name_part2.r_animate({ opacity: `[${ name_part2.style.opacity }~0]`, duration: 1000 })
       name_part3.r_animate({ opacity: `[${ name_part3.style.opacity }~0]`, duration: 1000 })
       dot.r_animate({ opacity: `[${ dot.style.opacity }~0]`, duration: 1000 })
-
-
-      const {
-        curve_block,
-        ball_block,
-        paper_block,
-        curve_1, curve_2, curve_3,
-        ball_1, ball_2, ball_3,
-        paper_1, paper_2, paper_3
-      } = this.$refs
-      const duration = 1000
-      const opacity_on = { opacity: '[1~0]', duration: 1000 }
-      curve_block.r_animate(opacity_on)
-      ball_block.r_animate(opacity_on)
-      paper_block.r_animate(opacity_on)
-      curve_1.r_animate({ transform: 'scale([2~1]) translate([-100~0]px,[-100~0]px)', duration, reverse: true })
-      curve_2.r_animate({ transform: 'translate([-100~0]px,[100~0]px)', duration, reverse: true })
-      curve_3.r_animate({ transform: 'translate([-200~0]px,[200~0]px)', duration, reverse: true })
-      ball_1.r_animate({ transform: 'translate([200~0]px)', duration, reverse: true })
-      ball_2.r_animate({ transform: 'translateY([-150~0]px)', duration, reverse: true })
-      ball_3.r_animate({ transform: 'translate([100~0]px,[-200~0]px)', duration, reverse: true })
-      paper_1.r_animate({ transform: 'translate([300~0]px)', duration, reverse: true })
-      paper_2.r_animate({ transform: 'translateY([240~0]px)', duration, reverse: true })
-      paper_3.r_animate({ transform: 'translate([200~0]px,[100~0]px)', duration, reverse: true })
-
+      this.background_exit()
     },
     background_enter() {
       const {
@@ -144,11 +106,81 @@ export default {
       paper_1.r_animate({ transform: 'translate([300~0]px)', duration })
       paper_2.r_animate({ transform: 'translateY([240~0]px)', duration })
       paper_3.r_animate({ transform: 'translate([200~0]px,[100~0]px)', duration })
+    },
+    background_exit() {
+      const {
+        curve_block,
+        ball_block,
+        paper_block,
+        curve_1, curve_2, curve_3,
+        ball_1, ball_2, ball_3,
+        paper_1, paper_2, paper_3
+      } = this.$refs
+      const duration = 1000
+      const opacity_on = { opacity: '[1~0]', duration: 1000 }
+      curve_block.r_animate(opacity_on)
+      ball_block.r_animate(opacity_on)
+      paper_block.r_animate(opacity_on)
+      curve_1.r_animate({ transform: 'scale([2~1]) translate([-100~0]px,[-100~0]px)', duration, reverse: true })
+      curve_2.r_animate({ transform: 'translate([-100~0]px,[100~0]px)', duration, reverse: true })
+      curve_3.r_animate({ transform: 'translate([-200~0]px,[200~0]px)', duration, reverse: true })
+      ball_1.r_animate({ transform: 'translate([200~0]px)', duration, reverse: true })
+      ball_2.r_animate({ transform: 'translateY([-150~0]px)', duration, reverse: true })
+      ball_3.r_animate({ transform: 'translate([100~0]px,[-200~0]px)', duration, reverse: true })
+      paper_1.r_animate({ transform: 'translate([300~0]px)', duration, reverse: true })
+      paper_2.r_animate({ transform: 'translateY([240~0]px)', duration, reverse: true })
+      paper_3.r_animate({ transform: 'translate([200~0]px,[100~0]px)', duration, reverse: true })
+    },
+    init_interact() {
+      const {
+        curve_1, curve_2, curve_3,
+        ball_1, ball_2, ball_3,
+      } = this.$refs
+      const config = { interpolation: 'easeInOutExpo', duration: 750 }
+      curve_1.addEventListener('mouseenter', function (e) {
+        curve_1.r_animate({ transform: 'translateX([0~80]px)', ...config })
+      })
+      curve_1.addEventListener('mouseleave', function (e) {
+        curve_1.r_animate({ transform: 'translateX([80~0]px)', ...config })
+      })
+      curve_2.addEventListener('mouseenter', function (e) {
+        curve_2.r_animate({ transform: 'translateX([0~80]px)', ...config })
+      })
+      curve_2.addEventListener('mouseleave', function (e) {
+        curve_2.r_animate({ transform: 'translateX([80~0]px)', ...config })
+      })
+      curve_3.addEventListener('mouseenter', function (e) {
+        curve_3.r_animate({ transform: 'translateX([0~80]px)', ...config })
+      })
+      curve_3.addEventListener('mouseleave', function (e) {
+        curve_3.r_animate({ transform: 'translateX([80~0]px)', ...config })
+      })
+
+      ball_1.addEventListener('mouseenter', function (e) {
+        ball_1
+            .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
+            .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
+      })
+
+      ball_2.addEventListener('mouseenter', function (e) {
+        ball_2
+            .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
+            .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
+      })
+
+      ball_3.addEventListener('mouseenter', function (e) {
+        ball_3
+            .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
+            .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
+      })
+
     }
   },
   mounted() {
+    this.init_interact()
     this.$data.r_director = new R_director()
     this.$data.r_director.take(this)
+    // this.background_enter()
   }
 }
 
@@ -171,6 +203,7 @@ export default {
       <div ref="curve_block" class="curve_block">
         <svg class="curve" width="300" height="400">
           <path
+              class="curve_1"
               ref="curve_1"
               d="
                 M 0 0 V 400 H 195 C 201 299 97 278 92 141 C 93 79 112 56 122 47 C 134 35 143 38 151 44 C 160 51 177 38 188 25 C 197 14 202 6 212 0 H 0 L 0 0
@@ -180,14 +213,14 @@ export default {
           <path
               ref="curve_2"
               d="
-                M 0 0 V 400 H 188 C 184 336 122 329 89 271 C 45 211 17 128 13 77 C 10 28 40 -4 41 0 H 0 L 0 0
+                M 0 0 V 400 H 188 C 170 307 91 315 50 231 C -1 139 23 16 41 0 H 0 L 0 0
               "
               fill="#d4d4d4"
               stroke="#d4d4d4"/>
           <path
               ref="curve_3"
               d="
-                M 0 0 V 400 H 180 C 163 342 92 373 52 282 C 45 211 17 128 13 77 C 10 28 40 -4 41 0 H 0 L 0 0
+                M 0 359 V 400 H 181 C 177 360 98 339 0 335
               "
               fill="white"
               stroke="white"/>
@@ -367,6 +400,10 @@ a {
 
 .curve {
   transform: scale(2.4);
+}
+
+.curve_1:hover {
+  transform: scale(1.2);
 }
 
 </style>

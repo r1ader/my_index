@@ -28,8 +28,8 @@ export default {
     init_windows() {
       this.$data.window_queue = [
         this.$refs.hello,
-        this.$refs.hello2,
-        this.$refs.introduce,
+        // this.$refs.hello2,
+        // this.$refs.introduce,
       ]
     },
     init_cursor() {
@@ -55,8 +55,8 @@ export default {
       document.addEventListener('mousemove', function (e) {
         const { clientX, clientY, path } = e
         if (_this.$data.cursor_lock) return
-        cursor.style.left = `${ clientX - 10 }px`
-        cursor.style.top = `${ clientY - 10 }px`
+        cursor.style.left = `${ clientX - 25 }px`
+        cursor.style.top = `${ clientY - 25 }px`
       })
       document.addEventListener('mouseleave', function (e) {
         if (_this.$data.cursor_lock) return
@@ -73,7 +73,7 @@ export default {
         if (this.$data.scroll_lock) return
         const { window_queue } = this.$data
         if (e.deltaY > 0) {
-          if (this.$data.scroll_index >= 3) return
+          if (this.$data.scroll_index >= window_queue.length - 1) return
           this.$data.scroll_index = Math.round(window.scrollY / window.innerHeight)
           let windows_now = window_queue[this.$data.scroll_index]
           if (_.isFunction(windows_now.exit_motion)) {
@@ -146,10 +146,10 @@ export default {
 
 <template>
   <div>
-    <div ref="cursor" class="cursor"></div>
     <Hello ref="hello"/>
-    <Hello2 ref="hello2"/>
-    <Introduce ref="introduce"/>
+    <div ref="cursor" class="cursor"></div>
+    <!--    <Hello2 ref="hello2"/>-->
+    <!--    <Introduce ref="introduce"/>-->
   </div>
 </template>
 
@@ -158,7 +158,7 @@ export default {
 body {
   margin: 0;
   padding: 0;
-  /*cursor: None;*/
+  cursor: None;
   overflow: hidden;
 }
 

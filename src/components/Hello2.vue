@@ -168,7 +168,7 @@ a {
 }
 
 .main_container {
-  background: #202020;
+  background: #505050;
   display: flex;
   flex-direction: column;
   justify-content: start;

@@ -2,6 +2,7 @@
 import Hello from './components/Hello.vue'
 import Hello2 from './components/Hello2.vue'
 import Introduce from './components/Introduce.vue'
+import { interpolation_functions } from "./utils/math_util";
 import _ from "lodash";
 import { r_register } from "./utils";
 
@@ -15,8 +16,10 @@ export default {
   data() {
     return {
       cursor_lock: true,
+      scroll_lock: true,
       clientX: 0,
-      clientY: 0
+      clientY: 0,
+      scroll_index: 0
     }
   },
   methods: {
@@ -39,6 +42,7 @@ export default {
           })
           .r_then(() => {
             this.$data.cursor_lock = false
+            this.$data.scroll_lock = false
           })
       document.addEventListener('mousemove', function (e) {
         const { clientX, clientY, path } = e
@@ -54,47 +58,64 @@ export default {
         if (_this.$data.cursor_lock) return
         cursor.style.opacity = '1'
       })
-      // cursor.r_sleep(1000)
-      //     .r_animate({
-      //       start: {opacity: 0, transform: 'scale(0.1)'},
-      //       end: {opacity: 1, transform: 'scale(1)'},
-      //       duration: 200
-      //     }).r_then(() => {
-      //   console.log('NOne')
-      //   cursor.style.transition = 'None'
-      // })
     },
     init_scroll() {
       document.addEventListener('mousewheel', (e) => {
+        if (e.ctrlKey) return
+        if (this.$data.scroll_lock) return
+        const { hello, hello2, introduce } = this.$refs
         if (e.deltaY > 0) {
-          this.scroll_next()
+          if (this.$data.scroll_index >= 3) return
+          let windows_now = [hello, hello2, introduce][this.$data.scroll_index]
+          this.$data.scroll_index += 1
+          let windows_next = [hello, hello2, introduce][this.$data.scroll_index]
+          this.scroll_smooth(window.innerHeight, () => {
+            windows_next.beginning_motion()
+          })
         } else if (e.deltaY < 0) {
-          this.scroll_last()
+          if (this.$data.scroll_index <= 0) return
+          let windows_now = [hello, hello2, introduce][this.$data.scroll_index]
+          this.$data.scroll_index -= 1
+          let windows_next = [hello, hello2, introduce][this.$data.scroll_index]
+          this.scroll_smooth(-window.innerHeight, () => {
+            windows_next.beginning_motion()
+          })
         }
+        console.log(this.$data.scroll_index)
       })
     },
-    scroll_next() {
-      // todo use requestAnimationFrame control scroll
-      window.scrollTo({
-        top: window.scrollY + window.innerHeight,
-        left: 0,
-        behavior: 'smooth'
-      })
-      this.$refs.hello2.beginning_motion()
+    scroll_smooth(scroll_distance, callback) {
+      this.$data.scroll_lock = true
+      let plan_duration = 1000
+      let frame_index = 0
+      const init_scrollY = window.scrollY
+      const inter_func = interpolation_functions('easeInOutExpo')
+      const render = () => {
+        window.scrollTo({
+          top: init_scrollY +
+              inter_func(frame_index * 16 / plan_duration)
+              * scroll_distance,
+        })
+        frame_index += 1
+        if ((frame_index - 1) * 16 < plan_duration) {
+          requestAnimationFrame(render)
+        } else {
+          this.$data.scroll_lock = false
+          if (_.isFunction(callback)) {
+            callback()
+          }
+        }
+      }
+      requestAnimationFrame(render)
     },
-    scroll_last() {
-      // this.
-      window.scrollTo({
-        top: window.scrollY - window.innerHeight,
-        left: 0,
-        behavior: 'smooth'
-      })
-    }
   },
   mounted() {
     this.init_cursor()
     this.init_scroll()
     this.$refs.hello.beginning_motion()
+    window.scrollTo({
+      top: 0,
+    })
   }
 }
 </script>
@@ -104,7 +125,7 @@ export default {
     <div ref="cursor" class="cursor"></div>
     <Hello ref="hello"/>
     <Hello2 ref="hello2"/>
-    <Introduce/>
+    <Introduce ref="introduce"/>
   </div>
 </template>
 

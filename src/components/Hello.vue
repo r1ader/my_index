@@ -80,10 +80,41 @@ export default {
           })
           .r_animate({ duration: 900 })
           .r_animate(shrink_width)
+    },
+    exit_motion() {
+      const {
+        hello,
+        introduce,
+        name_part1,
+        name_part2,
+        name_part2_e,
+        name_part2_1,
+        name_part3,
+        dot,
+        right_top_ball
+      } = this.$refs
+      r_register([hello,
+        introduce,
+        name_part1,
+        name_part2,
+        name_part2_e,
+        name_part2_1,
+        name_part3,
+        dot,
+        right_top_ball
+      ])
+      hello
+          .r_animate({ opacity: '[1~0]' })
+          .r_same(introduce)
+          .r_same(name_part1)
+          .r_same(name_part2)
+          .r_same(name_part2_1)
+          .r_same(name_part3)
+          .r_same(dot)
+          .r_same(right_top_ball)
     }
   },
   mounted() {
-    console.clear()
     // this.beginning_motion()
   }
 }

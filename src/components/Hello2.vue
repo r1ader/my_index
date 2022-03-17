@@ -94,7 +94,6 @@ export default {
     }
   },
   mounted() {
-    console.clear()
     // this.beginning_motion()
   }
 }

@@ -7,6 +7,7 @@ import _ from "lodash";
 import { r_register } from "./utils";
 
 const clog = console.log
+
 export default {
   components: {
     Hello,
@@ -16,13 +17,21 @@ export default {
   data() {
     return {
       cursor_lock: true,
-      scroll_lock: true,
+      scroll_lock: false,
       clientX: 0,
       clientY: 0,
-      scroll_index: 0
+      scroll_index: 0,
+      window_queue: []
     }
   },
   methods: {
+    init_windows() {
+      this.$data.window_queue = [
+        this.$refs.hello,
+        this.$refs.hello2,
+        this.$refs.introduce,
+      ]
+    },
     init_cursor() {
       const _this = this
       const cursor = this.$refs.cursor
@@ -63,29 +72,38 @@ export default {
       document.addEventListener('mousewheel', (e) => {
         if (e.ctrlKey) return
         if (this.$data.scroll_lock) return
-        const { hello, hello2, introduce } = this.$refs
+        const { window_queue } = this.$data
         if (e.deltaY > 0) {
           if (this.$data.scroll_index >= 3) return
-          let windows_now = [hello, hello2, introduce][this.$data.scroll_index]
+          this.$data.scroll_index = Math.round(window.scrollY / window.innerHeight)
+          let windows_now = window_queue[this.$data.scroll_index]
+          if (_.isFunction(windows_now.exit_motion)) {
+            windows_now.exit_motion()
+          }
           this.$data.scroll_index += 1
-          let windows_next = [hello, hello2, introduce][this.$data.scroll_index]
+          let windows_next = window_queue[this.$data.scroll_index]
+          this.$data.scroll_lock = true
           this.scroll_smooth(window.innerHeight, () => {
             windows_next.beginning_motion()
           })
         } else if (e.deltaY < 0) {
           if (this.$data.scroll_index <= 0) return
-          let windows_now = [hello, hello2, introduce][this.$data.scroll_index]
+          this.$data.scroll_index = Math.round(window.scrollY / window.innerHeight)
+          let windows_now = window_queue[this.$data.scroll_index]
+          if (_.isFunction(windows_now.exit_motion)) {
+            windows_now.exit_motion()
+          }
           this.$data.scroll_index -= 1
-          let windows_next = [hello, hello2, introduce][this.$data.scroll_index]
+          let windows_next = window_queue[this.$data.scroll_index]
+
+          this.$data.scroll_lock = true
           this.scroll_smooth(-window.innerHeight, () => {
             windows_next.beginning_motion()
           })
         }
-        console.log(this.$data.scroll_index)
       })
     },
     scroll_smooth(scroll_distance, callback) {
-      this.$data.scroll_lock = true
       let plan_duration = 1000
       let frame_index = 0
       const init_scrollY = window.scrollY
@@ -109,13 +127,15 @@ export default {
       requestAnimationFrame(render)
     },
   },
+  created() {
+    console.clear()
+  },
   mounted() {
     this.init_cursor()
     this.init_scroll()
-    this.$refs.hello.beginning_motion()
-    window.scrollTo({
-      top: 0,
-    })
+    this.init_windows()
+    this.$data.scroll_index = Math.round(window.scrollY / window.innerHeight)
+    this.$data.window_queue[this.$data.scroll_index].beginning_motion()
   }
 }
 </script>

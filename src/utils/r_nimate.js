@@ -19,12 +19,13 @@ const deep_assign = (target, origin) => {
 
 class R_animate_config {
     constructor(config) {
-        const { start, end, duration, delay, interpolation } = config
+        const { start, end, duration, delay, interpolation, reverse } = config
         Object.keys(config).forEach(key => {
             this[key] = config[key]
         })
         this.start = start || {}
         this.end = end || {}
+        this.reverse = reverse || false
         this.duration = _.isNumber(duration) ? duration : 0
         this.delay = delay || 0
         this.interpolation = interpolation || 'easeOutExpo'
@@ -91,7 +92,10 @@ class R_registered_dom {
                 let groove = config[key].replace(extract_number_reg, '{}')
                 const slots = extract_res.map(range => {
                     const inter_func = interpolation_functions(config.interpolation)
-                    const [start_value, end_value] = range.replace('[', '').replace(']', '').split('~').map(o => _.toNumber(o))
+                    let [start_value, end_value] = range.replace('[', '').replace(']', '').split('~').map(o => _.toNumber(o))
+                    if (config.reverse) {
+                        [start_value, end_value] = [end_value, start_value]
+                    }
                     if ((frame_index) * 16 >= config.plan_duration) {
                         return end_value
                     }

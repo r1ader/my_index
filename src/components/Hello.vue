@@ -90,21 +90,36 @@ export default {
         dot
       } = this.$refs
       hello.r_animate({ opacity: `[${ hello.style.opacity }~0]`, duration: 1000 })
+      introduce.r_animate({ opacity: `[${ introduce.style.opacity }~0]`, duration: 1000 })
+      name_part1.r_animate({ opacity: `[${ name_part1.style.opacity }~0]`, duration: 1000 })
+      name_part2.r_animate({ opacity: `[${ name_part2.style.opacity }~0]`, duration: 1000 })
+      name_part3.r_animate({ opacity: `[${ name_part3.style.opacity }~0]`, duration: 1000 })
+      dot.r_animate({ opacity: `[${ dot.style.opacity }~0]`, duration: 1000 })
 
-      introduce
-          .r_animate({ opacity: `[${ introduce.style.opacity }~0]`, duration: 1000 })
 
-      name_part1
-          .r_animate({ opacity: `[${ name_part1.style.opacity }~0]`, duration: 1000 })
+      const {
+        curve_block,
+        ball_block,
+        paper_block,
+        curve_1, curve_2, curve_3,
+        ball_1, ball_2, ball_3,
+        paper_1, paper_2, paper_3
+      } = this.$refs
+      const duration = 1000
+      const opacity_on = { opacity: '[1~0]', duration: 1000 }
+      curve_block.r_animate(opacity_on)
+      ball_block.r_animate(opacity_on)
+      paper_block.r_animate(opacity_on)
+      curve_1.r_animate({ transform: 'scale([2~1]) translate([-100~0]px,[-100~0]px)', duration, reverse: true })
+      curve_2.r_animate({ transform: 'translate([-100~0]px,[100~0]px)', duration, reverse: true })
+      curve_3.r_animate({ transform: 'translate([-200~0]px,[200~0]px)', duration, reverse: true })
+      ball_1.r_animate({ transform: 'translate([200~0]px)', duration, reverse: true })
+      ball_2.r_animate({ transform: 'translateY([-150~0]px)', duration, reverse: true })
+      ball_3.r_animate({ transform: 'translate([100~0]px,[-200~0]px)', duration, reverse: true })
+      paper_1.r_animate({ transform: 'translate([300~0]px)', duration, reverse: true })
+      paper_2.r_animate({ transform: 'translateY([240~0]px)', duration, reverse: true })
+      paper_3.r_animate({ transform: 'translate([200~0]px,[100~0]px)', duration, reverse: true })
 
-      name_part2
-          .r_animate({ opacity: `[${ name_part2.style.opacity }~0]`, duration: 1000 })
-
-      name_part3
-          .r_animate({ opacity: `[${ name_part3.style.opacity }~0]`, duration: 1000 })
-
-      dot
-          .r_animate({ opacity: `[${ dot.style.opacity }~0]`, duration: 1000 })
     },
     background_enter() {
       const {

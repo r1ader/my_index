@@ -117,8 +117,13 @@ export default {
       <div ref="right_top_ball" class="ball"></div>
     </div>
     <div class="main_block">
+      <div class="curve_block">
+        
+      </div>
       <div class="paper_block">
-        <div class="paper"/>
+        <div class="paper3"/>
+        <div class="paper2"/>
+        <div class="paper1"/>
       </div>
       <div class="hello_block">
         <div ref="hello">
@@ -200,16 +205,60 @@ a {
   letter-spacing: 5px;
 }
 
+.curve_block {
+  position: absolute;
+  left: 0;
+}
+
 .paper_block {
   position: absolute;
   right: 0;
   bottom: 0;
 }
 
-.paper{
+.paper1 {
+  position: absolute;
   width: 100px;
-  height: 100px;
+  height: 150px;
   background: white;
-  border-radius: 10px;
+  border-radius: 10px 10px 10px 10px;
+  transform: translate(-30px, -100px) scale(2) perspective(229px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg);
+  transition: 0.2s ease-out;
 }
+
+.paper1:hover {
+  transform: translate(-30px, -100px) scale(2.2) perspective(229px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg);
+  transition: 0.2s ease-out;
+}
+
+.paper2 {
+  position: absolute;
+  width: 100px;
+  height: 150px;
+  background: #d5d4d4;
+  border-radius: 10px 10px 10px 10px;
+  transform: translate(-110px, 0px) scale(2) rotateZ(-20deg);
+  transition: 0.2s ease-out;
+}
+
+.paper2:hover {
+  transform: translate(-110px, 0px) scale(2.2) rotateZ(-20deg);
+  transition: 0.2s ease-out;
+}
+
+.paper3 {
+  position: absolute;
+  width: 100px;
+  height: 150px;
+  background: #939393;
+  border-radius: 10px 10px 10px 10px;
+  transform: translate(-80px, -30px) scale(3) rotateZ(20deg);
+  transition: 0.2s ease-out;
+}
+
+.paper3:hover {
+  transform: translate(-80px, -30px) scale(3.3) rotateZ(20deg);
+  transition: 0.2s ease-out;
+}
+
 </style>

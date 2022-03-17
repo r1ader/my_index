@@ -42,20 +42,20 @@ export default {
       }
 
       hello
-          .r_animate({ duration: 1000 })
+          .r_animate({ duration: 500 })
           .r_animate(cylinder_enter)
 
       dot
-          .r_animate({ duration: 1500 })
+          .r_animate({ duration: 750 })
           .r_animate(cylinder_enter)
 
 
       introduce
-          .r_animate({ duration: 2000 })
+          .r_animate({ duration: 1500 })
           .r_animate(cylinder_enter)
 
       name_part1
-          .r_animate({ duration: 3000 })
+          .r_animate({ duration: 2500 })
           .r_animate(cylinder_enter)
 
       this.$data.r_director
@@ -74,6 +74,10 @@ export default {
           })
           .r_animate({ duration: 900 })
           .r_animate(shrink_width)
+          .r_animate({ duration: 900 })
+          .r_then(() => {
+            this.background_enter()
+          })
     },
     exit_motion() {
       this.$data.r_director.cut()
@@ -101,6 +105,30 @@ export default {
 
       dot
           .r_animate({ opacity: `[${ dot.style.opacity }~0]`, duration: 1000 })
+    },
+    background_enter() {
+      const {
+        curve_block,
+        ball_block,
+        paper_block,
+        curve_1, curve_2, curve_3,
+        ball_1, ball_2, ball_3,
+        paper_1, paper_2, paper_3
+      } = this.$refs
+      const duration = 2000
+      const opacity_on = { opacity: '[0~1]', duration: 100 }
+      curve_block.r_animate(opacity_on)
+      ball_block.r_animate(opacity_on)
+      paper_block.r_animate(opacity_on)
+      curve_1.r_animate({ transform: 'scale([2~1]) translate([-100~0]px,[-100~0]px)', duration })
+      curve_2.r_animate({ transform: 'translate([-100~0]px,[100~0]px)', duration })
+      curve_3.r_animate({ transform: 'translate([-200~0]px,[200~0]px)', duration })
+      ball_1.r_animate({ transform: 'translate([200~0]px)', duration })
+      ball_2.r_animate({ transform: 'translateY([-150~0]px)', duration })
+      ball_3.r_animate({ transform: 'translate([100~0]px,[-200~0]px)', duration })
+      paper_1.r_animate({ transform: 'translate([300~0]px)', duration })
+      paper_2.r_animate({ transform: 'translateY([240~0]px)', duration })
+      paper_3.r_animate({ transform: 'translate([200~0]px,[100~0]px)', duration })
     }
   },
   mounted() {
@@ -114,26 +142,35 @@ export default {
 <template>
   <div class="main_container">
     <div class="main_block">
-      <div class="ball_block">
-        <div class="ball_1"></div>
-        <div class="ball_2"></div>
-        <div class="ball_3"></div>
+      <div ref="ball_block" class="ball_block">
+        <div ref="ball_1">
+          <div class="ball_1"></div>
+        </div>
+        <div ref="ball_2">
+          <div class="ball_2"></div>
+        </div>
+        <div ref="ball_3">
+          <div class="ball_3"></div>
+        </div>
       </div>
-      <div class="curve_block">
-        <svg class="curve_1" width="300" height="400">
+      <div ref="curve_block" class="curve_block">
+        <svg class="curve" width="300" height="400">
           <path
+              ref="curve_1"
               d="
                 M 0 0 V 400 H 195 C 201 299 97 278 92 141 C 93 79 112 56 122 47 C 134 35 143 38 151 44 C 160 51 177 38 188 25 C 197 14 202 6 212 0 H 0 L 0 0
               "
               fill="#939393"
               stroke="#939393"/>
           <path
+              ref="curve_2"
               d="
                 M 0 0 V 400 H 188 C 184 336 122 329 89 271 C 45 211 17 128 13 77 C 10 28 40 -4 41 0 H 0 L 0 0
               "
               fill="#d4d4d4"
               stroke="#d4d4d4"/>
           <path
+              ref="curve_3"
               d="
                 M 0 0 V 400 H 180 C 163 342 92 373 52 282 C 45 211 17 128 13 77 C 10 28 40 -4 41 0 H 0 L 0 0
               "
@@ -141,12 +178,18 @@ export default {
               stroke="white"/>
         </svg>
       </div>
-      <div class="paper_block">
-        <div class="paper3"/>
-        <div class="paper2"/>
-        <div class="paper1"/>
+      <div ref="paper_block" class="paper_block">
+        <div ref="paper_3">
+          <div class="paper_3"></div>
+        </div>
+        <div ref="paper_2">
+          <div class="paper_2"></div>
+        </div>
+        <div ref="paper_1">
+          <div class="paper_1"></div>
+        </div>
       </div>
-      <div class="hello_block">
+      <div ref="hello_block" class="hello_block">
         <div ref="hello">
           Hello
         </div>
@@ -244,11 +287,12 @@ a {
 
 .paper_block {
   position: absolute;
+  opacity: 0;
   right: 0;
   bottom: 0;
 }
 
-.paper1 {
+.paper_1 {
   position: absolute;
   width: 100px;
   height: 150px;
@@ -258,12 +302,12 @@ a {
   transition: 0.2s ease-out;
 }
 
-.paper1:hover {
+.paper_1:hover {
   transform: translate(-30px, -100px) scale(2.2) perspective(229px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg);
   transition: 0.2s ease-out;
 }
 
-.paper2 {
+.paper_2 {
   position: absolute;
   width: 100px;
   height: 150px;
@@ -273,12 +317,12 @@ a {
   transition: 0.2s ease-out;
 }
 
-.paper2:hover {
+.paper_2:hover {
   transform: translate(-110px, 0px) scale(2.2) rotateZ(-20deg);
   transition: 0.2s ease-out;
 }
 
-.paper3 {
+.paper_3 {
   position: absolute;
   width: 100px;
   height: 150px;
@@ -288,23 +332,25 @@ a {
   transition: 0.2s ease-out;
 }
 
-.paper3:hover {
+.paper_3:hover {
   transform: translate(-80px, -30px) scale(3.3) rotateZ(20deg);
   transition: 0.2s ease-out;
 }
 
 .curve_block {
+  opacity: 0;
   position: absolute;
   left: 0;
 }
 
 .ball_block {
   position: absolute;
+  opacity: 0;
   right: 0;
   top: 0;
 }
 
-.curve_1 {
+.curve {
   transform: scale(2.4);
 }
 

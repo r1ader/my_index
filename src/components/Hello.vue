@@ -113,12 +113,33 @@ export default {
 
 <template>
   <div class="main_container">
-    <div class="navigation_block">
-      <div ref="right_top_ball" class="ball"></div>
-    </div>
     <div class="main_block">
+      <div class="ball_block">
+        <div class="ball_1"></div>
+        <div class="ball_2"></div>
+        <div class="ball_3"></div>
+      </div>
       <div class="curve_block">
-        
+        <svg class="curve_1" width="300" height="400">
+          <path
+              d="
+                M 0 0 V 400 H 195 C 201 299 97 278 92 141 C 93 79 112 56 122 47 C 134 35 143 38 151 44 C 160 51 177 38 188 25 C 197 14 202 6 212 0 H 0 L 0 0
+              "
+              fill="#939393"
+              stroke="#939393"/>
+          <path
+              d="
+                M 0 0 V 400 H 188 C 184 336 122 329 89 271 C 45 211 17 128 13 77 C 10 28 40 -4 41 0 H 0 L 0 0
+              "
+              fill="#d4d4d4"
+              stroke="#d4d4d4"/>
+          <path
+              d="
+                M 0 0 V 400 H 180 C 163 342 92 373 52 282 C 45 211 17 128 13 77 C 10 28 40 -4 41 0 H 0 L 0 0
+              "
+              fill="white"
+              stroke="white"/>
+        </svg>
       </div>
       <div class="paper_block">
         <div class="paper3"/>
@@ -161,14 +182,30 @@ a {
   color: #42b983;
 }
 
-.ball {
-  display: inline-block;
-  width: 100px;
-  height: 100px;
-  border-radius: 50px;
-  margin: 20px;
-  background: #dedede;
-  opacity: 0;
+.ball_1 {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+  background: #939393;
+  transform: translate(20px, 150px) rotateZ(-30deg) scaleY(1.5);
+}
+
+.ball_2 {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+  background: #d4d4d4;
+  transform: translate(-150px) rotateZ(30deg) scaleX(1.5);
+}
+
+.ball_3 {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+  background: white;
 }
 
 .main_block {
@@ -205,11 +242,6 @@ a {
   letter-spacing: 5px;
 }
 
-.curve_block {
-  position: absolute;
-  left: 0;
-}
-
 .paper_block {
   position: absolute;
   right: 0;
@@ -235,7 +267,7 @@ a {
   position: absolute;
   width: 100px;
   height: 150px;
-  background: #d5d4d4;
+  background: #d4d4d4;
   border-radius: 10px 10px 10px 10px;
   transform: translate(-110px, 0px) scale(2) rotateZ(-20deg);
   transition: 0.2s ease-out;
@@ -259,6 +291,21 @@ a {
 .paper3:hover {
   transform: translate(-80px, -30px) scale(3.3) rotateZ(20deg);
   transition: 0.2s ease-out;
+}
+
+.curve_block {
+  position: absolute;
+  left: 0;
+}
+
+.ball_block {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.curve_1 {
+  transform: scale(2.4);
 }
 
 </style>

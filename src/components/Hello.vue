@@ -1,3 +1,79 @@
+<template>
+  <div class="main_container">
+    <div class="main_block">
+      <div ref="ball_block" class="ball_block">
+        <div ref="ball_1">
+          <div class="ball_1"></div>
+        </div>
+        <div ref="ball_2">
+          <div class="ball_2"></div>
+        </div>
+        <div ref="ball_3">
+          <div class="ball_3"></div>
+        </div>
+      </div>
+      <div ref="curve_block" class="curve_block">
+        <svg ref="curve" class="curve" width="300" height="400">
+          <path
+              class="curve_1"
+              ref="curve_1"
+              d="
+                M 0 0 V 400 H 195 C 201 299 97 278 92 141 C 93 79 112 56 122 47 C 134 35 143 38 151 44 C 160 51 177 38 188 25 C 197 14 202 6 212 0 H 0 L 0 0
+              "
+              fill="#939393"
+              stroke="#939393"/>
+          <path
+              ref="curve_2"
+              d="
+                M 0 0 V 400 H 188 C 170 307 91 315 50 231 C -1 139 23 16 41 0 H 0 L 0 0
+              "
+              fill="#d4d4d4"
+              stroke="#d4d4d4"/>
+          <path
+              ref="curve_3"
+              d="
+                M 0 359 V 400 H 181 C 177 360 98 339 0 335
+              "
+              fill="white"
+              stroke="white"/>
+        </svg>
+      </div>
+      <div ref="paper_block" class="paper_block">
+        <div ref="paper_3">
+          <div class="paper_3"></div>
+        </div>
+        <div ref="paper_2">
+          <div class="paper_2"></div>
+        </div>
+        <div ref="paper_1">
+          <div class="paper_1"></div>
+        </div>
+      </div>
+      <div ref="hello_block" class="hello_block">
+        <div ref="hello">
+          Hello
+        </div>
+        <div ref="dot">,</div>
+        <div ref="introduce">
+          here is
+        </div>
+        <div style="margin-right: 0" ref="name_part1">
+          r
+        </div>
+        <div style="margin-right: 0;margin-left: 0;" ref="name_part2">
+          <span ref="name_part2_e">e</span>
+          <span style="position:absolute;opacity: 0" ref="name_part2_1">
+            1
+          </span>
+        </div>
+        <div style="margin-left: 0" ref="name_part3">
+          ader
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script>
 import R_director from '../utils/r_nimate'
 
@@ -90,10 +166,13 @@ export default {
         paper_block,
         curve_1, curve_2, curve_3,
         ball_1, ball_2, ball_3,
-        paper_1, paper_2, paper_3
+        paper_1, paper_2, paper_3,
+        curve
       } = this.$refs
       const duration = 2000
       const opacity_on = { opacity: '[0~1]', duration: 100 }
+      const scale_ratio = window.innerHeight / 360
+      curve.r_animate({ transform: `scale([${ scale_ratio }~${ scale_ratio }])`, duration: 100 })
       curve_block.r_animate(opacity_on)
       ball_block.r_animate(opacity_on)
       paper_block.r_animate(opacity_on)
@@ -197,90 +276,16 @@ export default {
     this.init_interact()
     this.$data.r_director = new R_director()
     this.$data.r_director.take(this)
-    this.background_enter()
+    // this.background_enter()
   }
 }
 
 </script>
 
-<template>
-  <div class="main_container">
-    <div class="main_block">
-      <div ref="ball_block" class="ball_block">
-        <div ref="ball_1">
-          <div class="ball_1"></div>
-        </div>
-        <div ref="ball_2">
-          <div class="ball_2"></div>
-        </div>
-        <div ref="ball_3">
-          <div class="ball_3"></div>
-        </div>
-      </div>
-      <div ref="curve_block" class="curve_block">
-        <svg class="curve" width="300" height="400">
-          <path
-              class="curve_1"
-              ref="curve_1"
-              d="
-                M 0 0 V 400 H 195 C 201 299 97 278 92 141 C 93 79 112 56 122 47 C 134 35 143 38 151 44 C 160 51 177 38 188 25 C 197 14 202 6 212 0 H 0 L 0 0
-              "
-              fill="#939393"
-              stroke="#939393"/>
-          <path
-              ref="curve_2"
-              d="
-                M 0 0 V 400 H 188 C 170 307 91 315 50 231 C -1 139 23 16 41 0 H 0 L 0 0
-              "
-              fill="#d4d4d4"
-              stroke="#d4d4d4"/>
-          <path
-              ref="curve_3"
-              d="
-                M 0 359 V 400 H 181 C 177 360 98 339 0 335
-              "
-              fill="white"
-              stroke="white"/>
-        </svg>
-      </div>
-      <div ref="paper_block" class="paper_block">
-        <div ref="paper_3">
-          <div class="paper_3"></div>
-        </div>
-        <div ref="paper_2">
-          <div class="paper_2"></div>
-        </div>
-        <div ref="paper_1">
-          <div class="paper_1"></div>
-        </div>
-      </div>
-      <div ref="hello_block" class="hello_block">
-        <div ref="hello">
-          Hello
-        </div>
-        <div ref="dot">,</div>
-        <div ref="introduce">
-          here is
-        </div>
-        <div style="margin-right: 0" ref="name_part1">
-          r
-        </div>
-        <div style="margin-right: 0;margin-left: 0;" ref="name_part2">
-          <span ref="name_part2_e">e</span>
-          <span style="position:absolute;opacity: 0" ref="name_part2_1">
-            1
-          </span>
-        </div>
-        <div style="margin-left: 0" ref="name_part3">
-          ader
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <style scoped>
 div {
+  /*font-family: Merienda;*/
+  font-family: 'Varela Round', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;

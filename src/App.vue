@@ -1,4 +1,5 @@
 <script>
+
 import Hello from './components/Hello.vue'
 import Hello2 from './components/Hello2.vue'
 import Introduce from './components/Introduce.vue'
@@ -126,12 +127,6 @@ export default {
       requestAnimationFrame(render)
     },
   },
-  beforeCreate() {
-
-  },
-  created() {
-    //
-  },
   mounted() {
     const r_director = new R_director()
     r_director.take(this)
@@ -154,11 +149,14 @@ export default {
 </template>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Merienda&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
 
 body {
   margin: 0;
   padding: 0;
-  cursor: None;
+  /*cursor: None;*/
   overflow: hidden;
 }
 

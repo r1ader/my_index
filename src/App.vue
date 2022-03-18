@@ -21,8 +21,11 @@ export default {
       scroll_lock: false,
       clientX: 0,
       clientY: 0,
+      cursorX: 0,
+      cursorY: 0,
       scroll_index: 0,
-      window_queue: []
+      window_queue: [],
+      docking: false
     }
   },
   methods: {
@@ -41,23 +44,41 @@ export default {
             opacity: '[0~0]',
             top: `[0~${ window.innerHeight / 1.5 }]px`,
             left: `[0~${ window.innerWidth / 2 }]px`,
-            duration: 0,
+            duration: 16,
+            callback: () => {
+              this.$data.cursorX = window.innerWidth / 2
+              this.$data.cursorY = window.innerHeight / 1.5
+            }
           })
-          .r_animate({ duration: 6000 })
+          .r_animate({ duration: 100 })
           .r_animate({
             opacity: '[0~1]',
-            transform: 'scale([0~1])',
+            transform: 'translate(-10px, -10px) scale([0~1])',
             duration: 1000
           })
           .r_then(() => {
             this.$data.cursor_lock = false
             this.$data.scroll_lock = false
           })
+
       document.addEventListener('mousemove', function (e) {
-        const { clientX, clientY, path } = e
+        const { clientX, clientY } = e
         if (_this.$data.cursor_lock) return
-        cursor.style.left = `${ clientX - 25 }px`
-        cursor.style.top = `${ clientY - 25 }px`
+        if (!_this.$data.docking) {
+          const x_ratio = (e.movementX > 0 ? 1 : -1) * (clientX - _this.$data.cursorX) / window.innerWidth * 10 + 1
+          const y_ratio = (e.movementY > 0 ? 1 : -1) * (clientY - _this.$data.cursorY) / window.innerWidth * 10 + 1
+          _this.$data.cursorX += e.movementX * x_ratio
+          _this.$data.cursorY += e.movementY * y_ratio
+          cursor.style.left = `${ _this.$data.cursorX }px`
+          cursor.style.top = `${ _this.$data.cursorY }px`
+          if (Math.abs(clientX - _this.$data.cursorX) + Math.abs(clientY - _this.$data.cursorY) < 8) {
+            _this.$data.docking = true
+          }
+        } else {
+          cursor.style.left = `${ clientX }px`
+          cursor.style.top = `${ clientY }px`
+        }
+
       })
       document.addEventListener('mouseleave', function (e) {
         if (_this.$data.cursor_lock) return
@@ -177,6 +198,7 @@ body {
   border-radius: 10px;
   background: #5d5d5d;
   opacity: 0;
+  transform: translate(-10px, -10px);
 }
 
 

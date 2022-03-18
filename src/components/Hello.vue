@@ -136,28 +136,41 @@ export default {
         curve_1, curve_2, curve_3,
         ball_1, ball_2, ball_3,
       } = this.$refs
-      const config = { interpolation: 'easeInOutExpo', duration: 750 }
+      const translate_out = {
+        transform: 'translateX([0~80]px)',
+        interpolation: 'easeInOutExpo',
+        duration: 750,
+        name: 'translate_out'
+      }
+      const translate_in = {
+        transform: 'translateX([80~0]px)',
+        interpolation: 'easeInOutExpo',
+        duration: 750,
+        name: 'translate_in',
+        callback: (actor) => {
+          while (actor.queue.length >= 2) {
+            actor.queue.shift()
+            actor.queue.shift()
+          }
+        }
+      }
       curve_1.addEventListener('mouseenter', function (e) {
-        curve_1.r_animate({ transform: 'translateX([0~80]px)', ...config })
-            .r_then(() => {
-              console.log('callback')
-              // curve_1.clean_remain_process()
-            })
+        curve_1.r_animate(translate_out)
       })
       curve_1.addEventListener('mouseleave', function (e) {
-        curve_1.r_animate({ transform: 'translateX([80~0]px)', ...config })
+        curve_1.r_animate(translate_in)
       })
       curve_2.addEventListener('mouseenter', function (e) {
-        curve_2.r_animate({ transform: 'translateX([0~80]px)', ...config })
+        curve_2.r_animate(translate_out)
       })
       curve_2.addEventListener('mouseleave', function (e) {
-        curve_2.r_animate({ transform: 'translateX([80~0]px)', ...config })
+        curve_2.r_animate(translate_in)
       })
       curve_3.addEventListener('mouseenter', function (e) {
-        curve_3.r_animate({ transform: 'translateX([0~80]px)', ...config })
+        curve_3.r_animate(translate_out)
       })
       curve_3.addEventListener('mouseleave', function (e) {
-        curve_3.r_animate({ transform: 'translateX([80~0]px)', ...config })
+        curve_3.r_animate(translate_in)
       })
 
       ball_1.addEventListener('mouseenter', function (e) {
@@ -184,7 +197,7 @@ export default {
     this.init_interact()
     this.$data.r_director = new R_director()
     this.$data.r_director.take(this)
-    // this.background_enter()
+    this.background_enter()
   }
 }
 

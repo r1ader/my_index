@@ -14,8 +14,17 @@ const expose_func_list = [
 
 const expose_props_list = [
     'r_id',
-    'in_animation',
+    'busy',
     'queue',
+    'in_task',
+]
+
+const config_props_list = [
+    'callback',
+    'reverse',
+    'duration',
+    'delay',
+    'interpolation',
 ]
 
 class R_animate_config {
@@ -24,10 +33,12 @@ class R_animate_config {
         Object.keys(config).forEach(key => {
             this[key] = config[key]
         })
-        this.name = config.name
+        this.name = config.name ||
+            Object.keys(config)
+                .filter(o => config_props_list.indexOf(o) === -1)
+                .map(o => `${ o } : ${ config[o] }`)
+                .join('\n')
         this.callback = config.callback
-        this.start = start || {}
-        this.end = end || {}
         this.reverse = reverse || false
         this.duration = _.isNumber(duration) ? duration : 0
         this.delay = delay || 0
@@ -38,52 +49,32 @@ class R_animate_config {
         return deep_assign(this, obj)
     }
 
-    r_delay(delay_duration) {
-        const res = _.cloneDeep(this)
-        res.delay = delay_duration
-        return res
-    }
-
-    r_reverse() {
-        return new R_animate_config({
-            start: this.end,
-            end: this.start,
-            ...this
-        })
-    }
-
     get plan_duration() {
         let res = 0
-        // if (_.isString(this.start.transition)) {
-        //     res += get_time_duration_from_string(this.start.transition)
-        // }
-        // if (_.isString(this.start.transitionDelay)) {
-        //     res += get_time_duration_from_string(this.start.transitionDelay)
-        // }
-        // console.log('res', res)
         if (_.isNumber(this.delay)) res += this.delay
         if (_.isNumber(this.duration)) res += this.duration
         return res
     }
-
 }
 
 class R_registered_dom {
     constructor(r_id, item) {
         this.r_id = r_id
         this.ref = item
-        this.in_animation = false
+        this.busy = false
+        this.in_task = null
         this.queue = []
     }
 
     run() {
-        if (this.in_animation) return
-        this.in_animation = true
+        if (this.busy) return
         if (this.queue.length === 0) {
             warn(this.ref.toString() + '’s queue is empty')
         }
         const config = this.queue.shift()
         if (!config) return
+        this.busy = true
+        this.in_task = config.name
         let frame_index = 0
         const render = () => {
             Object.keys(config).forEach(key => {
@@ -113,9 +104,10 @@ class R_registered_dom {
             if ((frame_index - 1) * 16 < config.plan_duration) {
                 requestAnimationFrame(render)
             } else {
-                this.in_animation = false
+                this.busy = false
+                this.in_task = ''
                 if (_.isFunction(config.callback)) {
-                    config.callback()
+                    config.callback(this)
                 }
                 if (!!this.queue.length) this.run()
             }
@@ -127,7 +119,8 @@ class R_registered_dom {
         if (this.render_process) {
             cancelAnimationFrame(this.render_process)
         }
-        this.in_animation = false
+        this.busy = false
+        this.in_task = ''
         this.render_process = undefined
     }
 
@@ -137,7 +130,7 @@ class R_registered_dom {
 
     r_animate(config) {
         this.queue.push(new R_animate_config(config))
-        if (!this.in_animation) {
+        if (!this.busy) {
             setTimeout(() => {
                 this.run()
             }, 16)
@@ -162,7 +155,7 @@ class R_registered_dom {
         this.queue.push(new R_animate_config({
             delay: delay_duration
         }))
-        if (!this.in_animation) {
+        if (!this.busy) {
             setTimeout(() => {
                 this.run()
             }, 16)

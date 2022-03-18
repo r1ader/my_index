@@ -139,6 +139,10 @@ export default {
       const config = { interpolation: 'easeInOutExpo', duration: 750 }
       curve_1.addEventListener('mouseenter', function (e) {
         curve_1.r_animate({ transform: 'translateX([0~80]px)', ...config })
+            .r_then(() => {
+              console.log('callback')
+              // curve_1.clean_remain_process()
+            })
       })
       curve_1.addEventListener('mouseleave', function (e) {
         curve_1.r_animate({ transform: 'translateX([80~0]px)', ...config })

@@ -1,21 +1,22 @@
 import _ from "lodash";
 import { v4 as uuidv4 } from 'uuid';
-import { parseCSSValue } from "./css_util";
 import { interpolation_functions } from "./math_util"
 import { warn } from "vue";
+import { deep_assign } from "./index";
 
 const clog = console.log
 
-const deep_assign = (target, origin) => {
-    Object.keys(origin).forEach(key => {
-        if (_.isObject(origin[key])) {
-            target[key] = deep_assign(target[key], origin[key])
-        } else {
-            target[key] = origin[key]
-        }
-    })
-    return target
-}
+const expose_func_list = [
+    'clean_remain_process',
+    'r_animate',
+    'r_then',
+]
+
+const expose_props_list = [
+    'r_id',
+    'in_animation',
+    'queue',
+]
 
 class R_animate_config {
     constructor(config) {
@@ -23,13 +24,14 @@ class R_animate_config {
         Object.keys(config).forEach(key => {
             this[key] = config[key]
         })
+        this.name = config.name
+        this.callback = config.callback
         this.start = start || {}
         this.end = end || {}
         this.reverse = reverse || false
         this.duration = _.isNumber(duration) ? duration : 0
         this.delay = delay || 0
         this.interpolation = interpolation || 'easeOutExpo'
-
     }
 
     replace(obj) {
@@ -65,18 +67,6 @@ class R_animate_config {
     }
 
 }
-
-const expose_func_list = [
-    'clean_remain_process',
-    'r_animate',
-    'r_then',
-]
-
-const expose_props_list = [
-    'r_id',
-    'in_animation',
-    'queue',
-]
 
 class R_registered_dom {
     constructor(r_id, item) {
@@ -124,7 +114,10 @@ class R_registered_dom {
                 requestAnimationFrame(render)
             } else {
                 this.in_animation = false
-                if (this.queue.length) this.run()
+                if (_.isFunction(config.callback)) {
+                    config.callback()
+                }
+                if (!!this.queue.length) this.run()
             }
         }
         this.render_process = requestAnimationFrame(render)
@@ -153,12 +146,7 @@ class R_registered_dom {
     }
 
     r_then(func) {
-        const sum_duration = this.queue.reduce((pre, now) => {
-            return pre + now.plan_duration
-        }, 0)
-        setTimeout(() => {
-            func()
-        }, sum_duration)
+        this.queue.push(new R_animate_config({ duration: 0, callback: func }))
         return this.ref
     }
 
@@ -183,7 +171,6 @@ class R_registered_dom {
     }
 }
 
-// todo implement a director class to control all the registered dom
 class R_director {
     constructor() {
         this.id = uuidv4().replace(/-/g, "")

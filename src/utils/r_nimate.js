@@ -66,6 +66,18 @@ class R_animate_config {
 
 }
 
+const expose_func_list = [
+    'clean_remain_process',
+    'r_animate',
+    'r_then',
+]
+
+const expose_props_list = [
+    'r_id',
+    'in_animation',
+    'queue',
+]
+
 class R_registered_dom {
     constructor(r_id, item) {
         this.r_id = r_id
@@ -126,12 +138,8 @@ class R_registered_dom {
         this.render_process = undefined
     }
 
-    r_same(target) {
-        target.queue = target.queue.concat(this.queue)
-        setTimeout(() => {
-            target.run()
-        }, 16)
-        return target
+    clean_remain_process() {
+        this.queue = []
     }
 
     r_animate(config) {
@@ -152,6 +160,14 @@ class R_registered_dom {
             func()
         }, sum_duration)
         return this.ref
+    }
+
+    r_same(target) {
+        target.queue = target.queue.concat(this.queue)
+        setTimeout(() => {
+            target.run()
+        }, 16)
+        return target
     }
 
     r_sleep(delay_duration) {
@@ -198,13 +214,12 @@ class R_director {
         wait_register_queue.forEach(r_id => {
             const registered_dom = this.registered_dict[r_id]
             const element = registered_dom.ref
-            element.r_id = r_id
-            element.queue = registered_dom.queue
-            element.run = registered_dom.run.bind(registered_dom)
-            element.r_animate = registered_dom.r_animate.bind(registered_dom)
-            element.r_same = registered_dom.r_same.bind(registered_dom)
-            element.r_then = registered_dom.r_then.bind(registered_dom)
-            element.r_sleep = registered_dom.r_sleep.bind(registered_dom)
+            expose_props_list.forEach(props_name => {
+                element[props_name] = registered_dom[props_name]
+            })
+            expose_func_list.forEach(func_name => {
+                element[func_name] = registered_dom[func_name].bind(registered_dom)
+            })
         })
     }
 

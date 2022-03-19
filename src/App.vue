@@ -43,19 +43,8 @@ export default {
       ]
     },
     init_cursor() {
-      const _this = this
-      const cursor = this.$refs.cursor
       const cursor_show_time = debug ? 1000 : 6000
-      const wait_register_event = ['mousemove', 'mousedown', 'mouseup', 'mouseleave', 'mouseenter']
-      wait_register_event.forEach(event_name => {
-        document.addEventListener(event_name, function (e) {
-          if (_.isFunction(_this[`document_${ event_name }_function`])) {
-            _this[`document_${ event_name }_function`](e)
-          }
-        })
-      })
-
-      cursor
+      this.$refs.cursor
           .r_animate({
             opacity: '[0~0]',
             top: `[0~${ window.innerHeight / 1.5 }]px`,
@@ -76,9 +65,10 @@ export default {
             this.$data.cursor_lock = false
             this.$data.scroll_lock = false
           })
-
     },
     init_scroll() {
+      this.$data.scroll_index = Math.round(window.scrollY / window.innerHeight)
+      this.$data.window_queue[this.$data.scroll_index].beginning_motion()
       document.addEventListener('mousewheel', (e) => {
         if (e.ctrlKey) return
         if (this.$data.scroll_lock) return
@@ -111,6 +101,17 @@ export default {
             windows_next.beginning_motion()
           })
         }
+      })
+    },
+    init_interaction() {
+      const _this = this
+      const wait_register_event = ['mousemove', 'mousedown', 'mouseup', 'mouseleave', 'mouseenter']
+      wait_register_event.forEach(event_name => {
+        document.addEventListener(event_name, function (e) {
+          if (_.isFunction(_this[`document_${ event_name }_function`])) {
+            _this[`document_${ event_name }_function`](e)
+          }
+        })
       })
     },
     scroll_smooth(scroll_distance, callback) {
@@ -183,10 +184,9 @@ export default {
     const r_director = new R_director()
     r_director.take(this)
     this.init_cursor()
-    this.init_scroll()
     this.init_windows()
-    this.$data.scroll_index = Math.round(window.scrollY / window.innerHeight)
-    this.$data.window_queue[this.$data.scroll_index].beginning_motion()
+    this.init_interaction()
+    this.init_scroll()
   }
 }
 </script>

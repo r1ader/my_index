@@ -49,7 +49,7 @@
           <div class="paper_1"></div>
         </div>
       </div>
-      <div ref="hello_block" class="hello_block">
+      <div ref="hello_block" class="hello_block no_select">
         <div ref="hello">
           Hello
         </div>
@@ -428,4 +428,12 @@ a {
   transform: scale(1.2);
 }
 
+.no_select {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
 </style>

@@ -177,7 +177,7 @@ export default {
 body {
   margin: 0;
   padding: 0;
-  /*cursor: None;*/
+  cursor: None;
   overflow: hidden;
 }
 
@@ -192,6 +192,7 @@ body {
 
 .cursor {
   position: fixed;
+  pointer-events: none;
   width: 14px;
   height: 14px;
   border: 3px solid #dedede;

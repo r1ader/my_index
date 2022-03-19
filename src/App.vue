@@ -8,7 +8,13 @@ import _ from "lodash";
 import R_director from "./utils/r_nimate";
 
 const clog = console.log
-
+const debug = true
+const debounce = (actor) => {
+  while (actor.queue.length >= 2) {
+    actor.queue.shift()
+    actor.queue.shift()
+  }
+}
 export default {
   components: {
     Hello,
@@ -39,6 +45,16 @@ export default {
     init_cursor() {
       const _this = this
       const cursor = this.$refs.cursor
+      const cursor_show_time = debug ? 1000 : 6000
+      const wait_register_event = ['mousemove', 'mousedown', 'mouseup', 'mouseleave', 'mouseenter']
+      wait_register_event.forEach(event_name => {
+        document.addEventListener(event_name, function (e) {
+          if (_.isFunction(_this[`document_${ event_name }_function`])) {
+            _this[`document_${ event_name }_function`](e)
+          }
+        })
+      })
+
       cursor
           .r_animate({
             opacity: '[0~0]',
@@ -50,10 +66,10 @@ export default {
               this.$data.cursorY = window.innerHeight / 1.5
             }
           })
-          .r_animate({ duration: 100 })
+          .r_animate({ duration: cursor_show_time })
           .r_animate({
             opacity: '[0~1]',
-            transform: 'translate(-10px, -10px) scale([0~1])',
+            transform: 'scale([0~1])',
             duration: 1000
           })
           .r_then(() => {
@@ -61,33 +77,6 @@ export default {
             this.$data.scroll_lock = false
           })
 
-      document.addEventListener('mousemove', function (e) {
-        const { clientX, clientY } = e
-        if (_this.$data.cursor_lock) return
-        if (!_this.$data.docking) {
-          const x_ratio = (e.movementX > 0 ? 1 : -1) * (clientX - _this.$data.cursorX) / window.innerWidth * 10 + 1
-          const y_ratio = (e.movementY > 0 ? 1 : -1) * (clientY - _this.$data.cursorY) / window.innerWidth * 10 + 1
-          _this.$data.cursorX += e.movementX * x_ratio
-          _this.$data.cursorY += e.movementY * y_ratio
-          cursor.style.left = `${ _this.$data.cursorX }px`
-          cursor.style.top = `${ _this.$data.cursorY }px`
-          if (Math.abs(clientX - _this.$data.cursorX) + Math.abs(clientY - _this.$data.cursorY) < 8) {
-            _this.$data.docking = true
-          }
-        } else {
-          cursor.style.left = `${ clientX }px`
-          cursor.style.top = `${ clientY }px`
-        }
-
-      })
-      document.addEventListener('mouseleave', function (e) {
-        if (_this.$data.cursor_lock) return
-        cursor.style.opacity = '0'
-      })
-      document.addEventListener('mouseenter', function (e) {
-        if (_this.$data.cursor_lock) return
-        cursor.style.opacity = '1'
-      })
     },
     init_scroll() {
       document.addEventListener('mousewheel', (e) => {
@@ -147,6 +136,48 @@ export default {
       }
       requestAnimationFrame(render)
     },
+    document_mousemove_function(e) {
+      const { clientX, clientY } = e
+      const { cursor } = this.$refs
+      if (this.$data.cursor_lock) return
+      if (!this.$data.docking) {
+        const x_ratio = (e.movementX > 0 ? 1 : -1) * (clientX - this.$data.cursorX) / window.innerWidth * 10 + 1
+        const y_ratio = (e.movementY > 0 ? 1 : -1) * (clientY - this.$data.cursorY) / window.innerWidth * 10 + 1
+        this.$data.cursorX += e.movementX * x_ratio
+        this.$data.cursorY += e.movementY * y_ratio
+        cursor.style.left = `${ this.$data.cursorX - 10 }px`
+        cursor.style.top = `${ this.$data.cursorY - 10 }px`
+        if (Math.abs(clientX - this.$data.cursorX) + Math.abs(clientY - this.$data.cursorY) < 8) {
+          this.$data.docking = true
+        }
+      } else {
+        cursor.style.left = `${ clientX - 10 }px`
+        cursor.style.top = `${ clientY - 10 }px`
+      }
+    },
+    document_mousedown_function(e) {
+      const { cursor } = this.$refs
+      cursor.r_animate({
+        transform: 'scale([1~1.5])', opacity: '[1~0.5]',
+        duration: 200, callback: debounce
+      })
+    },
+    document_mouseup_function(e) {
+      const { cursor } = this.$refs
+      cursor.r_animate({
+        transform: 'scale([1.5~1])', opacity: '[0.5~1]',
+        duration: 200, callback: debounce
+      })
+    },
+    document_mouseleave_function(e) {
+      if (this.$data.cursor_lock) return
+      this.$refs.cursor.style.opacity = '0'
+    },
+    document_mouseenter_function(e) {
+      if (this.$data.cursor_lock) return
+      this.$refs.cursor.style.opacity = '1'
+    }
+
   },
   mounted() {
     const r_director = new R_director()
@@ -199,7 +230,6 @@ body {
   border-radius: 10px;
   background: #5d5d5d;
   opacity: 0;
-  transform: translate(-10px, -10px);
 }
 
 

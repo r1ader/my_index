@@ -208,7 +208,7 @@ export default {
 body {
   margin: 0;
   padding: 0;
-  cursor: None;
+  /*cursor: None;*/
   overflow: hidden;
 }
 
@@ -230,6 +230,7 @@ body {
   border-radius: 10px;
   background: #5d5d5d;
   opacity: 0;
+  z-index: 999;
 }
 
 

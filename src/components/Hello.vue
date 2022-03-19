@@ -1,5 +1,6 @@
 <template>
   <div class="main_container">
+    <div ref="shadow_block" class="shadow_block"></div>
     <div class="main_block">
       <div ref="ball_block" class="ball_block">
         <div ref="ball_1">
@@ -45,8 +46,22 @@
         <div ref="paper_2">
           <div class="paper_2"></div>
         </div>
-        <div ref="paper_1">
-          <div class="paper_1"></div>
+        <div>
+          <div ref="paper_1" class="paper_1">
+            <div ref="paper_1_content" class="paper_1_content">
+              <span style="font-size: 30px">r1ader ?</span>
+              <span style="font-size: 13px">
+                My friends always call me "reader" for my fancy on a magazine called 《reader》
+              </span>
+              <span style="font-size: 13px">
+                But it's too common as a username,
+                so I replace the letter "e" with "1"
+              </span>
+              <span style="font-size: 13px">
+                Just pronounced "r1ader" the same way as "reader"
+              </span>
+            </div>
+          </div>
         </div>
       </div>
       <div ref="hello_block" class="hello_block no_select">
@@ -76,12 +91,17 @@
 
 <script>
 import R_director from '../utils/r_nimate'
+import _ from "lodash";
+
+const clog = console.log
+const debug = true
 
 export default {
   name: 'Hello',
   data() {
     return {
-      r_director: null
+      r_director: null,
+      focus_on: false
     }
   },
   methods: {
@@ -138,7 +158,9 @@ export default {
           .r_animate(shrink_width)
           .r_animate({ duration: 900 })
           .r_then(() => {
-            this.background_enter()
+            if (!debug) {
+              this.background_enter()
+            }
           })
     },
     exit_motion() {
@@ -182,7 +204,10 @@ export default {
       ball_1.r_animate({ transform: 'translate([200~0]px)', duration })
       ball_2.r_animate({ transform: 'translateY([-150~0]px)', duration })
       ball_3.r_animate({ transform: 'translate([100~0]px,[-200~0]px)', duration })
-      paper_1.r_animate({ transform: 'translate([300~0]px)', duration })
+      paper_1.r_animate({
+        transform: 'translate([300~-50]px,-100px) perspective(229px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg)',
+        duration
+      })
       paper_2.r_animate({ transform: 'translateY([240~0]px)', duration })
       paper_3.r_animate({ transform: 'translate([200~0]px,[100~0]px)', duration })
     },
@@ -214,6 +239,8 @@ export default {
       const {
         curve_1, curve_2, curve_3,
         ball_1, ball_2, ball_3,
+        paper_1, paper_2, paper_3,
+        paper_1_content, shadow_block
       } = this.$refs
       const translate_out = {
         transform: 'translateX([0~80]px)',
@@ -233,6 +260,7 @@ export default {
           }
         }
       }
+      const _this = this
       curve_1.addEventListener('mouseenter', function (e) {
         curve_1.r_animate(translate_out)
       })
@@ -257,26 +285,105 @@ export default {
             .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
             .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
       })
-
       ball_2.addEventListener('mouseenter', function (e) {
         ball_2
             .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
             .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
       })
-
       ball_3.addEventListener('mouseenter', function (e) {
         ball_3
             .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
             .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
       })
 
+      const paper_1_float = {
+        transform: 'translate(-50px,-100px) scale([1~1.1])  perspective(229px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg)',
+        duration: 200
+      }
+      paper_1.addEventListener('mouseenter', function (e) {
+        if (!_this.$data.focus_on) {
+          paper_1.r_animate(paper_1_float)
+          paper_1_content.r_animate({
+            opacity: '[0~1]',
+            duration: 200
+          })
+        }
+      })
+      paper_1.addEventListener('mouseleave', function (e) {
+        if (!_this.$data.focus_on) {
+          paper_1.r_animate({ ...paper_1_float, reverse: true })
+          paper_1_content.r_animate({ opacity: '[1~0]', duration: 200 })
+        }
+      })
+
+      paper_1.addEventListener('click', function (e) {
+        if (_this.$data.focus_on) return
+        const paper_1_flip_in = {
+          zIndex: '[3~3]',
+          background: 'rgb([255~230],[255~230],[255~230])',
+          borderRadius: '[20~10]px',
+          transform: 'translate([-50~-670]px,[-100~-500]px) scale([1.1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)',
+          duration: 1500,
+          interpolation: 'easeInOutExpo',
+        }
+        paper_1.r_animate(paper_1_flip_in)
+        const focus_cancel_callback = () => {
+          return new Promise((resolve, eject) => {
+            paper_1.r_animate({
+              ...paper_1_flip_in,
+              transform: 'translate([-50~-670]px,[-100~-500]px) scale([1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)',
+              reverse: true
+            }).r_then(resolve)
+            paper_1_content.r_animate({ opacity: '[1~0]', duration: 1500 })
+          })
+        }
+        clog(focus_cancel_callback)
+        _this.turn_focus_on(focus_cancel_callback)
+      })
+      shadow_block.addEventListener('click', function (e) {
+        if (!_this.$data.focus_on) return
+        if (_.isFunction(_this['shadow_block_cancel_callback'])) {
+          const cancel_promise = _this['shadow_block_cancel_callback']()
+          if (cancel_promise instanceof Promise) {
+            cancel_promise.finally(_this.turn_focus_off)
+          } else {
+            _this.turn_focus_off()
+          }
+          _this['shadow_block_cancel_callback'] = null
+        } else {
+          _this.turn_focus_off()
+        }
+      })
+    },
+    turn_focus_on(callback) {
+      if (this.$data.focus_on) return
+      this.$data.focus_on = true
+      this.$refs.shadow_block.r_animate({
+        zIndex: '[2~2]',
+        background: 'rgba(0,0,0,[0~0.8])',
+        duration: 1000
+      })
+      this['shadow_block_cancel_callback'] = callback
+    },
+    turn_focus_off() {
+      if (!this.$data.focus_on) return
+      this.$data.focus_on = false
+      this.$refs.shadow_block.r_animate({
+        background: 'rgba(0,0,0,[0.8~0])',
+        duration: 1000
+      }).r_animate({
+        zIndex: '[2~-1]',
+        duration: 16
+      })
     }
   },
   mounted() {
-    this.init_interact()
     this.$data.r_director = new R_director()
     this.$data.r_director.take(this)
-    // this.background_enter()
+    if (debug) {
+      this.background_enter()
+    }
+    this.init_interact()
   }
 }
 
@@ -364,17 +471,12 @@ a {
 
 .paper_1 {
   position: absolute;
-  width: 100px;
-  height: 150px;
+  z-index: 2;
+  width: 200px;
+  height: 300px;
   background: white;
-  border-radius: 10px 10px 10px 10px;
-  transform: translate(-30px, -100px) scale(2) perspective(229px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg);
-  transition: 0.2s ease-out;
-}
-
-.paper_1:hover {
-  transform: translate(-30px, -100px) scale(2.2) perspective(229px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg);
-  transition: 0.2s ease-out;
+  box-shadow: -18px -16px 20px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
 }
 
 .paper_2 {
@@ -433,7 +535,28 @@ a {
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Old versions of Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                   supported by Chrome, Edge, Opera and Firefox */
+}
+
+.paper_1_content {
+  opacity: 0;
+  height: 251px;
+  width: 200px;
+  font-weight: bolder;
+  color: #202020;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin: 20px;
+  flex-direction: column;
+}
+
+.shadow_block {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: -3;
 }
 </style>

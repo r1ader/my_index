@@ -95,6 +95,12 @@ import _ from "lodash";
 
 const clog = console.log
 const debug = true
+const debounce = (actor) => {
+  while (actor.queue.length >= 2) {
+    actor.queue.shift()
+    actor.queue.shift()
+  }
+}
 
 export default {
   name: 'Hello',
@@ -163,24 +169,6 @@ export default {
             }
           })
     },
-    exit_motion() {
-      this.$data.r_director.cut()
-      const {
-        hello,
-        introduce,
-        name_part1,
-        name_part2,
-        name_part3,
-        dot
-      } = this.$refs
-      hello.r_animate({ opacity: `[${ hello.style.opacity }~0]`, duration: 1000 })
-      introduce.r_animate({ opacity: `[${ introduce.style.opacity }~0]`, duration: 1000 })
-      name_part1.r_animate({ opacity: `[${ name_part1.style.opacity }~0]`, duration: 1000 })
-      name_part2.r_animate({ opacity: `[${ name_part2.style.opacity }~0]`, duration: 1000 })
-      name_part3.r_animate({ opacity: `[${ name_part3.style.opacity }~0]`, duration: 1000 })
-      dot.r_animate({ opacity: `[${ dot.style.opacity }~0]`, duration: 1000 })
-      this.background_exit()
-    },
     background_enter() {
       const {
         curve_block,
@@ -211,30 +199,6 @@ export default {
       paper_2.r_animate({ transform: 'translateY([240~0]px)', duration })
       paper_3.r_animate({ transform: 'translate([200~0]px,[100~0]px)', duration })
     },
-    background_exit() {
-      const {
-        curve_block,
-        ball_block,
-        paper_block,
-        curve_1, curve_2, curve_3,
-        ball_1, ball_2, ball_3,
-        paper_1, paper_2, paper_3
-      } = this.$refs
-      const duration = 1000
-      const opacity_on = { opacity: '[1~0]', duration: 1000 }
-      curve_block.r_animate(opacity_on)
-      ball_block.r_animate(opacity_on)
-      paper_block.r_animate(opacity_on)
-      curve_1.r_animate({ transform: 'scale([2~1]) translate([-100~0]px,[-100~0]px)', duration, reverse: true })
-      curve_2.r_animate({ transform: 'translate([-100~0]px,[100~0]px)', duration, reverse: true })
-      curve_3.r_animate({ transform: 'translate([-200~0]px,[200~0]px)', duration, reverse: true })
-      ball_1.r_animate({ transform: 'translate([200~0]px)', duration, reverse: true })
-      ball_2.r_animate({ transform: 'translateY([-150~0]px)', duration, reverse: true })
-      ball_3.r_animate({ transform: 'translate([100~0]px,[-200~0]px)', duration, reverse: true })
-      paper_1.r_animate({ transform: 'translate([300~0]px)', duration, reverse: true })
-      paper_2.r_animate({ transform: 'translateY([240~0]px)', duration, reverse: true })
-      paper_3.r_animate({ transform: 'translate([200~0]px,[100~0]px)', duration, reverse: true })
-    },
     init_interact() {
       const {
         curve_1, curve_2, curve_3,
@@ -253,12 +217,7 @@ export default {
         interpolation: 'easeInOutExpo',
         duration: 750,
         name: 'translate_in',
-        callback: (actor) => {
-          while (actor.queue.length >= 2) {
-            actor.queue.shift()
-            actor.queue.shift()
-          }
-        }
+        callback: debounce
       }
       const _this = this
       curve_1.addEventListener('mouseenter', function (e) {
@@ -297,8 +256,9 @@ export default {
       })
 
       const paper_1_float = {
-        transform: 'translate(-50px,-100px) scale([1~1.1])  perspective(229px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg)',
-        duration: 200
+        transform: 'translate(-50px,-100px) scale([1~1.1]) perspective(229px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg)',
+        duration: 500,
+        callback: debounce
       }
       paper_1.addEventListener('mouseenter', function (e) {
         if (!_this.$data.focus_on) {
@@ -315,32 +275,36 @@ export default {
           paper_1_content.r_animate({ opacity: '[1~0]', duration: 200 })
         }
       })
-
       paper_1.addEventListener('click', function (e) {
         if (_this.$data.focus_on) return
+        const card_position_x = Math.round(window.innerWidth / -2)
         const paper_1_flip_in = {
           zIndex: '[3~3]',
-          background: 'rgb([255~230],[255~230],[255~230])',
+          background: 'rgb([255~180],[255~180],[255~180])',
           borderRadius: '[20~10]px',
-          transform: 'translate([-50~-670]px,[-100~-500]px) scale([1.1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)',
+          transform: `translate([-50~${ card_position_x }]px,[-100~-500]px) scale([1.1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)`,
           duration: 1500,
           interpolation: 'easeInOutExpo',
         }
         paper_1.r_animate(paper_1_flip_in)
-        const focus_cancel_callback = () => {
+        _this['shadow_block_cancel_callback'] = () => {
           return new Promise((resolve, eject) => {
             paper_1.r_animate({
               ...paper_1_flip_in,
-              transform: 'translate([-50~-670]px,[-100~-500]px) scale([1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)',
+              transform: `translate([-50~${ card_position_x }]px,[-100~-500]px) scale([1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)`,
               reverse: true
             }).r_then(resolve)
             paper_1_content.r_animate({ opacity: '[1~0]', duration: 1500 })
           })
         }
-        clog(focus_cancel_callback)
-        _this.turn_focus_on(focus_cancel_callback)
+        _this.turn_focus_on()
       })
-      shadow_block.addEventListener('click', function (e) {
+
+    },
+    init_focus_system() {
+      const _this = this
+      const { shadow_block } = this.$refs
+      const shadow_block_click_function = function (e) {
         if (!_this.$data.focus_on) return
         if (_.isFunction(_this['shadow_block_cancel_callback'])) {
           const cancel_promise = _this['shadow_block_cancel_callback']()
@@ -353,17 +317,22 @@ export default {
         } else {
           _this.turn_focus_off()
         }
-      })
+      }
+      shadow_block.addEventListener('click', shadow_block_click_function)
     },
-    turn_focus_on(callback) {
+    turn_focus_on() {
       if (this.$data.focus_on) return
       this.$data.focus_on = true
-      this.$refs.shadow_block.r_animate({
-        zIndex: '[2~2]',
-        background: 'rgba(0,0,0,[0~0.8])',
-        duration: 1000
-      })
-      this['shadow_block_cancel_callback'] = callback
+      this.$refs.shadow_block
+          .r_animate({
+            zIndex: '[-1~2]',
+            duration: 16
+          })
+          .r_animate({
+            background: 'rgba(0,0,0,[0~0.8])',
+            duration: 1000
+          })
+
     },
     turn_focus_off() {
       if (!this.$data.focus_on) return
@@ -383,6 +352,7 @@ export default {
     if (debug) {
       this.background_enter()
     }
+    this.init_focus_system()
     this.init_interact()
   }
 }

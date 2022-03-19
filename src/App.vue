@@ -38,34 +38,28 @@ export default {
     },
     init_cursor() {
       const _this = this
-      const {
-        cursor,
-        cursor_1,
-        cursor_2,
-        cursor_3,
-        cursor_4,
-      } = this.$refs
-      const cursor_in = {
-        opacity: '[0~0]',
-        top: `[0~${ window.innerHeight / 1.5 }]px`,
-        left: `[0~${ window.innerWidth / 2 }]px`,
-        duration: 16
-      }
-      const cursor_show = {
-        opacity: '[0~1]',
-        duration: 1000
-      }
-      cursor_1.r_animate(cursor_in).r_animate({ duration: 6000 }).r_animate(cursor_show)
-      cursor_2.r_animate(cursor_in).r_animate({ duration: 6000 }).r_animate(cursor_show)
-      cursor_3.r_animate(cursor_in).r_animate({ duration: 6000 }).r_animate(cursor_show)
-      cursor_4.r_animate(cursor_in).r_animate({ duration: 6000 }).r_animate(cursor_show)
-          .r_then(() => {
-            _this.$data.cursor_lock = false
+      const cursor = this.$refs.cursor
+      cursor
+          .r_animate({
+            opacity: '[0~0]',
+            top: `[0~${ window.innerHeight / 1.5 }]px`,
+            left: `[0~${ window.innerWidth / 2 }]px`,
+            duration: 16,
+            callback: () => {
+              this.$data.cursorX = window.innerWidth / 2
+              this.$data.cursorY = window.innerHeight / 1.5
+            }
           })
-
-
-      this.$data.cursorX = window.innerWidth / 2
-      this.$data.cursorY = window.innerHeight / 1.5
+          .r_animate({ duration: 100 })
+          .r_animate({
+            opacity: '[0~1]',
+            transform: 'translate(-10px, -10px) scale([0~1])',
+            duration: 1000
+          })
+          .r_then(() => {
+            this.$data.cursor_lock = false
+            this.$data.scroll_lock = false
+          })
 
       document.addEventListener('mousemove', function (e) {
         const { clientX, clientY } = e
@@ -75,34 +69,24 @@ export default {
           const y_ratio = (e.movementY > 0 ? 1 : -1) * (clientY - _this.$data.cursorY) / window.innerWidth * 10 + 1
           _this.$data.cursorX += e.movementX * x_ratio
           _this.$data.cursorY += e.movementY * y_ratio
-          cursor_1.style.left = `${ _this.$data.cursorX }px`
-          cursor_1.style.top = `${ _this.$data.cursorY }px`
-          cursor_2.style.left = `${ _this.$data.cursorX }px`
-          cursor_2.style.top = `${ _this.$data.cursorY }px`
-          cursor_3.style.left = `${ _this.$data.cursorX }px`
-          cursor_3.style.top = `${ _this.$data.cursorY }px`
-          cursor_4.style.left = `${ _this.$data.cursorX }px`
-          cursor_4.style.top = `${ _this.$data.cursorY }px`
+          cursor.style.left = `${ _this.$data.cursorX }px`
+          cursor.style.top = `${ _this.$data.cursorY }px`
           if (Math.abs(clientX - _this.$data.cursorX) + Math.abs(clientY - _this.$data.cursorY) < 8) {
             _this.$data.docking = true
           }
         } else {
-          cursor_1.style.left = `${ clientX }px`
-          cursor_1.style.top = `${ clientY }px`
-          cursor_2.style.left = `${ clientX }px`
-          cursor_2.style.top = `${ clientY }px`
-          cursor_3.style.left = `${ clientX }px`
-          cursor_3.style.top = `${ clientY }px`
-          cursor_4.style.left = `${ clientX }px`
-          cursor_4.style.top = `${ clientY }px`
+          cursor.style.left = `${ clientX }px`
+          cursor.style.top = `${ clientY }px`
         }
 
       })
       document.addEventListener('mouseleave', function (e) {
-        _this.$data.docking = false
+        if (_this.$data.cursor_lock) return
+        cursor.style.opacity = '0'
       })
       document.addEventListener('mouseenter', function (e) {
-        _this.$data.docking = false
+        if (_this.$data.cursor_lock) return
+        cursor.style.opacity = '1'
       })
     },
     init_scroll() {
@@ -179,18 +163,7 @@ export default {
 <template>
   <div>
     <Hello ref="hello"/>
-    <div style="transform: translate(-10px,-8px)" class="cursor_container" ref="cursor_1">
-      <div class="cursor"></div>
-    </div>
-    <div style="transform: translate(-10px,8px) rotateZ(180deg)" class="cursor_container" ref="cursor_2">
-      <div class="cursor"></div>
-    </div>
-    <div style="transform: translate(-2px,0) rotateZ(90deg)" class="cursor_container" ref="cursor_3">
-      <div class="cursor"></div>
-    </div>
-    <div style="transform: translate(-18px,0) rotateZ(270deg)" class="cursor_container" ref="cursor_4">
-      <div class="cursor"></div>
-    </div>
+    <div ref="cursor" class="cursor"></div>
     <!--    <Hello2 ref="hello2"/>-->
     <!--    <Introduce ref="introduce"/>-->
   </div>
@@ -204,7 +177,7 @@ export default {
 body {
   margin: 0;
   padding: 0;
-  cursor: None;
+  /*cursor: None;*/
   overflow: hidden;
 }
 
@@ -217,19 +190,15 @@ body {
   /*margin-top: 60px;*/
 }
 
-.cursor_container {
-  position: fixed;
-  height: 5px;
-  overflow: hidden;
-}
-
 .cursor {
+  position: fixed;
   width: 14px;
   height: 14px;
   border: 3px solid #dedede;
   border-radius: 10px;
-  /*background: #5d5d5d;*/
-  opacity: 1;
+  background: #5d5d5d;
+  opacity: 0;
+  transform: translate(-10px, -10px);
 }
 
 

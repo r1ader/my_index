@@ -44,10 +44,27 @@
           <div ref="paper_3" class="paper_3">
             <div ref="paper_3_content" class="paper_3_content">
               <span style="font-size: 30px">About animation</span>
-              <span style="font-size: 13px">
-                All the animation in this website was supported by r_animate.js
-                It’s very lightweight and easy to learn.
-                Visit r_animate.js if you wanna try it.
+              <span style="font-size: 20px">
+                All the animation
+                in this website
+              </span>
+              <span style="font-size: 20px">
+                was supported by
+              </span>
+              <span style="font-size: 20px;color: #434394;">
+                r_animate.js
+              </span>
+              <span style="font-size: 20px">
+                It’s very lightweight
+              </span>
+              <span style="font-size: 20px">
+                and easy to learn.
+              </span>
+              <span style="font-size: 20px">
+                Visit <span style="font-size: 20px;color: #434394;">r_animate.js</span>
+              </span>
+              <span style="font-size: 20px">
+                if you wanna try it.
               </span>
             </div>
           </div>
@@ -56,14 +73,14 @@
           <div ref="paper_2" class="paper_2">
             <div ref="paper_2_content" class="paper_2_content">
               <span style="font-size: 30px">About me</span>
-              <span style="font-size: 13px">
+              <span style="font-size: 20px">
                 I am studying a master's degree at HZNU
               </span>
-              <span style="font-size: 13px">
+              <span style="font-size: 20px">
                 I love Coding, Painting  and  Designing
               </span>
-              <span style="font-size: 13px">
-                Any issue, concat  r1ader.v1@gmail.com
+              <span style="font-size: 20px">
+                My e-mail: <span style="font-size: 20px;color: #434394;">r1ader.v1@gmail.com</span>
               </span>
             </div>
           </div>
@@ -72,15 +89,24 @@
           <div ref="paper_1" class="paper_1">
             <div ref="paper_1_content" class="paper_1_content">
               <span style="font-size: 30px">r1ader ?</span>
-              <span style="font-size: 13px">
-                My friends always call me "reader" for my fancy on a magazine called 《reader》
+              <span style="font-size: 20px;line-height:30px">
+                My friends always call me
+                <span style="font-size: 20px;color: #bd355e;">"reader"</span>
+                for my fancy on a magazine called
+                <span style="font-size: 20px;color: #bd355e;">《reader》</span>
               </span>
-              <span style="font-size: 13px">
+              <span style="font-size: 20px;line-height:30px">
                 But it's too common as a username,
-                so I replace the letter "e" with "1"
+                so I replace the letter
+                <span style="font-size: 20px;color: #bd355e;">"e"</span>
+                with number
+                <span style="font-size: 20px;color: #bd355e;">"1"</span>
               </span>
-              <span style="font-size: 13px">
-                Just pronounced "r1ader" the same way as "reader"
+              <span style="font-size: 20px;line-height:30px">
+                Just pronounced
+                <span style="font-size: 20px;color: #bd355e;">"r1ader"</span> the same way as
+                <span style="font-size: 20px;color: #bd355e;">
+                "reader"</span>
               </span>
             </div>
           </div>
@@ -201,7 +227,7 @@ export default {
         paper_1, paper_2, paper_3,
         curve
       } = this.$refs
-      const duration = 2000
+      const duration = debug ? 500 : 2000
       const opacity_on = { opacity: '[0~1]', duration: 100 }
       const scale_ratio = window.innerHeight / 360
       curve.r_animate({ transform: `scale([${ scale_ratio }~${ scale_ratio }])`, duration: 100 })
@@ -215,11 +241,11 @@ export default {
       ball_2.r_animate({ transform: 'translateY([-150~0]px)', duration })
       ball_3.r_animate({ transform: 'translate([100~0]px,[-200~0]px)', duration })
       paper_1.r_animate({
-        transform: 'translate([300~-50]px,-100px) perspective(229px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg)',
+        transform: 'translate([300~-50]px,-100px) scale(0.7) perspective(500px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg)',
         duration
       })
       paper_2.r_animate({
-        transform: 'translate(-70px, [240~-70]px) rotateX(20deg) rotateZ(-20deg)',
+        transform: 'translate(-70px, [240~-70]px) scale(0.5) perspective(500px) rotateY(40deg) rotateZ(-20deg)',
         duration
       })
       paper_3.r_animate({
@@ -283,35 +309,14 @@ export default {
             .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
       })
 
-      const paper_1_float = {
-        transform: 'translate(-50px,-100px) scale([1~1.1]) perspective(229px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg)',
-        duration: 500,
-        callback: debounce
-      }
-      paper_1.addEventListener('mouseenter', function (e) {
-        if (!_this.$data.focus_on) {
-          paper_1.r_animate(paper_1_float)
-          // paper_1_content.r_animate({
-          //   opacity: '[0~1]',
-          //   duration: 200
-          // })
-        }
-      })
-      paper_1.addEventListener('mouseleave', function (e) {
-        if (!_this.$data.focus_on) {
-          paper_1.r_animate({ ...paper_1_float, reverse: true })
-          // paper_1_content.r_animate({ opacity: '[1~0]', duration: 200 })
-        }
-      })
       paper_1.addEventListener('click', function (e) {
         if (_this.$data.focus_on) return
         const card_position_x = Math.round(window.innerWidth / -2)
         const card_position_y = Math.round(window.innerHeight / -2)
         const paper_1_flip_in = {
-          zIndex: '[3~3]',
           background: 'rgb([255~180],[255~180],[255~180])',
           borderRadius: '[20~10]px',
-          transform: `translate([-50~${ card_position_x }]px,[-100~${ card_position_y }]px) scale([1.1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)`,
+          transform: `translate([-50~${ card_position_x }]px,[-100~${ card_position_y }]px) scale([0.7~1]) perspective([500~1000]px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)`,
           duration: 1500,
           interpolation: 'easeInOutExpo',
         }
@@ -320,7 +325,7 @@ export default {
           return new Promise((resolve, eject) => {
             paper_1.r_animate({
               ...paper_1_flip_in,
-              transform: `translate([-50~${ card_position_x }]px,[-100~${ card_position_y }]px) scale([1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)`,
+              // transform: `translate([-50~${ card_position_x }]px,[-100~${ card_position_y }]px) scale([1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)`,
               reverse: true
             }).r_then(resolve)
           })
@@ -332,10 +337,9 @@ export default {
         const card_position_x = Math.round(window.innerWidth / -2)
         const card_position_y = Math.round(window.innerHeight / -2)
         const paper_2_flip_in = {
-          zIndex: '[3~3]',
-          background: 'rgb([255~180],[255~180],[255~180])',
+          background: 'rgb([212~180],[212~180],[212~180])',
           borderRadius: '[20~10]px',
-          transform: `translate([-70~${ card_position_x }]px, [-70~${ card_position_y }]px) scale([1~2]) rotateX([20~360]deg) rotateZ([-20~0]deg)`,
+          transform: `translate([-70~${ card_position_x }]px, [-70~${ card_position_y }]px) scale([0.5~1]) perspective(500px) rotateY([40~0]deg) rotateX([0~-360]deg) rotateZ([-20~0]deg)`,
           duration: 1500,
           interpolation: 'easeInOutExpo',
         }
@@ -356,8 +360,7 @@ export default {
         const card_position_x = Math.round(window.innerWidth / -2)
         const card_position_y = Math.round(window.innerHeight / -2)
         const paper_3_flip_in = {
-          zIndex: '[3~3]',
-          background: 'rgb([255~180],[255~180],[255~180])',
+          background: 'rgb([147~180],[147~180],[147~180])',
           borderRadius: '[20~10]px',
           transform: `translate([-80~${ card_position_x }]px, [-30~${ card_position_y }]px) rotateZ([20~-360]deg)`,
           duration: 1500,
@@ -375,7 +378,7 @@ export default {
         }
         _this.turn_focus_on()
       })
-      paper_3.click()
+      paper_1.hover_event = true
     },
     init_focus_system() {
       const _this = this
@@ -518,8 +521,8 @@ a {
 .paper_1 {
   position: absolute;
   z-index: 3;
-  width: 200px;
-  height: 300px;
+  width: 400px;
+  height: 600px;
   background: white;
   border-radius: 20px;
   box-shadow: -18px -16px 20px 0 rgba(0, 0, 0, 0.2);
@@ -527,22 +530,21 @@ a {
 
 .paper_2 {
   position: absolute;
-  z-index: 2;
-  width: 300px;
-  height: 200px;
-  background: #d4d4d4;
+  z-index: 3;
+  width: 600px;
+  height: 400px;
+  background: rgba(212, 212, 212, 1);
   border-radius: 20px;
   box-shadow: -18px -16px 20px 0 rgba(0, 0, 0, 0.2);
 }
 
 .paper_3 {
   position: absolute;
-  z-index: 1;
-  width: 300px;
-  height: 440px;
-  background: #939393;
+  z-index: 3;
+  width: 400px;
+  height: 600px;
+  background: rgba(147, 147, 147, 1);
   border-radius: 20px;
-  transition: 0.2s ease-out;
 }
 
 .curve_block {
@@ -562,10 +564,6 @@ a {
   transform: scale(2.4);
 }
 
-.curve_1:hover {
-  transform: scale(1.2);
-}
-
 .no_select {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
@@ -577,12 +575,12 @@ a {
 }
 
 .paper_1_content {
-  height: 251px;
-  width: 200px;
+  height: 397px;
+  width: 273px;
   font-weight: bolder;
   color: #202020;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   margin: 20px;
   flex-direction: column;
@@ -590,27 +588,29 @@ a {
 
 .paper_2_content {
   opacity: 1;
-  height: 170px;
-  width: 260px;
+  height: 212px;
+  /*width: 260px;*/
   font-weight: bolder;
   color: #202020;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   margin: 20px;
   flex-direction: column;
 }
 
 .paper_3_content {
+  width: 400px;
+  margin: 0;
+  box-sizing: border-box;
+  height: 600px;
+  padding: 60px 0 60px 0;
   opacity: 1;
-  height: 170px;
-  width: 260px;
   font-weight: bolder;
   color: #202020;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  margin: 20px;
   flex-direction: column;
 }
 

@@ -65,6 +65,9 @@ export default {
             this.$data.cursor_lock = false
             this.$data.scroll_lock = false
           })
+      if (debug) {
+        document.body.style.cursor = 'auto'
+      }
     },
     init_scroll() {
       this.$data.scroll_index = Math.round(window.scrollY / window.innerHeight)
@@ -142,10 +145,12 @@ export default {
       const { cursor } = this.$refs
       if (this.$data.cursor_lock) return
       if (!this.$data.docking) {
-        const x_ratio = (e.movementX > 0 ? 1 : -1) * (clientX - this.$data.cursorX) / window.innerWidth * 10 + 1
-        const y_ratio = (e.movementY > 0 ? 1 : -1) * (clientY - this.$data.cursorY) / window.innerWidth * 10 + 1
-        this.$data.cursorX += e.movementX * x_ratio
-        this.$data.cursorY += e.movementY * y_ratio
+        // const x_ratio = (e.movementX > 0 ? 1 : -1) * (clientX - this.$data.cursorX) / window.innerWidth * 10 + 1
+        // const y_ratio = (e.movementY > 0 ? 1 : -1) * (clientY - this.$data.cursorY) / window.innerWidth * 10 + 1
+        // this.$data.cursorX += e.movementX * x_ratio
+        // this.$data.cursorY += e.movementY * y_ratio
+        this.$data.cursorX += (clientX - this.$data.cursorX) / 8
+        this.$data.cursorY += (clientY - this.$data.cursorY) / 8
         cursor.style.left = `${ this.$data.cursorX - 10 }px`
         cursor.style.top = `${ this.$data.cursorY - 10 }px`
         if (Math.abs(clientX - this.$data.cursorX) + Math.abs(clientY - this.$data.cursorY) < 8) {
@@ -154,6 +159,13 @@ export default {
       } else {
         cursor.style.left = `${ clientX - 10 }px`
         cursor.style.top = `${ clientY - 10 }px`
+      }
+      if (e.path[0] && e.path[0].hover_event) {
+        cursor.style.border = '3px solid rgba(218, 130, 130, 1)'
+        cursor.style.background = 'rgba(100, 45, 45, 1)'
+      }else{
+        cursor.style.border = '3px solid rgba(222, 222, 222, 1)'
+        cursor.style.background = 'rgba(93, 93, 93, 1)'
       }
     },
     document_mousedown_function(e) {
@@ -208,7 +220,7 @@ export default {
 body {
   margin: 0;
   padding: 0;
-  /*cursor: None;*/
+  cursor: None;
   overflow: hidden;
 }
 
@@ -226,9 +238,9 @@ body {
   pointer-events: none;
   width: 14px;
   height: 14px;
-  border: 3px solid #dedede;
+  border: 3px solid rgba(222, 222, 222, 1);
   border-radius: 10px;
-  background: #5d5d5d;
+  background: rgba(93, 93, 93, 1);
   opacity: 0;
   z-index: 999;
 }

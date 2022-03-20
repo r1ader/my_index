@@ -40,11 +40,33 @@
         </svg>
       </div>
       <div ref="paper_block" class="paper_block">
-        <div ref="paper_3">
-          <div class="paper_3"></div>
+        <div>
+          <div ref="paper_3" class="paper_3">
+            <div ref="paper_3_content" class="paper_3_content">
+              <span style="font-size: 30px">About animation</span>
+              <span style="font-size: 13px">
+                All the animation in this website was supported by r_animate.js
+                It’s very lightweight and easy to learn.
+                Visit r_animate.js if you wanna try it.
+              </span>
+            </div>
+          </div>
         </div>
-        <div ref="paper_2">
-          <div class="paper_2"></div>
+        <div>
+          <div ref="paper_2" class="paper_2">
+            <div ref="paper_2_content" class="paper_2_content">
+              <span style="font-size: 30px">About me</span>
+              <span style="font-size: 13px">
+                I am studying a master's degree at HZNU
+              </span>
+              <span style="font-size: 13px">
+                I love Coding, Painting  and  Designing
+              </span>
+              <span style="font-size: 13px">
+                Any issue, concat  r1ader.v1@gmail.com
+              </span>
+            </div>
+          </div>
         </div>
         <div>
           <div ref="paper_1" class="paper_1">
@@ -196,8 +218,14 @@ export default {
         transform: 'translate([300~-50]px,-100px) perspective(229px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg)',
         duration
       })
-      paper_2.r_animate({ transform: 'translateY([240~0]px)', duration })
-      paper_3.r_animate({ transform: 'translate([200~0]px,[100~0]px)', duration })
+      paper_2.r_animate({
+        transform: 'translate(-70px, [240~-70]px) rotateX(20deg) rotateZ(-20deg)',
+        duration
+      })
+      paper_3.r_animate({
+        transform: 'translate([300~-80]px, [300~-30]px) rotateZ(20deg)',
+        duration
+      })
     },
     init_interact() {
       const {
@@ -263,26 +291,27 @@ export default {
       paper_1.addEventListener('mouseenter', function (e) {
         if (!_this.$data.focus_on) {
           paper_1.r_animate(paper_1_float)
-          paper_1_content.r_animate({
-            opacity: '[0~1]',
-            duration: 200
-          })
+          // paper_1_content.r_animate({
+          //   opacity: '[0~1]',
+          //   duration: 200
+          // })
         }
       })
       paper_1.addEventListener('mouseleave', function (e) {
         if (!_this.$data.focus_on) {
           paper_1.r_animate({ ...paper_1_float, reverse: true })
-          paper_1_content.r_animate({ opacity: '[1~0]', duration: 200 })
+          // paper_1_content.r_animate({ opacity: '[1~0]', duration: 200 })
         }
       })
       paper_1.addEventListener('click', function (e) {
         if (_this.$data.focus_on) return
         const card_position_x = Math.round(window.innerWidth / -2)
+        const card_position_y = Math.round(window.innerHeight / -2)
         const paper_1_flip_in = {
           zIndex: '[3~3]',
           background: 'rgb([255~180],[255~180],[255~180])',
           borderRadius: '[20~10]px',
-          transform: `translate([-50~${ card_position_x }]px,[-100~-500]px) scale([1.1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)`,
+          transform: `translate([-50~${ card_position_x }]px,[-100~${ card_position_y }]px) scale([1.1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)`,
           duration: 1500,
           interpolation: 'easeInOutExpo',
         }
@@ -291,15 +320,62 @@ export default {
           return new Promise((resolve, eject) => {
             paper_1.r_animate({
               ...paper_1_flip_in,
-              transform: `translate([-50~${ card_position_x }]px,[-100~-500]px) scale([1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)`,
+              transform: `translate([-50~${ card_position_x }]px,[-100~${ card_position_y }]px) scale([1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)`,
               reverse: true
             }).r_then(resolve)
-            paper_1_content.r_animate({ opacity: '[1~0]', duration: 1500 })
           })
         }
         _this.turn_focus_on()
       })
-
+      paper_2.addEventListener('click', function (e) {
+        if (_this.$data.focus_on) return
+        const card_position_x = Math.round(window.innerWidth / -2)
+        const card_position_y = Math.round(window.innerHeight / -2)
+        const paper_2_flip_in = {
+          zIndex: '[3~3]',
+          background: 'rgb([255~180],[255~180],[255~180])',
+          borderRadius: '[20~10]px',
+          transform: `translate([-70~${ card_position_x }]px, [-70~${ card_position_y }]px) scale([1~2]) rotateX([20~360]deg) rotateZ([-20~0]deg)`,
+          duration: 1500,
+          interpolation: 'easeInOutExpo',
+        }
+        paper_2.r_animate(paper_2_flip_in)
+        _this['shadow_block_cancel_callback'] = () => {
+          return new Promise((resolve, eject) => {
+            paper_2.r_animate({
+              ...paper_2_flip_in,
+              // transform: `translate([-70~${ card_position_x }]px, [-70~${ card_position_y }]px) rotateX([20~360]deg) rotateZ([-20~0]deg)`,
+              reverse: true
+            }).r_then(resolve)
+          })
+        }
+        _this.turn_focus_on()
+      })
+      paper_3.addEventListener('click', function (e) {
+        if (_this.$data.focus_on) return
+        const card_position_x = Math.round(window.innerWidth / -2)
+        const card_position_y = Math.round(window.innerHeight / -2)
+        const paper_3_flip_in = {
+          zIndex: '[3~3]',
+          background: 'rgb([255~180],[255~180],[255~180])',
+          borderRadius: '[20~10]px',
+          transform: `translate([-80~${ card_position_x }]px, [-30~${ card_position_y }]px) rotateZ([20~-360]deg)`,
+          duration: 1500,
+          interpolation: 'easeInOutExpo',
+        }
+        paper_3.r_animate(paper_3_flip_in)
+        _this['shadow_block_cancel_callback'] = () => {
+          return new Promise((resolve, eject) => {
+            paper_3.r_animate({
+              ...paper_3_flip_in,
+              // transform: `translate([-70~${ card_position_x }]px, [-70~${ card_position_y }]px) rotateX([20~360]deg) rotateZ([-20~0]deg)`,
+              reverse: true
+            }).r_then(resolve)
+          })
+        }
+        _this.turn_focus_on()
+      })
+      paper_3.click()
     },
     init_focus_system() {
       const _this = this
@@ -441,41 +517,31 @@ a {
 
 .paper_1 {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   width: 200px;
   height: 300px;
   background: white;
-  box-shadow: -18px -16px 20px 0 rgba(0, 0, 0, 0.2);
   border-radius: 20px;
+  box-shadow: -18px -16px 20px 0 rgba(0, 0, 0, 0.2);
 }
 
 .paper_2 {
   position: absolute;
-  width: 100px;
-  height: 150px;
+  z-index: 2;
+  width: 300px;
+  height: 200px;
   background: #d4d4d4;
-  border-radius: 10px 10px 10px 10px;
-  transform: translate(-110px, 0px) scale(2) rotateZ(-20deg);
-  transition: 0.2s ease-out;
-}
-
-.paper_2:hover {
-  transform: translate(-110px, 0px) scale(2.2) rotateZ(-20deg);
-  transition: 0.2s ease-out;
+  border-radius: 20px;
+  box-shadow: -18px -16px 20px 0 rgba(0, 0, 0, 0.2);
 }
 
 .paper_3 {
   position: absolute;
-  width: 100px;
-  height: 150px;
+  z-index: 1;
+  width: 300px;
+  height: 440px;
   background: #939393;
-  border-radius: 10px 10px 10px 10px;
-  transform: translate(-80px, -30px) scale(3) rotateZ(20deg);
-  transition: 0.2s ease-out;
-}
-
-.paper_3:hover {
-  transform: translate(-80px, -30px) scale(3.3) rotateZ(20deg);
+  border-radius: 20px;
   transition: 0.2s ease-out;
 }
 
@@ -511,9 +577,34 @@ a {
 }
 
 .paper_1_content {
-  opacity: 0;
   height: 251px;
   width: 200px;
+  font-weight: bolder;
+  color: #202020;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin: 20px;
+  flex-direction: column;
+}
+
+.paper_2_content {
+  opacity: 1;
+  height: 170px;
+  width: 260px;
+  font-weight: bolder;
+  color: #202020;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin: 20px;
+  flex-direction: column;
+}
+
+.paper_3_content {
+  opacity: 1;
+  height: 170px;
+  width: 260px;
   font-weight: bolder;
   color: #202020;
   display: flex;

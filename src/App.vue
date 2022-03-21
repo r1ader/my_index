@@ -1,6 +1,6 @@
 <script>
 
-import Hello from './components/Hello.vue'
+import Hello from './components/Hello/index.vue'
 import Hello2 from './components/Hello2.vue'
 import Introduce from './components/Introduce.vue'
 import { interpolation_functions } from "./utils/math_util";
@@ -8,7 +8,7 @@ import _ from "lodash";
 import R_director from "./utils/r_nimate";
 
 const clog = console.log
-const debug = true
+const debug = false
 const debounce = (actor) => {
   while (actor.queue.length >= 2) {
     actor.queue.shift()
@@ -31,7 +31,8 @@ export default {
       cursorY: 0,
       scroll_index: 0,
       window_queue: [],
-      docking: false
+      docking: false,
+      is_begin: false
     }
   },
   methods: {
@@ -43,7 +44,7 @@ export default {
       ]
     },
     init_cursor() {
-      const cursor_show_time = debug ? 1000 : 6000
+      const cursor_show_time = debug ? 100 : 1000
       this.$refs.cursor
           .r_animate({
             opacity: '[0~0]',
@@ -71,7 +72,6 @@ export default {
     },
     init_scroll() {
       this.$data.scroll_index = Math.round(window.scrollY / window.innerHeight)
-      this.$data.window_queue[this.$data.scroll_index].beginning_motion()
       document.addEventListener('mousewheel', (e) => {
         if (e.ctrlKey) return
         if (this.$data.scroll_lock) return
@@ -144,6 +144,10 @@ export default {
       const { clientX, clientY } = e
       const { cursor } = this.$refs
       if (this.$data.cursor_lock) return
+      if (!this.$data.is_begin) {
+        this.$data.is_begin = true
+        this.$data.window_queue[this.$data.scroll_index].beginning_motion()
+      }
       if (!this.$data.docking) {
         // const x_ratio = (e.movementX > 0 ? 1 : -1) * (clientX - this.$data.cursorX) / window.innerWidth * 10 + 1
         // const y_ratio = (e.movementY > 0 ? 1 : -1) * (clientY - this.$data.cursorY) / window.innerWidth * 10 + 1
@@ -160,13 +164,13 @@ export default {
         cursor.style.left = `${ clientX - 10 }px`
         cursor.style.top = `${ clientY - 10 }px`
       }
-      if (e.path[0] && e.path[0].hover_event) {
-        cursor.style.border = '3px solid rgba(218, 130, 130, 1)'
-        cursor.style.background = 'rgba(100, 45, 45, 1)'
-      }else{
-        cursor.style.border = '3px solid rgba(222, 222, 222, 1)'
-        cursor.style.background = 'rgba(93, 93, 93, 1)'
+      // cursor.style.backgroundPosition = `${ -clientX }px ${ -clientY }px`
+      if (e.path[0] && e.path[0].cursor_hidden) {
+        cursor.style.display = 'none'
+      } else {
+        cursor.style.display = ''
       }
+      // cursor.style.backgroundImage
     },
     document_mousedown_function(e) {
       const { cursor } = this.$refs
@@ -189,8 +193,10 @@ export default {
     document_mouseenter_function(e) {
       if (this.$data.cursor_lock) return
       this.$refs.cursor.style.opacity = '1'
-    }
+    },
+    begin() {
 
+    }
   },
   mounted() {
     const r_director = new R_director()
@@ -243,6 +249,9 @@ body {
   background: rgba(93, 93, 93, 1);
   opacity: 0;
   z-index: 999;
+  /*background: url("./assets/cat1.png")  no-repeat;*/
+  /*background-size: auto 100vh;*/
+  /*background-position: 400px 300px;*/
 }
 
 

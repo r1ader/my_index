@@ -76,6 +76,7 @@ class R_registered_dom {
         this.busy = true
         this.in_task = config.name
         let frame_index = 0
+        const inter_func = interpolation_functions(config.interpolation)
         const render = () => {
             Object.keys(config).forEach(key => {
                 const extract_number_reg = /\[(-|\d|\.)+?~(-|\d||\.)+?\]/g
@@ -84,7 +85,6 @@ class R_registered_dom {
                 if (!_.isArray(extract_res) || !extract_res.length) return
                 let groove = config[key].replace(extract_number_reg, '{}')
                 const slots = extract_res.map(range => {
-                    const inter_func = interpolation_functions(config.interpolation)
                     let [start_value, end_value] = range.replace('[', '').replace(']', '').split('~').map(o => _.toNumber(o))
                     if (config.reverse) {
                         [start_value, end_value] = [end_value, start_value]
@@ -100,6 +100,10 @@ class R_registered_dom {
                 })
                 this.ref.style[key] = groove
             })
+            if (_.isFunction(config.parallel)){
+                const ratio = inter_func(frame_index * 16 / config.plan_duration)
+                config.parallel(ratio)
+            }
             frame_index += 1
             if ((frame_index - 1) * 16 < config.plan_duration) {
                 requestAnimationFrame(render)

@@ -3,6 +3,7 @@ import App from './App.vue'
 
 const app = createApp(App)
 app.mount('#app')
+// todo make a global variable debug
 
 // todo 主题，交互 => 色彩
 //  右上角多层纸张，弹力效果，曲线

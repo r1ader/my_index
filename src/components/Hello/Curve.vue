@@ -5,7 +5,10 @@
         <image href="../../assets/cat1.png" x="-100" y="0" width="300" height="400"/>
       </pattern>
       <pattern id="img2" patternUnits="userSpaceOnUse" width="605" height="1200">
-        <image href="../../assets/me.png" x="-80" y="30" width="303" height="600"/>
+        <image href="../../assets/me.png" x="-100" y="40" width="303" height="540"/>
+      </pattern>
+      <pattern id="img3" patternUnits="userSpaceOnUse" width="400" height="300">
+        <image href="../../assets/cat2.png" x="0" y="0" width="160" height="160"/>
       </pattern>
       <pattern id="cat_background" patternUnits="userSpaceOnUse" :width="innerWidth" :height="innerHeight">
         <rect fill="#939393" :width="innerWidth" :height="innerHeight"/>
@@ -53,6 +56,17 @@
             :cx="cursorX-curve_2_transform"
             :cy="cursorY"></circle>
       </pattern>
+      <pattern id="cat2_background" patternUnits="userSpaceOnUse" :width="innerWidth" :height="innerHeight">
+        <rect fill="#ffffff" :width="innerWidth" :height="innerHeight"/>
+        <text style="font-weight: bolder" fill="#939393">
+          tart
+        </text>
+        <circle
+            fill="url(#img3)"
+            r="60"
+            :cx="cursorX-curve_3_transform"
+            :cy="cursorY"></circle>
+      </pattern>
     </defs>
     <path
         class="curve_1"
@@ -74,7 +88,7 @@
         d="
                 M 0 359 V 400 H 181 C 177 360 98 339 0 335
               "
-        fill="white"/>
+        fill="url(#cat2_background)"/>
   </svg>
 </template>
 
@@ -94,12 +108,13 @@ export default {
   data() {
     return {
       r_director: null,
-      cursorX: 300,
-      cursorY: 300,
+      cursorX: 20,
+      cursorY: 380,
       innerHeight: 100,
       innerWidth: 100,
       curve_1_transform: -80,
       curve_2_transform: -80,
+      curve_3_transform: -80,
     }
   },
   methods: {
@@ -109,7 +124,7 @@ export default {
       } = this.$refs
       const duration = debug ? 500 : 3000
       curve_1.r_animate({ transform: 'translate([-188~-80]px)', duration })
-      curve_2.r_animate({ transform: 'translate([-188~-80]px,[100~0]px)', duration })
+      curve_2.r_animate({ transform: 'translate([-188~0]px,[100~0]px)', duration })
       curve_3.r_animate({ transform: 'translate([-188~-80]px,[200~0]px)', duration })
     },
     init_interact() {
@@ -132,6 +147,11 @@ export default {
       const _this = this
       curve_1.cursor_hidden = true
       curve_2.cursor_hidden = true
+      curve.addEventListener('mousemove', function (e) {
+        const scale_ratio = window.innerHeight / 400
+        _this.$data.cursorX = e.clientX / scale_ratio
+        _this.$data.cursorY = e.clientY / scale_ratio
+      })
       curve_1.addEventListener('mouseenter', function (e) {
         curve_1.r_animate({
           ...translate_out,
@@ -148,12 +168,6 @@ export default {
           }
         })
 
-      })
-
-      curve.addEventListener('mousemove', function (e) {
-        const scale_ratio = window.innerHeight / 400
-        _this.$data.cursorX = e.clientX / scale_ratio
-        _this.$data.cursorY = e.clientY / scale_ratio
       })
       curve_2.addEventListener('mouseenter', function (e) {
         curve_2.r_animate({
@@ -172,10 +186,20 @@ export default {
         })
       })
       curve_3.addEventListener('mouseenter', function (e) {
-        curve_3.r_animate(translate_out)
+        curve_3.r_animate({
+          ...translate_out,
+          parallel: (ratio) => {
+            _this.$data.curve_3_transform = -80 + 80 * ratio
+          }
+        })
       })
       curve_3.addEventListener('mouseleave', function (e) {
-        curve_3.r_animate(translate_in)
+        curve_3.r_animate({
+          ...translate_in,
+          parallel: (ratio) => {
+            _this.$data.curve_3_transform = -80 * ratio
+          }
+        })
       })
     },
   },

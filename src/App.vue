@@ -205,6 +205,12 @@ export default {
     this.init_windows()
     this.init_interaction()
     this.init_scroll()
+    setTimeout(() => {
+      if (!this.$data.is_begin) {
+        this.$data.is_begin = true
+        this.$data.window_queue[this.$data.scroll_index].beginning_motion()
+      }
+    }, 3000)
   }
 }
 </script>

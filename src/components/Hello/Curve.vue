@@ -29,7 +29,7 @@
 
         <circle
             fill="url(#img1)"
-            r="60"
+            r="40"
             :cx="cursorX-curve_1_transform"
             :cy="cursorY"></circle>
       </pattern>
@@ -37,14 +37,14 @@
         <rect fill="#d4d4d4" :width="innerWidth" :height="innerHeight"/>
         <path id="mePath1" fill="none" stroke="none"
               d="M 10 20 H 89"/>
-        <text style="font-weight: bolder" fill="#939393">
+        <text style="font-weight: bolder" fill="#333333">
           <textPath href="#mePath1">
             (^з^)
           </textPath>
         </text>
         <path id="mePath2" fill="none" stroke="none"
               d="M 10 200 C 13 226 27 239 46 246"/>
-        <text style="font-weight: bolder" fill="#939393">
+        <text style="font-weight: bolder" fill="#333333">
           <textPath href="#mePath2">
             Me &#8594;
           </textPath>
@@ -52,7 +52,7 @@
 
         <circle
             fill="url(#img2)"
-            r="60"
+            r="40"
             :cx="cursorX-curve_2_transform"
             :cy="cursorY"></circle>
       </pattern>
@@ -63,7 +63,7 @@
         </text>
         <circle
             fill="url(#img3)"
-            r="60"
+            r="40"
             :cx="cursorX-curve_3_transform"
             :cy="cursorY"></circle>
       </pattern>
@@ -108,7 +108,7 @@ export default {
   data() {
     return {
       r_director: null,
-      cursorX: 20,
+      cursorX: 300,
       cursorY: 380,
       innerHeight: 100,
       innerWidth: 100,
@@ -122,9 +122,9 @@ export default {
       const {
         curve_1, curve_2, curve_3
       } = this.$refs
-      const duration = debug ? 500 : 3000
+      const duration = debug ? 500 : 2000
       curve_1.r_animate({ transform: 'translate([-188~-80]px)', duration })
-      curve_2.r_animate({ transform: 'translate([-188~0]px,[100~0]px)', duration })
+      curve_2.r_animate({ transform: 'translate([-188~-80]px,[100~0]px)', duration })
       curve_3.r_animate({ transform: 'translate([-188~-80]px,[200~0]px)', duration })
     },
     init_interact() {
@@ -147,6 +147,7 @@ export default {
       const _this = this
       curve_1.cursor_hidden = true
       curve_2.cursor_hidden = true
+      curve_3.cursor_hidden = true
       curve.addEventListener('mousemove', function (e) {
         const scale_ratio = window.innerHeight / 400
         _this.$data.cursorX = e.clientX / scale_ratio

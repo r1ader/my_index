@@ -119,7 +119,7 @@ import Curve from "./Curve.vue";
 import _ from "lodash";
 
 const clog = console.log
-const debug = true
+const debug = false
 const debounce = (actor) => {
   while (actor.queue.length >= 2) {
     actor.queue.shift()

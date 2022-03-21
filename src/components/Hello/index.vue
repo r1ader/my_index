@@ -1,6 +1,5 @@
 <template>
   <div class="main_container">
-    <div ref="shadow_block" class="shadow_block"></div>
     <div class="main_block">
       <div ref="ball_block" class="ball_block">
         <div ref="ball_1">
@@ -110,6 +109,7 @@
         </div>
       </div>
     </div>
+    <div ref="shadow_block" class="shadow_block"></div>
   </div>
 </template>
 
@@ -495,6 +495,7 @@ a {
 .curve_block {
   opacity: 0;
   position: absolute;
+  z-index: 2;
   left: 0;
   top: 0;
 }

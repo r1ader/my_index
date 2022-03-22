@@ -94,9 +94,9 @@
 
 <script>
 import R_director from "r_animate";
+import { debug } from '../../const/config'
+import { clog } from '../../utils/index'
 
-const clog = console.log
-const debug = false
 const debounce = (actor) => {
   while (actor.queue.length >= 2) {
     actor.queue.shift()

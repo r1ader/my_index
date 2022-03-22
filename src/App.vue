@@ -1,14 +1,14 @@
 <script>
 
-import Hello from './components/Hello/index.vue'
+import First from './components/First/index.vue'
 import Hello2 from './components/Hello2.vue'
 import Introduce from './components/Introduce.vue'
 import { interpolation_functions } from "./utils/math_util";
 import _ from "lodash";
 import R_director from "r_animate";
+import { debug } from './const/config'
+import { clog } from './utils/index'
 
-const clog = console.log
-const debug = false
 const debounce = (actor) => {
   while (actor.queue.length >= 2) {
     actor.queue.shift()
@@ -17,7 +17,7 @@ const debounce = (actor) => {
 }
 export default {
   components: {
-    Hello,
+    First,
     Hello2,
     Introduce
   },
@@ -210,14 +210,14 @@ export default {
         this.$data.is_begin = true
         this.$data.window_queue[this.$data.scroll_index].beginning_motion()
       }
-    }, 3000)
+    }, debug ? 100 : 3000)
   }
 }
 </script>
 
 <template>
   <div>
-    <Hello ref="hello"/>
+    <First ref="hello"/>
     <div ref="cursor" class="cursor"></div>
     <!--    <Hello2 ref="hello2"/>-->
     <!--    <Introduce ref="introduce"/>-->
@@ -232,8 +232,13 @@ export default {
 body {
   margin: 0;
   padding: 0;
-  cursor: None;
+  cursor: None !important;
   overflow: hidden;
+}
+
+a {
+  cursor: None !important;
+  text-decoration: none !important;
 }
 
 #app {

@@ -26,9 +26,11 @@
               <span style="font-size: 20px">
                 was supported by
               </span>
-              <span style="font-size: 20px;color: #434394;">
-                r_animate.js
-              </span>
+              <a target="_blank" href="https://github.com/r1ader/r_animate">
+                <span style="font-size: 20px;color: #434394;">
+                  r_animate.js
+                </span>
+              </a>
               <span style="font-size: 20px">
                 It’s very lightweight
               </span>
@@ -36,7 +38,12 @@
                 and easy to learn.
               </span>
               <span style="font-size: 20px">
-                Visit <span style="font-size: 20px;color: #434394;">r_animate.js</span>
+                Visit
+                <a target="_blank" href="https://github.com/r1ader/r_animate">
+                  <span style="font-size: 20px;color: #434394;">
+                    r_animate.js
+                  </span>
+                </a>
               </span>
               <span style="font-size: 20px">
                 if you wanna try it.
@@ -87,26 +94,8 @@
           </div>
         </div>
       </div>
-      <div ref="hello_block" class="hello_block no_select">
-        <div ref="hello">
-          Hello
-        </div>
-        <div ref="dot">,</div>
-        <div ref="introduce">
-          here is
-        </div>
-        <div style="margin-right: 0" ref="name_part1">
-          r
-        </div>
-        <div style="margin-right: 0;margin-left: 0;" ref="name_part2">
-          <span ref="name_part2_e">e</span>
-          <span style="position:absolute;opacity: 0" ref="name_part2_1">
-            1
-          </span>
-        </div>
-        <div style="margin-left: 0" ref="name_part3">
-          ader
-        </div>
+      <div>
+        <Hello ref="hello" @enter_over="background_enter"/>
       </div>
     </div>
     <div ref="shadow_block" class="shadow_block"></div>
@@ -116,10 +105,10 @@
 <script>
 import R_director from 'r_animate'
 import Curve from "./Curve.vue";
+import Hello from "./Hello.vue";
 import _ from "lodash";
-
-const clog = console.log
-const debug = false
+import { debug } from '../../const/config'
+import { clog } from '../../utils/index'
 const debounce = (actor) => {
   while (actor.queue.length >= 2) {
     actor.queue.shift()
@@ -128,9 +117,10 @@ const debounce = (actor) => {
 }
 
 export default {
-  name: 'Hello',
-  components:{
-    Curve
+  name: 'First',
+  components: {
+    Curve,
+    Hello
   },
   data() {
     return {
@@ -142,62 +132,7 @@ export default {
   },
   methods: {
     beginning_motion() {
-      const {
-        hello,
-        introduce,
-        name_part1,
-        name_part2,
-        name_part2_e,
-        name_part2_1,
-        name_part3,
-        dot
-      } = this.$refs
-      const cylinder_enter = {
-        transform: 'translate(0, [-50~0]px) rotateX([90~0]deg)',
-        opacity: '[0~1]',
-        duration: 1000
-      }
-      const cylinder_out = {
-        transform: 'translate(0, [0~50]px) rotateX([0~90]deg)',
-        opacity: '[1~0]',
-        duration: 1000
-      }
-      const spread_width = {
-        marginLeft: '[0~20]px',
-        marginRight: '[0~20]px',
-        duration: 400
-      }
-      const shrink_width = {
-        marginLeft: '[20~0]px',
-        marginRight: '[20~0]px',
-        duration: 400
-      }
-
-      hello.r_animate({ duration: 500 }).r_animate(cylinder_enter)
-      dot.r_animate({ duration: 750 }).r_animate(cylinder_enter)
-      introduce.r_animate({ duration: 1500 }).r_animate(cylinder_enter)
-      name_part1.r_animate({ duration: 2500 }).r_animate(cylinder_enter)
-
-      this.$data.r_director.copy(name_part1, [
-        name_part2,
-        name_part3
-      ])
-
-      name_part2
-          .r_animate(spread_width)
-          .r_animate({ duration: 100 })
-          .r_then(() => {
-            name_part2_1.r_animate(cylinder_enter)
-            name_part2_e.r_animate(cylinder_out)
-          })
-          .r_animate({ duration: 900 })
-          .r_animate(shrink_width)
-          .r_animate({ duration: 900 })
-          .r_then(() => {
-            if (!debug) {
-              this.background_enter()
-            }
-          })
+      this.$refs.hello.beginning_motion()
     },
     background_enter() {
       const {
@@ -436,26 +371,6 @@ a {
   align-items: center;
 }
 
-.navigation_block {
-  position: absolute;
-  flex-direction: row;
-  justify-content: end;
-  align-items: center;
-  width: 100vw;
-}
-
-.hello_block div {
-  /*font-family: Constantia;*/
-  /*font-family: fantasy;*/
-  opacity: 0;
-  position: relative;
-  font-weight: bolder;
-  color: white;
-  font-size: 60px;
-  margin: 20px;
-  letter-spacing: 5px;
-}
-
 .paper_block {
   position: absolute;
   opacity: 0;
@@ -505,16 +420,6 @@ a {
   opacity: 0;
   right: 0;
   top: 0;
-}
-
-.no_select {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none;
-  /* Non-prefixed version, currently
-                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
 .paper_1_content {

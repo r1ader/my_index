@@ -19,7 +19,7 @@
     <div style="margin-left: 0" ref="name_part3">
       ader
     </div>
-    <span style="position: relative">
+    <span style="position: relative;opacity: 0">
       <div class="r1ader_background" ref="r_b"></div>
     </span>
   </div>

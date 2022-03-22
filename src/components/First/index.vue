@@ -95,7 +95,7 @@
         </div>
       </div>
       <div>
-        <Hello ref="hello" @enter_over="background_enter"/>
+        <Hello style="position: relative;z-index: 2" ref="hello" @enter_over="background_enter"/>
       </div>
     </div>
     <div ref="shadow_block" class="shadow_block"></div>

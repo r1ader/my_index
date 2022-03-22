@@ -34,7 +34,10 @@ export default {
       docking: false,
       is_begin: false,
       cursor_in_animation: false,
-      in_interact_area: false
+      in_interact_area: false,
+      cursor_render_Framer: null,
+      chase_target: null,
+      fit_target: null
     }
   },
   methods: {
@@ -47,7 +50,7 @@ export default {
     },
     init_cursor() {
       const cursor_show_time = debug ? 100 : 1000
-      this.$refs.cursor
+      this.$refs.cursor_container
           .r_animate({
             opacity: '[0~0]',
             top: `[0~${ window.innerHeight / 1.5 }]px`,
@@ -61,52 +64,15 @@ export default {
           .r_animate({ duration: cursor_show_time })
           .r_animate({
             opacity: '[0~1]',
-            transform: 'scale([0~1]) translate(-10px, -10px)',
+            transform: 'scale([0~1])',
             duration: 1000
           })
           .r_then(() => {
             this.$data.cursor_lock = false
-            this.$data.scroll_lock = false
           })
       if (debug) {
-        document.body.style.cursor = 'auto'
+        document.body.style.cursor = 'auto!important'
       }
-    },
-    init_scroll() {
-      this.$data.scroll_index = Math.round(window.scrollY / window.innerHeight)
-      document.addEventListener('mousewheel', (e) => {
-        if (e.ctrlKey) return
-        if (this.$data.scroll_lock) return
-        const { window_queue } = this.$data
-        if (e.deltaY > 0) {
-          if (this.$data.scroll_index >= window_queue.length - 1) return
-          this.$data.scroll_index = Math.round(window.scrollY / window.innerHeight)
-          let windows_now = window_queue[this.$data.scroll_index]
-          if (_.isFunction(windows_now.exit_motion)) {
-            windows_now.exit_motion()
-          }
-          this.$data.scroll_index += 1
-          let windows_next = window_queue[this.$data.scroll_index]
-          this.$data.scroll_lock = true
-          this.scroll_smooth(window.innerHeight, () => {
-            windows_next.beginning_motion()
-          })
-        } else if (e.deltaY < 0) {
-          if (this.$data.scroll_index <= 0) return
-          this.$data.scroll_index = Math.round(window.scrollY / window.innerHeight)
-          let windows_now = window_queue[this.$data.scroll_index]
-          if (_.isFunction(windows_now.exit_motion)) {
-            windows_now.exit_motion()
-          }
-          this.$data.scroll_index -= 1
-          let windows_next = window_queue[this.$data.scroll_index]
-
-          this.$data.scroll_lock = true
-          this.scroll_smooth(-window.innerHeight, () => {
-            windows_next.beginning_motion()
-          })
-        }
-      })
     },
     init_interaction() {
       const _this = this
@@ -119,121 +85,134 @@ export default {
         })
       })
     },
-    scroll_smooth(scroll_distance, callback) {
-      let plan_duration = 1000
-      let frame_index = 0
-      const init_scrollY = window.scrollY
-      const inter_func = interpolation_functions('easeInOutExpo')
-      const render = () => {
-        window.scrollTo({
-          top: init_scrollY +
-              inter_func(frame_index * 16 / plan_duration)
-              * scroll_distance,
-        })
-        frame_index += 1
-        if ((frame_index - 1) * 16 < plan_duration) {
-          requestAnimationFrame(render)
-        } else {
-          this.$data.scroll_lock = false
-          if (_.isFunction(callback)) {
-            callback()
-          }
-        }
-      }
-      requestAnimationFrame(render)
-    },
     document_mousemove_function(e) {
       const { clientX, clientY } = e
       this.$data.clientX = clientX
       this.$data.clientY = clientY
-      const { cursor } = this.$refs
       if (this.$data.cursor_lock) return
       if (!this.$data.is_begin) {
         this.$data.is_begin = true
-        this.$data.window_queue[this.$data.scroll_index].beginning_motion()
-      }
-      cursor.style.left = `${ clientX }px`
-      cursor.style.top = `${ clientY }px`
-      if (e.path[0] && e.path[0].cursor_hidden) {
-        cursor.style.display = 'none'
-      } else {
-        cursor.style.display = ''
+        this.$refs.hello.beginning_motion()
       }
 
-      //
-      let { width, height } = getComputedStyle(e.path[0])
-      const cursor_style = getComputedStyle(cursor)
-      const cursor_width = cursor_style.width.replace('px', '')
-      const cursor_height = cursor_style.height.replace('px', '')
-      const viewportOffset = e.path[0].getBoundingClientRect();
-      const top = viewportOffset.top;
-      const left = viewportOffset.left;
-      width = width.replace('px', '')
-      height = height.replace('px', '')
-      if (this.$data.in_interact_area && !this.$data.cursor_in_animation) {
-        cursor.style.transform = `translate(${ left - clientX }px,${ top - clientY }px)`
-      } else {
-        cursor.style.transform = `translate(${ -10 }px,${ -10 }px)`
+      if (!this.$data.docking && !this.$data.in_interact_area) {
+        this.$data.chase_target = [clientX, clientY]
+        this.cursor_chase()
       }
-      if (e.path[0] && e.path[0].r_wrap) {
-        if (!this.$data.cursor_in_animation && !this.$data.in_interact_area) {
-          this.$data.cursor_in_animation = true
-          this.$data.in_interact_area = true
-          const config = {
-            top: `[${ cursor.style.top.replace('px', '') }~${ top }]px`,
-            left: `[${ cursor.style.left.replace('px', '') }~${ left }]px`,
-            // width: `[${ cursor_width }~${ width }]px`,
-            // height: `[${ cursor_height }~${ height }]px`,
-            duration: 200
-          }
-          cursor.r_animate(config).r_then(() => {
-            this.$data.cursor_in_animation = false
-          })
-        }
+      if (this.$data.docking && !this.$data.in_interact_area) {
+        this.cursor_move(clientX, clientY)
+      }
+      this.cursor_event_listen(e)
+    },
+    cursor_move(x, y) {
+      const { cursor_container } = this.$refs
+      cursor_container.style.left = `${ x }px`
+      cursor_container.style.top = `${ y }px`
+    },
+    cursor_event_listen(event) {
+      const { path } = event
+      const target = _.first(path)
+      if (!target) return
+      const { cursor_container, cursor } = this.$refs
+      if (target.cursor_hidden) {
+        cursor_container.style.display = 'none'
       } else {
-        if (!this.$data.cursor_in_animation && this.$data.in_interact_area) {
-          this.$data.cursor_in_animation = true
-          this.$data.in_interact_area = false
-          const config = {
-            top: `[${ cursor.style.top.replace('px', '') }~${ clientY }]px`,
-            left: `[${ cursor.style.left.replace('px', '') }~${ clientX }]px`,
-            // width: `[${ cursor.style.width.replace('px', '') }~${ 14 }]px`,
-            // height: `[${ cursor.style.height.replace('px', '') }~${ 14 }]px`,
-            duration: 200
-          }
-          cursor.r_animate(config).r_then(() => {
-            this.$data.cursor_in_animation = false
-          })
-        }
+        cursor_container.style.display = ''
       }
 
-      // cursor.style.backgroundImage
+      this.$data.in_interact_area = target.r_wrap;
+      // clog(target.r_wrap)
+      if (target.r_wrap) {
+        this.$data.docking = false
+        const viewportOffset = target.getBoundingClientRect();
+        const top = viewportOffset.top;
+        const left = viewportOffset.left;
+        this.$data.chase_target = [left + 10, top + 10]
+        let { width, height } = getComputedStyle(target)
+        width = width.replace('px', '')
+        height = height.replace('px', '')
+        this.$data.fit_target = [width, height]
+        this.cursor_chase()
+      } else {
+        this.$data.fit_target = [20, 20]
+      }
+      // const cursor_style = getComputedStyle(cursor)
+      // const cursor_width = cursor_style.width.replace('px', '')
+      // const cursor_height = cursor_style.height.replace('px', '')
+      // let { width, height } = getComputedStyle(target)
+      // width = width.replace('px', '')
+      // height = height.replace('px', '')
+
+    },
+    cursor_chase() {
+      if (this.$data.cursor_render_Framer) return
+      this.$data.cursor_render_Framer = requestAnimationFrame(() => this.cursor_render())
+    },
+    cursor_render() {
+      // todo rewrite this function
+      const time = 30
+      const [x, y] = this.$data.chase_target
+      const { cursor_container, cursor } = this.$refs
+      const cursor_x = Math.round(parseFloat(cursor_container.style.left.replace('px', '')))
+      const cursor_y = Math.round(parseFloat(cursor_container.style.top.replace('px', '')))
+      let distance_x = (x - cursor_x > 0 ? 1 : -1) * Math.sqrt(Math.abs((x - cursor_x) / window.innerWidth)) * window.innerWidth / time
+      let distance_y = (y - cursor_y > 0 ? 1 : -1) * Math.sqrt(Math.abs((y - cursor_y) / window.innerHeight)) * window.innerWidth / time
+
+      let distance_w = 0
+      let distance_h = 0
+      if (this.$data.fit_target) {
+        const [w, h] = this.$data.fit_target
+        const cursor_style = getComputedStyle(cursor)
+        const cursor_w = parseFloat(cursor_style.width.replace('px', ''))
+        const cursor_h = parseFloat(cursor_style.height.replace('px', ''))
+        // distance_w = (w - cursor_w > 0 ? 1 : -1) * Math.sqrt(Math.abs((w - cursor_w) / Math.max(w,cursor_w))) * Math.max(w,cursor_w)/5
+        // distance_h = (h - cursor_h > 0 ? 1 : -1) * Math.sqrt(Math.abs((h - cursor_h) / Math.max(h,cursor_h))) * Math.max(h,cursor_h)/5
+        distance_w = (w - cursor_w) / 5
+        distance_h = (h - cursor_h) / 5
+        // clog(w, h, cursor_w, cursor_h, distance_w, distance_h)
+        cursor.style.width = `${ cursor_w + distance_w }px`
+        cursor.style.height = `${ cursor_h + distance_h }px`
+      }
+
+      // clog('render', Math.round(distance_w), Math.round(distance_h))
+      if (Math.abs(distance_x) + Math.abs(distance_y) < 2 && Math.abs(distance_w) + Math.abs(distance_h) < 0.3) {
+        // clog('done')
+        if (x === this.$data.clientX && y === this.$data.clientY) {
+          this.$data.docking = true
+        }
+        this.$data.chase_target = null
+        this.$data.fit_target = null
+        this.$data.cursor_render_Framer = null
+      } else {
+        this.cursor_move(cursor_x + distance_x, cursor_y + distance_y)
+        requestAnimationFrame(() => this.cursor_render())
+      }
     },
     document_mousedown_function(e) {
-      const { cursor } = this.$refs
-      cursor.r_animate({
-        transform: 'translate(-10px, -10px) scale([1~1.5])', opacity: '[1~0.5]',
+      const { cursor_container } = this.$refs
+      cursor_container.r_animate({
+        transform: 'scale([1~1.5])', opacity: '[1~0.5]',
         duration: 200, callback: debounce
       })
     },
     document_mouseup_function(e) {
-      const { cursor } = this.$refs
-      cursor.r_animate({
-        transform: 'translate(-10px, -10px) scale([1.5~1])', opacity: '[0.5~1]',
+      const { cursor_container } = this.$refs
+      cursor_container.r_animate({
+        transform: 'scale([1.5~1])', opacity: '[0.5~1]',
         duration: 200, callback: debounce
       })
     },
     document_mouseleave_function(e) {
       if (this.$data.cursor_lock) return
-      this.$refs.cursor.style.opacity = '0'
+      this.$refs.cursor_container.style.display = 'none'
     },
     document_mouseenter_function(e) {
       if (this.$data.cursor_lock) return
-      this.$refs.cursor.style.opacity = '1'
+      this.$refs.cursor_container.style.display = ''
     },
     begin() {
 
-    }
+    },
   },
   mounted() {
     const r_director = new R_director()
@@ -241,14 +220,10 @@ export default {
     this.init_cursor()
     this.init_windows()
     this.init_interaction()
-    this.init_scroll()
-    if (debug) {
-      document.body.style.cursor = 'auto!important'
-    }
     setTimeout(() => {
       if (!this.$data.is_begin) {
         this.$data.is_begin = true
-        this.$data.window_queue[this.$data.scroll_index].beginning_motion()
+        this.$refs.hello.beginning_motion()
       }
     }, debug ? 100 : 3000)
   }
@@ -258,7 +233,9 @@ export default {
 <template>
   <div>
     <First ref="hello"/>
-    <div ref="cursor" class="cursor"></div>
+    <div ref="cursor_container" class="cursor_container">
+      <div ref="cursor" class="cursor"></div>
+    </div>
     <!--    <Hello2 ref="hello2"/>-->
     <!--    <Introduce ref="introduce"/>-->
   </div>
@@ -290,17 +267,20 @@ a {
   /*margin-top: 60px;*/
 }
 
-.cursor {
+.cursor_container {
   position: fixed;
   pointer-events: none;
+}
+
+.cursor {
+  position: absolute;
   box-sizing: border-box;
   width: 20px;
   height: 20px;
   border: 3px solid rgba(222, 222, 222, 1);
   border-radius: 10px;
   background: rgba(93, 93, 93, 1);
-  opacity: 0;
-  z-index: 999;
+  z-index: 1;
   transform: translate(-10px, -10px);
   /*background: url("./assets/cat1.png")  no-repeat;*/
   /*background-size: auto 100vh;*/

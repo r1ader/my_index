@@ -256,3 +256,5 @@ class R_director {
 }
 
 export default R_director
+// todo support no start animation
+//  support syntax check

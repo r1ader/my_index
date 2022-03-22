@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import R_director from 'r_animate'
+import R_director from '../../utils/r_animate'
 import Curve from "./Curve.vue";
 import Hello from "./Hello.vue";
 import _ from "lodash";

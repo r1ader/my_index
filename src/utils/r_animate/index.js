@@ -1,8 +1,7 @@
 import _ from "lodash";
 import { v4 as uuidv4 } from 'uuid';
-import { interpolation_functions } from "./math_util"
-import { warn } from "vue";
-import { deep_assign } from "./index";
+import { interpolation_functions } from "./src/math"
+import { deep_assign } from "./src/util";
 
 const clog = console.log
 
@@ -10,6 +9,8 @@ const expose_func_list = [
     'clean_remain_process',
     'r_animate',
     'r_then',
+    'r_busy',
+    'r_queue',
 ]
 
 const expose_props_list = [
@@ -69,7 +70,7 @@ class R_registered_dom {
     run() {
         if (this.busy) return
         if (this.queue.length === 0) {
-            warn(this.ref.toString() + '’s queue is empty')
+            console.warn(this.ref.toString() + '’s queue is empty')
         }
         const config = this.queue.shift()
         if (!config) return
@@ -145,6 +146,14 @@ class R_registered_dom {
     r_then(func) {
         this.queue.push(new R_animate_config({ duration: 0, callback: func }))
         return this.ref
+    }
+
+    r_busy(){
+        return this.busy
+    }
+
+    r_queue(){
+        return this.queue
     }
 
     r_same(target) {

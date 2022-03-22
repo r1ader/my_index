@@ -5,7 +5,7 @@ import Hello2 from './components/Hello2.vue'
 import Introduce from './components/Introduce.vue'
 import { interpolation_functions } from "./utils/math_util";
 import _ from "lodash";
-import R_director from "r_animate";
+import R_director from "./utils/r_animate";
 import { debug } from './const/config'
 import { clog } from './utils/index'
 
@@ -32,7 +32,9 @@ export default {
       scroll_index: 0,
       window_queue: [],
       docking: false,
-      is_begin: false
+      is_begin: false,
+      cursor_in_animation: false,
+      in_interact_area: false
     }
   },
   methods: {
@@ -59,7 +61,7 @@ export default {
           .r_animate({ duration: cursor_show_time })
           .r_animate({
             opacity: '[0~1]',
-            transform: 'scale([0~1])',
+            transform: 'scale([0~1]) translate(-10px, -10px)',
             duration: 1000
           })
           .r_then(() => {
@@ -142,47 +144,82 @@ export default {
     },
     document_mousemove_function(e) {
       const { clientX, clientY } = e
+      this.$data.clientX = clientX
+      this.$data.clientY = clientY
       const { cursor } = this.$refs
       if (this.$data.cursor_lock) return
       if (!this.$data.is_begin) {
         this.$data.is_begin = true
         this.$data.window_queue[this.$data.scroll_index].beginning_motion()
       }
-      if (!this.$data.docking) {
-        // const x_ratio = (e.movementX > 0 ? 1 : -1) * (clientX - this.$data.cursorX) / window.innerWidth * 10 + 1
-        // const y_ratio = (e.movementY > 0 ? 1 : -1) * (clientY - this.$data.cursorY) / window.innerWidth * 10 + 1
-        // this.$data.cursorX += e.movementX * x_ratio
-        // this.$data.cursorY += e.movementY * y_ratio
-        this.$data.cursorX += (clientX - this.$data.cursorX) / 8
-        this.$data.cursorY += (clientY - this.$data.cursorY) / 8
-        cursor.style.left = `${ this.$data.cursorX - 10 }px`
-        cursor.style.top = `${ this.$data.cursorY - 10 }px`
-        if (Math.abs(clientX - this.$data.cursorX) + Math.abs(clientY - this.$data.cursorY) < 8) {
-          this.$data.docking = true
-        }
-      } else {
-        cursor.style.left = `${ clientX - 10 }px`
-        cursor.style.top = `${ clientY - 10 }px`
-      }
-      // cursor.style.backgroundPosition = `${ -clientX }px ${ -clientY }px`
+      cursor.style.left = `${ clientX }px`
+      cursor.style.top = `${ clientY }px`
       if (e.path[0] && e.path[0].cursor_hidden) {
         cursor.style.display = 'none'
       } else {
         cursor.style.display = ''
       }
+
+      //
+      let { width, height } = getComputedStyle(e.path[0])
+      const cursor_style = getComputedStyle(cursor)
+      const cursor_width = cursor_style.width.replace('px', '')
+      const cursor_height = cursor_style.height.replace('px', '')
+      const viewportOffset = e.path[0].getBoundingClientRect();
+      const top = viewportOffset.top;
+      const left = viewportOffset.left;
+      width = width.replace('px', '')
+      height = height.replace('px', '')
+      if (this.$data.in_interact_area && !this.$data.cursor_in_animation) {
+        cursor.style.transform = `translate(${ left - clientX }px,${ top - clientY }px)`
+      } else {
+        cursor.style.transform = `translate(${ -10 }px,${ -10 }px)`
+      }
+      if (e.path[0] && e.path[0].r_wrap) {
+        if (!this.$data.cursor_in_animation && !this.$data.in_interact_area) {
+          this.$data.cursor_in_animation = true
+          this.$data.in_interact_area = true
+          const config = {
+            top: `[${ cursor.style.top.replace('px', '') }~${ top }]px`,
+            left: `[${ cursor.style.left.replace('px', '') }~${ left }]px`,
+            // width: `[${ cursor_width }~${ width }]px`,
+            // height: `[${ cursor_height }~${ height }]px`,
+            duration: 200
+          }
+          cursor.r_animate(config).r_then(() => {
+            this.$data.cursor_in_animation = false
+          })
+        }
+      } else {
+        if (!this.$data.cursor_in_animation && this.$data.in_interact_area) {
+          this.$data.cursor_in_animation = true
+          this.$data.in_interact_area = false
+          const config = {
+            top: `[${ cursor.style.top.replace('px', '') }~${ clientY }]px`,
+            left: `[${ cursor.style.left.replace('px', '') }~${ clientX }]px`,
+            // width: `[${ cursor.style.width.replace('px', '') }~${ 14 }]px`,
+            // height: `[${ cursor.style.height.replace('px', '') }~${ 14 }]px`,
+            duration: 200
+          }
+          cursor.r_animate(config).r_then(() => {
+            this.$data.cursor_in_animation = false
+          })
+        }
+      }
+
       // cursor.style.backgroundImage
     },
     document_mousedown_function(e) {
       const { cursor } = this.$refs
       cursor.r_animate({
-        transform: 'scale([1~1.5])', opacity: '[1~0.5]',
+        transform: 'translate(-10px, -10px) scale([1~1.5])', opacity: '[1~0.5]',
         duration: 200, callback: debounce
       })
     },
     document_mouseup_function(e) {
       const { cursor } = this.$refs
       cursor.r_animate({
-        transform: 'scale([1.5~1])', opacity: '[0.5~1]',
+        transform: 'translate(-10px, -10px) scale([1.5~1])', opacity: '[0.5~1]',
         duration: 200, callback: debounce
       })
     },
@@ -205,6 +242,9 @@ export default {
     this.init_windows()
     this.init_interaction()
     this.init_scroll()
+    if (debug) {
+      document.body.style.cursor = 'auto!important'
+    }
     setTimeout(() => {
       if (!this.$data.is_begin) {
         this.$data.is_begin = true
@@ -232,7 +272,7 @@ export default {
 body {
   margin: 0;
   padding: 0;
-  cursor: None !important;
+  /*cursor: None !important;*/
   overflow: hidden;
 }
 
@@ -253,13 +293,15 @@ a {
 .cursor {
   position: fixed;
   pointer-events: none;
-  width: 14px;
-  height: 14px;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
   border: 3px solid rgba(222, 222, 222, 1);
   border-radius: 10px;
   background: rgba(93, 93, 93, 1);
   opacity: 0;
   z-index: 999;
+  transform: translate(-10px, -10px);
   /*background: url("./assets/cat1.png")  no-repeat;*/
   /*background-size: auto 100vh;*/
   /*background-position: 400px 300px;*/

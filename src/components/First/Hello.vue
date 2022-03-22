@@ -19,11 +19,14 @@
     <div style="margin-left: 0" ref="name_part3">
       ader
     </div>
+    <span style="position: relative">
+      <div class="r1ader_background" ref="r_b"></div>
+    </span>
   </div>
 </template>
 
 <script>
-import R_director from "r_animate";
+import R_director from "../../utils/r_animate";
 import { debug } from '../../const/config'
 
 export default {
@@ -45,6 +48,17 @@ export default {
         name_part3,
         dot
       } = this.$refs
+      if (debug) {
+        dot.style.opacity = '1'
+        hello.style.opacity = '1'
+        introduce.style.opacity = '1'
+        name_part1.style.opacity = '1'
+        name_part2.style.opacity = '1'
+        name_part2_e.style.opacity = '0'
+        name_part2_1.style.opacity = '1'
+        name_part3.style.opacity = '1'
+        return
+      }
       const cylinder_enter = {
         transform: 'translate(0, [-50~0]px) rotateX([90~0]deg)',
         opacity: '[0~1]',
@@ -90,18 +104,23 @@ export default {
             this.$emit('enter_over')
           })
     },
+    init_cursor_interact() {
+      const { r_b } = this.$refs
+      r_b.r_wrap = true
+    }
   },
 
   mounted() {
     this.$data.r_director = new R_director()
     this.$data.r_director.take(this)
+    this.init_cursor_interact()
   }
 }
 </script>
 
 <style scoped>
 
-.hello_block div {
+.hello_block > div {
   opacity: 0;
   position: relative;
   font-weight: bolder;
@@ -117,5 +136,18 @@ export default {
   -moz-user-select: none; /* Old versions of Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
+}
+
+.r1ader_background {
+  opacity: 1;
+  position: absolute !important;
+  background: rgb(66 185 131 / 63%);
+  margin: 0;
+  padding: 0;
+  z-index: 0;
+  height: 100px;
+  width: 256px;
+  right: 0;
+  top: -50px;
 }
 </style>

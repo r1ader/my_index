@@ -5,7 +5,7 @@ import Hello2 from './components/Hello2.vue'
 import Introduce from './components/Introduce.vue'
 import { interpolation_functions } from "./utils/math_util";
 import _ from "lodash";
-import R_director from "./utils/r_nimate";
+import R_director from "r_animate";
 
 const clog = console.log
 const debug = false

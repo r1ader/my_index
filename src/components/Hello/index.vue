@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import R_director from '../../utils/r_nimate'
+import R_director from 'r_animate'
 import Curve from "./Curve.vue";
 import _ from "lodash";
 

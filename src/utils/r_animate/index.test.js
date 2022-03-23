@@ -2,7 +2,7 @@ import { isAnimationValid } from './src/util'
 
 const true_array = [
     // only css
-    '90px', '20px', '10', '0', '1',
+    '90px', '20px', '10', '0', '1', '123.2345', '6524',
     // transform
     'scale(1)', 'translate(-10px,10px)', 'rotate(0)',
     'translate([300~-80]px, [300~-30]px) rotateZ(20deg)',

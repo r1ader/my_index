@@ -7,6 +7,11 @@ const true_array = [
     'scale(1)', 'translate(-10px,10px)', 'rotate(0)',
     'translate([300~-80]px, [300~-30]px) rotateZ(20deg)',
     'translate([300~-50]px,-100px) scale(0.7) perspective(500px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg)',
+
+    // color
+    'rgb(47, 29, 253)',
+    'rgba(47, 29, 253)',
+
     // animation
     '[1~20]px',
     '[~20]px',

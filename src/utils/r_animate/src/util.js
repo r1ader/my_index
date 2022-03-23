@@ -30,9 +30,18 @@ export function r_warn(msg) {
 // todo add support of transform style value
 export function isAnimationValid(str) {
     // (\d+?)
-    const check_reg = /^((-|\.|\d)*?|((\[((-|\.|\d)*?)~((-|\.|\d)+?)\])))(px)*$/g
+    const check_reg = /^((((-|\.|\d)*?|((\[((-|\.|\d)*?)~((-|\.|\d)+?)\])))(px)*)|(rgba*\((\s|\.|\d)+?,(\s|\.|\d)+?,(\s|\.|\d)+?(,(\s|\.|\d)+?)*\)))$/g
     if (check_reg.test(str)) {
         return true
     }
     return false
+}
+
+export function parseColorProps(start_color, end_color) {
+    if ((start_color + end_color).indexOf('a') === -1) {
+        const [sr, sg, sb] = start_color.replace('rgb(', '').replace(')', '').replace(/\s/g, '').split(',')
+        const [er, eg, eb] = end_color.replace('rgb(', '').replace(')', '').replace(/\s/g, '').split(',')
+        clog(`rgb([${ sr }~${ er }],[${ sg }~${ eg }],[${ sb }~${ eb }])`)
+        return `rgb([${ sr }~${ er }],[${ sg }~${ eg }],[${ sb }~${ eb }])`
+    }
 }

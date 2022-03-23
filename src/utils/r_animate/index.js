@@ -3,7 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { interpolation_functions } from "./src/math"
 import {
     deep_assign,
-    getNumberFromCssValue, isAnimationValid, r_warn
+    getNumberFromCssValue,
+    isAnimationValid,
+    r_warn,
+    parseColorProps
 } from "./src/util";
 
 const clog = console.log
@@ -47,6 +50,10 @@ const support_props = {
     number_props: [
         'zIndex',
         'opacity'
+    ],
+    color_props: [
+        'borderColor',
+        'backgroundColor'
     ]
 }
 
@@ -81,18 +88,23 @@ class R_animate_config {
     update(ref) {
         Object.keys(this).filter(o => class_prop.indexOf(o) === -1).forEach(key => {
             if (key !== 'transform' && key !== 'background' && !isAnimationValid(this[key])) {
-                return r_warn(`syntax error ${key} : ${this[key]}`)
+                return r_warn(`syntax error ${ key } : ${ this[key] }`)
             }
             if (/\[(-|\d|\.)+?~(-|\d||\.)+?\]/.test(this[key])) return
             Object.keys(support_props).forEach(prop_type => {
                 if (support_props[prop_type].indexOf(key) > -1) {
                     if (!ref) return
+                    const computed_style = getComputedStyle(ref)
+                    if (prop_type === 'color_props') {
+                        this[key] = parseColorProps(computed_style[key], this[key])
+                        return
+                    }
                     const unit = {
                         px_props: 'px',
                         number_props: '',
                     }[prop_type] || ''
                     const uppercasePropName = key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-                    const origin_str = ref.style[key] || getComputedStyle(ref).getPropertyValue(uppercasePropName) || '0';
+                    const origin_str = ref.style[key] || computed_style.getPropertyValue(uppercasePropName) || '0';
                     const origin_value = getNumberFromCssValue(origin_str, unit)
                     if (/\[(-|\d|\.)*?~(-|\d||\.)+?\]/.test(this[key])) {
                         this[key] = this[key].replace(/([\[])(\~)/g, `[${ origin_value }~`)

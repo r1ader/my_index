@@ -1,7 +1,10 @@
 import _ from "lodash";
 import { v4 as uuidv4 } from 'uuid';
 import { interpolation_functions } from "./src/math"
-import { deep_assign } from "./src/util";
+import {
+    deep_assign,
+    getNumberFromCssValue, isAnimationValid, r_warn
+} from "./src/util";
 
 const clog = console.log
 
@@ -28,6 +31,35 @@ const config_props_list = [
     'interpolation',
 ]
 
+const support_props = {
+    px_props:
+        [
+            'width',
+            'height',
+            'top',
+            'left',
+            'right',
+            'right',
+            'bottom',
+            'padding',
+            'margin',
+        ],
+    number_props: [
+        'zIndex',
+        'opacity'
+    ]
+}
+
+const class_prop = [
+    'name',
+    'callback',
+    'reverse',
+    'duration',
+    'delay',
+    'interpolation',
+    'parallel',
+]
+
 class R_animate_config {
     constructor(config) {
         const { start, end, duration, delay, interpolation, reverse } = config
@@ -44,6 +76,36 @@ class R_animate_config {
         this.duration = _.isNumber(duration) ? duration : 0
         this.delay = delay || 0
         this.interpolation = interpolation || 'easeOutExpo'
+    }
+
+    update(ref) {
+        Object.keys(this).filter(o => class_prop.indexOf(o) === -1).forEach(key => {
+            if (key !== 'transform' && !isAnimationValid(this[key])) {
+                return r_warn(this[key])
+            }
+            if (/\[(-|\d|\.)+?~(-|\d||\.)+?\]/.test(this[key])) return
+            Object.keys(support_props).forEach(prop_type => {
+                if (support_props[prop_type].indexOf(key) > -1) {
+                    if (!ref) return
+                    const unit = {
+                        px_props: 'px',
+                        number_props: '',
+                    }[prop_type] || ''
+                    const uppercasePropName = key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+                    const origin_str = ref.style[key] || getComputedStyle(ref).getPropertyValue(uppercasePropName) || '0';
+                    const origin_value = getNumberFromCssValue(origin_str, unit)
+                    if (/\[(-|\d|\.)*?~(-|\d||\.)+?\]/.test(this[key])) {
+                        this[key] = this[key].replace(/([\[])(\~)/g, `[${ origin_value }~`)
+                        return
+                    }
+                    const css_value = getNumberFromCssValue(this[key], unit)
+                    if (!_.isNumber(css_value)) {
+                        return r_warn(`Unrecognized Style Value "${ this[key] }"`)
+                    }
+                    this[key] = `[${ origin_value }~${ css_value }]${ unit }`
+                }
+            })
+        })
     }
 
     replace(obj) {
@@ -65,6 +127,7 @@ class R_registered_dom {
         this.busy = false
         this.in_task = null
         this.queue = []
+        this.inter_func = (a) => a
     }
 
     run() {
@@ -74,50 +137,47 @@ class R_registered_dom {
         }
         const config = this.queue.shift()
         if (!config) return
+        this.in_task = config
         this.busy = true
-        this.in_task = config.name
-        let frame_index = 0
-        const inter_func = interpolation_functions(config.interpolation)
-        const render = () => {
-            Object.keys(config).forEach(key => {
-                const extract_number_reg = /\[(-|\d|\.)+?~(-|\d||\.)+?\]/g
-                if (!_.isString(config[key])) return
-                const extract_res = config[key].match(extract_number_reg)
-                if (!_.isArray(extract_res) || !extract_res.length) return
-                let groove = config[key].replace(extract_number_reg, '{}')
-                const slots = extract_res.map(range => {
-                    let [start_value, end_value] = range.replace('[', '').replace(']', '').split('~').map(o => _.toNumber(o))
-                    if (config.reverse) {
-                        [start_value, end_value] = [end_value, start_value]
-                    }
-                    if ((frame_index) * 16 >= config.plan_duration) {
-                        return end_value
-                    }
-                    const ratio = inter_func(frame_index * 16 / config.plan_duration)
-                    return start_value + (end_value - start_value) * ratio
-                })
-                slots.forEach(value => {
-                    groove = groove.replace('{}', Math.round(value * 1000) / 1000)
-                })
-                this.ref.style[key] = groove
-            })
-            if (_.isFunction(config.parallel)){
-                const ratio = inter_func(frame_index * 16 / config.plan_duration)
-                config.parallel(ratio)
-            }
-            frame_index += 1
-            if ((frame_index - 1) * 16 < config.plan_duration) {
-                requestAnimationFrame(render)
-            } else {
-                this.busy = false
-                this.in_task = ''
-                if (_.isFunction(config.callback)) {
-                    config.callback(this)
+        this.inter_func = interpolation_functions(config.interpolation)
+        config.update(this.ref)
+        this.render_process = requestAnimationFrame(() => this.render(0))
+    }
+
+    render(frame_index) {
+        const config = this.in_task
+        const ratio = this.inter_func(Math.min((frame_index * 16 / config.plan_duration), 1.0))
+        Object.keys(config).forEach(key => {
+            const extract_number_reg = /\[(-|\d|\.)+?~(-|\d||\.)+?\]/g
+            if (!_.isString(config[key])) return
+            const extract_res = config[key].match(extract_number_reg)
+            if (!_.isArray(extract_res) || !extract_res.length) return
+            let groove = config[key].replace(extract_number_reg, '{}')
+            const slots = extract_res.map(range => {
+                let [start_value, end_value] = range.replace('[', '').replace(']', '').split('~').map(o => _.toNumber(o))
+                if (config.reverse) {
+                    [start_value, end_value] = [end_value, start_value]
                 }
-                if (!!this.queue.length) this.run()
-            }
+                return start_value + (end_value - start_value) * ratio
+            })
+            slots.forEach(value => {
+                groove = groove.replace('{}', Math.round(value * 1000) / 1000)
+            })
+            this.ref.style[key] = groove
+        })
+        if (_.isFunction(config.parallel)) {
+            config.parallel(ratio)
         }
-        this.render_process = requestAnimationFrame(render)
+        if (frame_index * 16 < config.plan_duration) {
+            requestAnimationFrame(() => this.render(frame_index + 1))
+        } else {
+            this.busy = false
+            this.in_task = null
+            if (_.isFunction(config.callback)) {
+                config.callback(this)
+            }
+            if (!!this.queue.length) this.run()
+        }
     }
 
     stop() {
@@ -125,7 +185,7 @@ class R_registered_dom {
             cancelAnimationFrame(this.render_process)
         }
         this.busy = false
-        this.in_task = ''
+        this.in_task = null
         this.render_process = undefined
     }
 
@@ -148,11 +208,11 @@ class R_registered_dom {
         return this.ref
     }
 
-    r_busy(){
+    r_busy() {
         return this.busy
     }
 
-    r_queue(){
+    r_queue() {
         return this.queue
     }
 

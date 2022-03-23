@@ -41,7 +41,6 @@ export function parseColorProps(start_color, end_color) {
     if ((start_color + end_color).indexOf('a') === -1) {
         const [sr, sg, sb] = start_color.replace('rgb(', '').replace(')', '').replace(/\s/g, '').split(',')
         const [er, eg, eb] = end_color.replace('rgb(', '').replace(')', '').replace(/\s/g, '').split(',')
-        clog(`rgb([${ sr }~${ er }],[${ sg }~${ eg }],[${ sb }~${ eb }])`)
         return `rgb([${ sr }~${ er }],[${ sg }~${ eg }],[${ sb }~${ eb }])`
     }
 }

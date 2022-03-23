@@ -177,7 +177,9 @@ export default {
         paper_1_content, shadow_block
       } = this.$refs
       const _this = this
-
+// todo add an transparent logo in ball,
+//  when cursor hover ball, it was drag to wrap the logo,
+//  with cursor's background, logo was visible
       ball_1.addEventListener('mouseenter', function (e) {
         ball_1
             .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
@@ -194,6 +196,7 @@ export default {
             .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
       })
 
+      // todo make cursor interact with card
       paper_1.addEventListener('click', function (e) {
         if (_this.$data.focus_on) return
         const card_position_x = Math.round(window.innerWidth / -2)

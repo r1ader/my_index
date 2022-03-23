@@ -2,13 +2,21 @@ import _ from "lodash";
 
 export const clog = console.log
 
-export function deep_assign (target, origin) {
-    Object.keys(origin).forEach(key => {
-        if (_.isObject(origin[key])) {
-            target[key] = deep_assign(target[key], origin[key])
-        } else {
-            target[key] = origin[key]
-        }
-    })
-    return target
+export function getElSize(target) {
+    const viewportOffset = target.getBoundingClientRect();
+    const top = viewportOffset.top;
+    const left = viewportOffset.left;
+    // clog(viewportOffset)
+    let { width, height, padding } = getComputedStyle(target)
+    width = parseFloat(width.replace('px', ''))
+    height = parseFloat(height.replace('px', ''))
+    padding = parseFloat(padding.replace('px', ''))
+
+    return {
+        width,
+        height,
+        top,
+        left,
+        padding
+    }
 }

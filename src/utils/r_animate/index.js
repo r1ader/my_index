@@ -80,8 +80,8 @@ class R_animate_config {
 
     update(ref) {
         Object.keys(this).filter(o => class_prop.indexOf(o) === -1).forEach(key => {
-            if (key !== 'transform' && !isAnimationValid(this[key])) {
-                return r_warn(this[key])
+            if (key !== 'transform' && key !== 'background' && !isAnimationValid(this[key])) {
+                return r_warn(`syntax error ${key} : ${this[key]}`)
             }
             if (/\[(-|\d|\.)+?~(-|\d||\.)+?\]/.test(this[key])) return
             Object.keys(support_props).forEach(prop_type => {

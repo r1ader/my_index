@@ -30,7 +30,7 @@ export function r_warn(msg) {
 // todo add support of transform style value
 export function isAnimationValid(str) {
     // (\d+?)
-    const check_reg = /^(\d+?|((\[((-|\.|\d)*?)~((-|\.|\d)+?)\])))(px)*$/g
+    const check_reg = /^((-|\.|\d)*?|((\[((-|\.|\d)*?)~((-|\.|\d)+?)\])))(px)*$/g
     if (check_reg.test(str)) {
         return true
     }

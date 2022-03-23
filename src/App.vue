@@ -7,7 +7,7 @@ import { interpolation_functions } from "./utils/math_util";
 import _ from "lodash";
 import R_director from "./utils/r_animate";
 import { debug } from './const/config'
-import { clog } from './utils/index'
+import { clog, getElSize } from './utils/index'
 
 const debounce = (actor) => {
   while (actor.queue.length >= 2) {
@@ -37,7 +37,36 @@ export default {
       in_interact_area: false,
       cursor_render_Framer: null,
       chase_target: null,
-      fit_target: null
+      fit_target: null,
+      cursor_target: null
+    }
+  },
+  watch: {
+    in_interact_area: function (new_value, old_value) {
+      const { cursor, cursor_container } = this.$refs
+      const target = this.$data.cursor_target
+      let { width, height, padding, top, left } = getElSize(target)
+      if (new_value) {
+        cancelAnimationFrame(this.$data.cursor_render_Framer)
+        this.$data.cursor_render_Framer = null
+        this.$data.docking = false
+        cursor_container.r_animate({
+          top: top + height / 2 + padding,
+          left: left + width / 2 + padding,
+          duration: 200
+        })
+        cursor.r_animate({
+          width: width,
+          height: height,
+          duration: 200
+        })
+      } else {
+        cursor.r_animate({
+          width: 20,
+          height: 20,
+          duration: 200
+        })
+      }
     }
   },
   methods: {
@@ -89,14 +118,13 @@ export default {
       const { clientX, clientY } = e
       this.$data.clientX = clientX
       this.$data.clientY = clientY
+      this.$data.cursor_target = e.path[0]
       if (this.$data.cursor_lock) return
       if (!this.$data.is_begin) {
         this.$data.is_begin = true
         this.$refs.hello.beginning_motion()
       }
-
       if (!this.$data.docking && !this.$data.in_interact_area) {
-        this.$data.chase_target = [clientX, clientY]
         this.cursor_chase()
       }
       if (this.$data.docking && !this.$data.in_interact_area) {
@@ -119,78 +147,29 @@ export default {
       } else {
         cursor_container.style.display = ''
       }
-
-      this.$data.in_interact_area = target.r_wrap;
-      // clog(target.r_wrap)
-      if (target.r_wrap) {
-        this.$data.docking = false
-        const viewportOffset = target.getBoundingClientRect();
-        const top = viewportOffset.top;
-        const left = viewportOffset.left;
-        let { width, height, padding } = getComputedStyle(target)
-        width = parseFloat(width.replace('px', ''))
-        height = parseFloat(height.replace('px', ''))
-        padding = parseFloat(padding.replace('px', ''))
-        this.$data.chase_target = [left + width / 2 + padding, top + height / 2 + padding]
-        this.$data.fit_target = [width, height]
-        this.cursor_chase()
-        cursor.style.borderColor = target.r_style.borderColor
-        cursor.style.backgroundColor = target.r_style.backgroundColor
-      } else {
-        this.$data.fit_target = [20, 20]
-        cursor.style.borderColor = 'rgba(222, 222, 222, 1)'
-        cursor.style.backgroundColor = 'rgba(93, 93, 93, 1)'
-      }
-      // const cursor_style = getComputedStyle(cursor)
-      // const cursor_width = cursor_style.width.replace('px', '')
-      // const cursor_height = cursor_style.height.replace('px', '')
-      // let { width, height } = getComputedStyle(target)
-      // width = width.replace('px', '')
-      // height = height.replace('px', '')
-
+      this.$data.in_interact_area = !!target.r_wrap;
     },
     cursor_chase() {
       if (this.$data.cursor_render_Framer) return
       this.$data.cursor_render_Framer = requestAnimationFrame(() => this.cursor_render())
     },
     cursor_render() {
-      // todo rewrite this function
       const time = 20
       const inter_func = interpolation_functions('easeOutCirc')
-      // position
-      const [x, y] = this.$data.chase_target
+      const [x, y] = [this.$data.clientX, this.$data.clientY]
       const { cursor_container, cursor } = this.$refs
       const cursor_x = parseFloat(cursor_container.style.left.replace('px', ''))
       const cursor_y = parseFloat(cursor_container.style.top.replace('px', ''))
-
       let distance_x = (x - cursor_x > 0 ? 1 : -1) * inter_func(Math.abs((x - cursor_x) / window.innerWidth)) * window.innerWidth / time
       let distance_y = (y - cursor_y > 0 ? 1 : -1) * inter_func(Math.abs((y - cursor_y) / window.innerHeight)) * window.innerWidth / time
-
-      // shape
-
-      let distance_w = 0
-      let distance_h = 0
-      if (this.$data.fit_target) {
-        const [w, h] = this.$data.fit_target
-        const cursor_style = getComputedStyle(cursor)
-        const cursor_w = parseFloat(cursor_style.width.replace('px', ''))
-        const cursor_h = parseFloat(cursor_style.height.replace('px', ''))
-        distance_w = (w - cursor_w) / 5
-        distance_h = (h - cursor_h) / 5
-        cursor.style.width = `${ cursor_w + distance_w }px`
-        cursor.style.height = `${ cursor_h + distance_h }px`
-      }
-
-      if (Math.abs(x - cursor_x) + Math.abs(y - cursor_y) < 2 && Math.abs(distance_w) + Math.abs(distance_h) < 0.3) {
+      if (Math.abs(x - cursor_x) + Math.abs(y - cursor_y) < 2) {
         if (x === this.$data.clientX && y === this.$data.clientY) {
           this.$data.docking = true
         }
-        this.$data.chase_target = null
-        this.$data.fit_target = null
         this.$data.cursor_render_Framer = null
       } else {
         this.cursor_move(cursor_x + distance_x, cursor_y + distance_y)
-        requestAnimationFrame(() => this.cursor_render())
+        this.$data.cursor_render_Framer = requestAnimationFrame(() => this.cursor_render())
       }
     },
     document_mousedown_function(e) {

@@ -95,7 +95,11 @@
         </div>
       </div>
       <div>
-        <Hello style="position: relative;z-index: 2" ref="hello" @enter_over="background_enter"/>
+        <Hello
+            style="position: relative;z-index: 2" ref="hello"
+            @enter_over="background_enter"
+            @click_name="()=>{this.$refs.paper_1.click()}"
+        />
       </div>
     </div>
     <div ref="shadow_block" class="shadow_block"></div>
@@ -109,6 +113,7 @@ import Hello from "./Hello.vue";
 import _ from "lodash";
 import { debug } from '../../const/config'
 import { clog } from '../../utils/index'
+
 const debounce = (actor) => {
   while (actor.queue.length >= 2) {
     actor.queue.shift()

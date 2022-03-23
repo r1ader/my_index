@@ -145,9 +145,9 @@ export default {
         callback: debounce
       }
       const _this = this
-      curve_1.cursor_hidden = true
-      curve_2.cursor_hidden = true
-      curve_3.cursor_hidden = true
+      // curve_1.cursor_hidden = true
+      // curve_2.cursor_hidden = true
+      // curve_3.cursor_hidden = true
       curve.addEventListener('mousemove', function (e) {
         const scale_ratio = window.innerHeight / 400
         _this.$data.cursorX = e.clientX / scale_ratio

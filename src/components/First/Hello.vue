@@ -107,6 +107,14 @@ export default {
     init_cursor_interact() {
       const { r_b } = this.$refs
       r_b.r_wrap = true
+      r_b.r_style = {
+        borderColor: 'rgb(47,29,253)',
+        backgroundColor: 'rgb(128,122,218)',
+      }
+      const _this = this
+      r_b.addEventListener('click', function (e) {
+        _this.$emit('click_name')
+      })
     }
   },
 
@@ -142,12 +150,13 @@ export default {
   opacity: 1;
   position: absolute !important;
   background: rgb(66 185 131 / 63%);
-  margin: 0;
-  padding: 0;
   z-index: 0;
   height: 100px;
   width: 256px;
-  right: 0;
-  top: -50px;
+  right: -20px;
+  margin: 0;
+  padding: 20px;
+  top: -70px;
+  box-sizing: content-box;
 }
 </style>

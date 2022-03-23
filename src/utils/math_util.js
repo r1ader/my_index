@@ -13,9 +13,17 @@ export function interpolation_functions(method) {
             return (x) => {
                 return Math.sin((x * Math.PI) / 2);
             }
-        case 'easeOutCirc':
+        case 'easeOutCubic':
             return (x) => {
                 return Math.sqrt(1 - Math.pow(x - 1, 2));
+            }
+        case 'easeOutQuint':
+            return (x) => {
+                return 1 - Math.pow(1 - x, 5);
+            }
+        case 'easeOutCirc':
+            return (x) => {
+                return 1 - Math.pow(1 - x, 3);
             }
 
         case 'easeInOutSine':

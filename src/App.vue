@@ -127,14 +127,19 @@ export default {
         const viewportOffset = target.getBoundingClientRect();
         const top = viewportOffset.top;
         const left = viewportOffset.left;
-        this.$data.chase_target = [left + 10, top + 10]
-        let { width, height } = getComputedStyle(target)
-        width = width.replace('px', '')
-        height = height.replace('px', '')
+        let { width, height, padding } = getComputedStyle(target)
+        width = parseFloat(width.replace('px', ''))
+        height = parseFloat(height.replace('px', ''))
+        padding = parseFloat(padding.replace('px', ''))
+        this.$data.chase_target = [left + width / 2 + padding, top + height / 2 + padding]
         this.$data.fit_target = [width, height]
         this.cursor_chase()
+        cursor.style.borderColor = target.r_style.borderColor
+        cursor.style.backgroundColor = target.r_style.backgroundColor
       } else {
         this.$data.fit_target = [20, 20]
+        cursor.style.borderColor = 'rgba(222, 222, 222, 1)'
+        cursor.style.backgroundColor = 'rgba(93, 93, 93, 1)'
       }
       // const cursor_style = getComputedStyle(cursor)
       // const cursor_width = cursor_style.width.replace('px', '')
@@ -150,13 +155,18 @@ export default {
     },
     cursor_render() {
       // todo rewrite this function
-      const time = 30
+      const time = 20
+      const inter_func = interpolation_functions('easeOutCirc')
+      // position
       const [x, y] = this.$data.chase_target
       const { cursor_container, cursor } = this.$refs
-      const cursor_x = Math.round(parseFloat(cursor_container.style.left.replace('px', '')))
-      const cursor_y = Math.round(parseFloat(cursor_container.style.top.replace('px', '')))
-      let distance_x = (x - cursor_x > 0 ? 1 : -1) * Math.sqrt(Math.abs((x - cursor_x) / window.innerWidth)) * window.innerWidth / time
-      let distance_y = (y - cursor_y > 0 ? 1 : -1) * Math.sqrt(Math.abs((y - cursor_y) / window.innerHeight)) * window.innerWidth / time
+      const cursor_x = parseFloat(cursor_container.style.left.replace('px', ''))
+      const cursor_y = parseFloat(cursor_container.style.top.replace('px', ''))
+
+      let distance_x = (x - cursor_x > 0 ? 1 : -1) * inter_func(Math.abs((x - cursor_x) / window.innerWidth)) * window.innerWidth / time
+      let distance_y = (y - cursor_y > 0 ? 1 : -1) * inter_func(Math.abs((y - cursor_y) / window.innerHeight)) * window.innerWidth / time
+
+      // shape
 
       let distance_w = 0
       let distance_h = 0
@@ -165,18 +175,13 @@ export default {
         const cursor_style = getComputedStyle(cursor)
         const cursor_w = parseFloat(cursor_style.width.replace('px', ''))
         const cursor_h = parseFloat(cursor_style.height.replace('px', ''))
-        // distance_w = (w - cursor_w > 0 ? 1 : -1) * Math.sqrt(Math.abs((w - cursor_w) / Math.max(w,cursor_w))) * Math.max(w,cursor_w)/5
-        // distance_h = (h - cursor_h > 0 ? 1 : -1) * Math.sqrt(Math.abs((h - cursor_h) / Math.max(h,cursor_h))) * Math.max(h,cursor_h)/5
         distance_w = (w - cursor_w) / 5
         distance_h = (h - cursor_h) / 5
-        // clog(w, h, cursor_w, cursor_h, distance_w, distance_h)
         cursor.style.width = `${ cursor_w + distance_w }px`
         cursor.style.height = `${ cursor_h + distance_h }px`
       }
 
-      // clog('render', Math.round(distance_w), Math.round(distance_h))
-      if (Math.abs(distance_x) + Math.abs(distance_y) < 2 && Math.abs(distance_w) + Math.abs(distance_h) < 0.3) {
-        // clog('done')
+      if (Math.abs(x - cursor_x) + Math.abs(y - cursor_y) < 2 && Math.abs(distance_w) + Math.abs(distance_h) < 0.3) {
         if (x === this.$data.clientX && y === this.$data.clientY) {
           this.$data.docking = true
         }
@@ -191,14 +196,14 @@ export default {
     document_mousedown_function(e) {
       const { cursor_container } = this.$refs
       cursor_container.r_animate({
-        transform: 'scale([1~1.5])', opacity: '[1~0.5]',
+        transform: 'scale([1~1.1])', opacity: '[1~0.5]',
         duration: 200, callback: debounce
       })
     },
     document_mouseup_function(e) {
       const { cursor_container } = this.$refs
       cursor_container.r_animate({
-        transform: 'scale([1.5~1])', opacity: '[0.5~1]',
+        transform: 'scale([1.1~1])', opacity: '[0.5~1]',
         duration: 200, callback: debounce
       })
     },
@@ -281,7 +286,7 @@ a {
   border-radius: 10px;
   background: rgba(93, 93, 93, 1);
   z-index: 1;
-  transform: translate(-10px, -10px);
+  transform: translate(-50%, -50%);
   /*background: url("./assets/cat1.png")  no-repeat;*/
   /*background-size: auto 100vh;*/
   /*background-position: 400px 300px;*/

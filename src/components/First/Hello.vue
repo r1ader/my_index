@@ -149,7 +149,6 @@ export default {
 .r1ader_background {
   opacity: 1;
   position: absolute !important;
-  background: rgb(66 185 131 / 63%);
   z-index: 0;
   height: 100px;
   width: 256px;
@@ -158,5 +157,8 @@ export default {
   padding: 20px;
   top: -70px;
   box-sizing: content-box;
+  border-radius: 20px;
+  background-color: rgb(128,122,218);
+  border-color: rgb(47,29,253);
 }
 </style>

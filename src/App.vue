@@ -45,7 +45,10 @@ export default {
     in_interact_area: function (new_value, old_value) {
       const { cursor, cursor_container } = this.$refs
       const target = this.$data.cursor_target
-      let { width, height, padding, top, left } = getElSize(target)
+      let {
+        width, height, padding, top, left,
+        borderColor, backgroundColor
+      } = getElSize(target)
       if (new_value) {
         cancelAnimationFrame(this.$data.cursor_render_Framer)
         this.$data.cursor_render_Framer = null
@@ -56,14 +59,18 @@ export default {
           duration: 200
         })
         cursor.r_animate({
-          width: width,
-          height: height,
+          width,
+          height,
+          borderColor,
+          backgroundColor,
           duration: 200
         })
       } else {
         cursor.r_animate({
           width: 20,
           height: 20,
+          borderColor: 'rgb(222, 222, 222)',
+          backgroundColor: 'rgb(93, 93, 93)',
           duration: 200
         })
       }

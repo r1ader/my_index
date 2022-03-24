@@ -31,54 +31,50 @@ export default {
       cursorY: 0,
       scroll_index: 0,
       window_queue: [],
-      docking: false,
       is_begin: false,
       cursor_in_animation: false,
       in_interact_area: false,
       cursor_render_Framer: null,
       chase_target: null,
       fit_target: null,
-      cursor_target: null
+      cursor_target: null,
+      target_shake_offset: [0, 0]
     }
   },
   watch: {
     in_interact_area: function (new_value, old_value) {
-      const { cursor, cursor_container } = this.$refs
-      const target = this.$data.cursor_target
+      const { cursor } = this.$refs
+      const target = this.cursor_target
       let {
-        width, height, padding, top, left,
+        width, height,
         borderColor, backgroundColor
       } = getElSize(target)
       if (new_value) {
-        cancelAnimationFrame(this.$data.cursor_render_Framer)
-        this.$data.cursor_render_Framer = null
-        this.$data.docking = false
-        cursor_container.r_animate({
-          top: top + height / 2 + padding,
-          left: left + width / 2 + padding,
-          duration: 200
-        })
+        cancelAnimationFrame(this.cursor_render_Framer)
+        this.cursor_render_Framer = null
+        cursor.r_cancel()
         cursor.r_animate({
           width,
           height,
           borderColor,
           backgroundColor,
-          duration: 200
+          duration: 500
         })
       } else {
+        cursor.r_cancel()
         cursor.r_animate({
           width: 20,
           height: 20,
           borderColor: 'rgb(222, 222, 222)',
           backgroundColor: 'rgb(93, 93, 93)',
-          duration: 200
+          duration: 800
         })
       }
     }
   },
   methods: {
     init_windows() {
-      this.$data.window_queue = [
+      this.window_queue = [
         this.$refs.hello,
         // this.$refs.hello2,
         // this.$refs.introduce,
@@ -93,8 +89,8 @@ export default {
             left: `[0~${ window.innerWidth / 2 }]px`,
             duration: 16,
             callback: () => {
-              this.$data.cursorX = window.innerWidth / 2
-              this.$data.cursorY = window.innerHeight / 1.5
+              this.cursorX = window.innerWidth / 2
+              this.cursorY = window.innerHeight / 1.5
             }
           })
           .r_animate({ duration: cursor_show_time })
@@ -104,7 +100,7 @@ export default {
             duration: 1000
           })
           .r_then(() => {
-            this.$data.cursor_lock = false
+            this.cursor_lock = false
           })
       if (debug) {
         document.body.style.cursor = 'auto!important'
@@ -123,20 +119,15 @@ export default {
     },
     document_mousemove_function(e) {
       const { clientX, clientY } = e
-      this.$data.clientX = clientX
-      this.$data.clientY = clientY
-      this.$data.cursor_target = e.path[0]
-      if (this.$data.cursor_lock) return
-      if (!this.$data.is_begin) {
-        this.$data.is_begin = true
+      this.clientX = clientX
+      this.clientY = clientY
+      this.cursor_target = e.path[0]
+      if (this.cursor_lock) return
+      if (!this.is_begin) {
+        this.is_begin = true
         this.$refs.hello.beginning_motion()
       }
-      if (!this.$data.docking && !this.$data.in_interact_area) {
-        this.cursor_chase()
-      }
-      if (this.$data.docking && !this.$data.in_interact_area) {
-        this.cursor_move(clientX, clientY)
-      }
+      this.cursor_chase()
       this.cursor_event_listen(e)
     },
     cursor_move(x, y) {
@@ -154,29 +145,39 @@ export default {
       } else {
         cursor_container.style.display = ''
       }
-      this.$data.in_interact_area = !!target.r_wrap;
+      this.in_interact_area = !!target.r_wrap;
+      if (target.r_wrap) {
+        let {
+          width, height, padding, top, left
+        } = getElSize(target)
+        width *= 1.2
+        height *= 1.4
+        this.target_shake_offset = [
+          left + width / 2 + padding * 1.2 - (left + width / 2 + padding * 1.2 - this.clientX) / 10,
+          top + height / 2 + padding * 1.4 - (top + height / 2 + padding * 1.4 - this.clientY) / 10,
+        ]
+        this.clientX = this.target_shake_offset[0]
+        this.clientY = this.target_shake_offset[1]
+      }
     },
     cursor_chase() {
-      if (this.$data.cursor_render_Framer) return
-      this.$data.cursor_render_Framer = requestAnimationFrame(() => this.cursor_render())
+      if (this.cursor_render_Framer) return
+      this.cursor_render_Framer = requestAnimationFrame(() => this.cursor_render())
     },
     cursor_render() {
       const time = 20
       const inter_func = interpolation_functions('easeOutCirc')
-      const [x, y] = [this.$data.clientX, this.$data.clientY]
-      const { cursor_container, cursor } = this.$refs
+      const [x, y] = [this.clientX, this.clientY]
+      const { cursor_container } = this.$refs
       const cursor_x = parseFloat(cursor_container.style.left.replace('px', ''))
       const cursor_y = parseFloat(cursor_container.style.top.replace('px', ''))
       let distance_x = (x - cursor_x > 0 ? 1 : -1) * inter_func(Math.abs((x - cursor_x) / window.innerWidth)) * window.innerWidth / time
       let distance_y = (y - cursor_y > 0 ? 1 : -1) * inter_func(Math.abs((y - cursor_y) / window.innerHeight)) * window.innerWidth / time
       if (Math.abs(x - cursor_x) + Math.abs(y - cursor_y) < 2) {
-        if (x === this.$data.clientX && y === this.$data.clientY) {
-          this.$data.docking = true
-        }
-        this.$data.cursor_render_Framer = null
+        this.cursor_render_Framer = null
       } else {
         this.cursor_move(cursor_x + distance_x, cursor_y + distance_y)
-        this.$data.cursor_render_Framer = requestAnimationFrame(() => this.cursor_render())
+        this.cursor_render_Framer = requestAnimationFrame(() => this.cursor_render())
       }
     },
     document_mousedown_function(e) {
@@ -194,11 +195,11 @@ export default {
       })
     },
     document_mouseleave_function(e) {
-      if (this.$data.cursor_lock) return
+      if (this.cursor_lock) return
       this.$refs.cursor_container.style.display = 'none'
     },
     document_mouseenter_function(e) {
-      if (this.$data.cursor_lock) return
+      if (this.cursor_lock) return
       this.$refs.cursor_container.style.display = ''
     },
     begin() {
@@ -212,8 +213,8 @@ export default {
     this.init_windows()
     this.init_interaction()
     setTimeout(() => {
-      if (!this.$data.is_begin) {
-        this.$data.is_begin = true
+      if (!this.is_begin) {
+        this.is_begin = true
         this.$refs.hello.beginning_motion()
       }
     }, debug ? 100 : 3000)
@@ -240,7 +241,7 @@ export default {
 body {
   margin: 0;
   padding: 0;
-  /*cursor: None !important;*/
+  cursor: None !important;
   overflow: hidden;
 }
 
@@ -256,6 +257,14 @@ a {
   text-align: center;
   color: #2c3e50;
   /*margin-top: 60px;*/
+}
+
+div {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
 }
 
 .cursor_container {

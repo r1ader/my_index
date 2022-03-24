@@ -158,7 +158,12 @@ export default {
   top: -70px;
   box-sizing: content-box;
   border-radius: 20px;
-  background-color: rgb(128,122,218);
-  border-color: rgb(47,29,253);
+  background-color: rgb(128, 122, 218);
+  border-color: rgb(47, 29, 253);
+  transform: scale(0.8, 0.6);
+}
+
+.r1ader_background:hover {
+  transform: scale(1.2, 1.4);
 }
 </style>

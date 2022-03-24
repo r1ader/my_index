@@ -17,6 +17,7 @@ const expose_func_list = [
     'r_then',
     'r_busy',
     'r_queue',
+    'r_cancel',
 ]
 
 const expose_props_list = [
@@ -196,13 +197,23 @@ class R_registered_dom {
         }
     }
 
-    stop() {
+    r_stop() {
         if (this.render_process) {
             cancelAnimationFrame(this.render_process)
+            this.render_process = undefined
         }
         this.busy = false
         this.in_task = null
-        this.render_process = undefined
+    }
+
+    r_cancel(){
+        if (this.render_process) {
+            cancelAnimationFrame(this.render_process)
+            this.render_process = undefined
+        }
+        this.busy = false
+        this.in_task = null
+        this.queue = []
     }
 
     clean_remain_process() {

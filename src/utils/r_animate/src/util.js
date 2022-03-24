@@ -27,10 +27,9 @@ export function r_warn(msg) {
     console.warn(`r_animate.js warning: ${ msg }`)
 }
 
-// todo add support of transform style value
 export function isAnimationValid(str) {
-    // (\d+?)
-    const check_reg = /^((((-|\.|\d)*?|((\[((-|\.|\d)*?)~((-|\.|\d)+?)\])))(px)*)|(rgba*\((\s|\.|\d)+?,(\s|\.|\d)+?,(\s|\.|\d)+?(,(\s|\.|\d)+?)*\)))$/g
+    str = str.replace(/(\[((-|\.|\d)*?)~((-|\.|\d)+?)\])/g, '0')
+    const check_reg = /^((((-|\.|\d)*?|(\[(-*(\s|\.|\d)+?)~(-*(\s|\.|\d)+?)\]))(px)*)|(rgba*\((\s|\.|\d)+?,(\s|\.|\d)+?,(\s|\.|\d)+?(,(\s|\.|\d)+?)*\))|(((scale)|(translate)|(rotate)|(perspective))X*Y*Z*\(-*(\s|\.|\d)+?((px)|(deg))*(,-*(\s|\.|\d)+?((px)|(deg))*)*\)\s*)*)$/g
     if (check_reg.test(str)) {
         return true
     }

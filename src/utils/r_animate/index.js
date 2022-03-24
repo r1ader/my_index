@@ -84,13 +84,15 @@ class R_animate_config {
         this.delay = delay || 0
         this.interpolation = interpolation || 'easeOutExpo'
     }
-
+    // todo support the single item of transform
+    //  and auto fill other item with update function
     update(ref) {
         Object.keys(this).filter(o => class_prop.indexOf(o) === -1).forEach(key => {
-            if (key !== 'transform' && key !== 'background' && !isAnimationValid(this[key])) {
+            // todo replace all the [0~1] like pattern with a number
+            //  decrease the pressure of the regex
+            if (!isAnimationValid(this[key])) {
                 return r_warn(`syntax error ${ key } : ${ this[key] }`)
             }
-            if (/\[(-|\d|\.)+?~(-|\d||\.)+?\]/.test(this[key])) return
             Object.keys(support_props).forEach(prop_type => {
                 if (support_props[prop_type].indexOf(key) > -1) {
                     if (!ref) return
@@ -106,7 +108,7 @@ class R_animate_config {
                     const uppercasePropName = key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
                     const origin_str = ref.style[key] || computed_style.getPropertyValue(uppercasePropName) || '0';
                     const origin_value = getNumberFromCssValue(origin_str, unit)
-                    if (/\[(-|\d|\.)*?~(-|\d||\.)+?\]/.test(this[key])) {
+                    if (/\[(-|\d|\.)*?~(-|\d|\.)+?\]/.test(this[key])) {
                         this[key] = this[key].replace(/([\[])(\~)/g, `[${ origin_value }~`)
                         return
                     }
@@ -328,5 +330,3 @@ class R_director {
 }
 
 export default R_director
-// todo support no start animation
-//  support syntax check

@@ -47,6 +47,7 @@ const support_props = {
             'bottom',
             'padding',
             'margin',
+            'borderRadius',
         ],
     number_props: [
         'zIndex',
@@ -85,6 +86,7 @@ class R_animate_config {
         this.delay = delay || 0
         this.interpolation = interpolation || 'easeOutExpo'
     }
+
     // todo support the single item of transform
     //  and auto fill other item with update function
 
@@ -163,6 +165,7 @@ class R_registered_dom {
 
     render(frame_index) {
         const config = this.in_task
+        if (!config) return
         const ratio = this.inter_func(Math.min((frame_index * 16 / config.plan_duration), 1.0))
         Object.keys(config).forEach(key => {
             const extract_number_reg = /\[(-|\d|\.)+?~(-|\d||\.)+?\]/g
@@ -206,7 +209,7 @@ class R_registered_dom {
         this.in_task = null
     }
 
-    r_cancel(){
+    r_cancel() {
         if (this.render_process) {
             cancelAnimationFrame(this.render_process)
             this.render_process = undefined

@@ -43,13 +43,21 @@ export default {
   },
   watch: {
     in_interact_area: function (new_value, old_value) {
-      const { cursor } = this.$refs
+      const { cursor, cursor_container } = this.$refs
       const target = this.cursor_target
       let {
         width, height,
-        borderColor, backgroundColor
+        borderColor, backgroundColor, borderRadius
       } = getElSize(target)
       if (new_value) {
+        cursor_container.style.zIndex = '1'
+        if (target.r_zIndex) {
+          cursor_container.style.zIndex = target.r_zIndex
+        }
+        clog(target.r_opacity)
+        if (target.r_opacity) {
+          cursor.style.opacity = target.r_opacity
+        }
         cancelAnimationFrame(this.cursor_render_Framer)
         this.cursor_render_Framer = null
         cursor.r_cancel()
@@ -58,13 +66,17 @@ export default {
           height,
           borderColor,
           backgroundColor,
+          borderRadius,
           duration: 500
         })
       } else {
+        cursor_container.style.zIndex = '999'
         cursor.r_cancel()
         cursor.r_animate({
+          opacity: 1,
           width: 20,
           height: 20,
+          borderRadius: 10,
           borderColor: 'rgb(222, 222, 222)',
           backgroundColor: 'rgb(93, 93, 93)',
           duration: 800
@@ -150,11 +162,9 @@ export default {
         let {
           width, height, padding, top, left
         } = getElSize(target)
-        width *= 1.2
-        height *= 1.4
         this.target_shake_offset = [
-          left + width / 2 + padding * 1.2 - (left + width / 2 + padding * 1.2 - this.clientX) / 10,
-          top + height / 2 + padding * 1.4 - (top + height / 2 + padding * 1.4 - this.clientY) / 10,
+          left + width / 2 + padding - (left + width / 2 + padding - this.clientX) / 10,
+          top + height / 2 + padding - (top + height / 2 + padding - this.clientY) / 10,
         ]
         this.clientX = this.target_shake_offset[0]
         this.clientY = this.target_shake_offset[1]
@@ -270,6 +280,7 @@ div {
 .cursor_container {
   position: fixed;
   pointer-events: none;
+  z-index: 99;
 }
 
 .cursor {
@@ -280,7 +291,6 @@ div {
   border: 3px solid rgba(222, 222, 222, 1);
   border-radius: 10px;
   background: rgba(93, 93, 93, 1);
-  z-index: 1;
   transform: translate(-50%, -50%);
   /*background: url("./assets/cat1.png")  no-repeat;*/
   /*background-size: auto 100vh;*/

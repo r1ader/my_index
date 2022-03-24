@@ -1,5 +1,10 @@
 <template>
   <div class="main_container">
+    <svg ref="github" style="opacity:0;pointer-events:none;position:fixed;right:15px;top:15px;z-index: 2;"
+         viewBox="0 0 1024 1024" width="50" height="50">
+      <path fill="white"
+            d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9 23.5 23.2 38.1 55.4 38.1 91v112.5c0.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"></path>
+    </svg>
     <div class="main_block">
       <div ref="ball_block" class="ball_block">
         <div ref="ball_1">
@@ -9,12 +14,28 @@
           <div class="ball_2"></div>
         </div>
         <div ref="ball_3">
-          <div class="ball_3"></div>
+          <div class="ball_3">
+          </div>
+
+          <span style="position: relative;opacity: 1">
+
+            <a target="_blank" href="https://github.com/r1ader/my_index">
+              <div class="ball_background" ref="b_b"></div>
+            </a>
+          </span>
         </div>
       </div>
       <div ref="curve_block" class="curve_block">
         <Curve ref="curve"></Curve>
       </div>
+      <div>
+        <Hello
+            style="position: relative;z-index: 2" ref="hello"
+            @enter_over="background_enter"
+            @click_name="()=>{this.$refs.paper_1.click()}"
+        />
+      </div>
+      <div ref="shadow_block" class="shadow_block"></div>
       <div ref="paper_block" class="paper_block">
         <div>
           <div ref="paper_3" class="paper_3">
@@ -27,8 +48,11 @@
                 was supported by
               </span>
               <a target="_blank" href="https://github.com/r1ader/r_animate">
-                <span style="font-size: 20px;color: #434394;">
+                <span style="font-size: 20px;color: #434394;position:relative;">
                   r_animate.js
+                </span>
+                <span style="position: relative;opacity: 1">
+                  <div class="r_animate_background" ref="r_a_b_1"></div>
                 </span>
               </a>
               <span style="font-size: 20px">
@@ -37,13 +61,18 @@
               <span style="font-size: 20px">
                 and easy to learn.
               </span>
+              <span>
               <span style="font-size: 20px">
-                Visit
-                <a target="_blank" href="https://github.com/r1ader/r_animate">
-                  <span style="font-size: 20px;color: #434394;">
+                    Visit
+                  </span>
+              <a target="_blank" href="https://github.com/r1ader/r_animate">
+                  <span style="margin-left:10px;font-size: 20px;color: #434394;position:relative;">
                     r_animate.js
                   </span>
-                </a>
+                  <span style="position: relative;opacity: 1">
+                  <div class="r_animate_background" ref="r_a_b_2"></div>
+                </span>
+              </a>
               </span>
               <span style="font-size: 20px">
                 if you wanna try it.
@@ -61,9 +90,16 @@
               <span style="font-size: 20px">
                 I love Coding, Painting  and  Designing
               </span>
-              <span style="font-size: 20px">
-                My e-mail: <span style="font-size: 20px;color: #434394;">r1ader.v1@gmail.com</span>
+              <span>
+              <span style="font-size: 20px;margin-right: 10px">
+                My e-mail:
               </span>
+                <span style="font-size: 20px;color: #434394;">r1ader.v1@gmail.com</span>
+
+                <span style="position: relative;opacity: 1">
+                    <div class="email_background" ref="e_b"></div>
+                </span>
+                </span>
             </div>
           </div>
         </div>
@@ -94,15 +130,7 @@
           </div>
         </div>
       </div>
-      <div>
-        <Hello
-            style="position: relative;z-index: 2" ref="hello"
-            @enter_over="background_enter"
-            @click_name="()=>{this.$refs.paper_1.click()}"
-        />
-      </div>
     </div>
-    <div ref="shadow_block" class="shadow_block"></div>
   </div>
 </template>
 
@@ -146,6 +174,7 @@ export default {
         paper_block,
         ball_1, ball_2, ball_3,
         paper_1, paper_2, paper_3,
+        github,
       } = this.$refs
       const duration = debug ? 500 : 2000
       const opacity_on = { opacity: '[0~1]', duration: 100 }
@@ -157,6 +186,7 @@ export default {
       ball_1.r_animate({ transform: 'translate([200~0]px)', duration })
       ball_2.r_animate({ transform: 'translateY([-150~0]px)', duration })
       ball_3.r_animate({ transform: 'translate([100~0]px,[-200~0]px)', duration })
+      github.r_animate({ transform: 'translate([100~0]px,[-200~0]px)', duration }).r_animate(opacity_on)
       paper_1.r_animate({
         transform: 'translate([300~-50]px,-100px) scale(0.7) perspective(500px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg)',
         duration
@@ -174,9 +204,20 @@ export default {
       const {
         ball_1, ball_2, ball_3,
         paper_1, paper_2, paper_3,
-        paper_1_content, shadow_block
+        paper_1_content, shadow_block,
+        b_b, r_a_b_1, r_a_b_2, e_b
       } = this.$refs
       const _this = this
+      b_b.r_wrap = true
+      r_a_b_1.r_wrap = true
+      r_a_b_1.r_opacity = 0.4
+      r_a_b_1.r_zIndex = 999
+      r_a_b_2.r_wrap = true
+      r_a_b_2.r_opacity = 0.4
+      r_a_b_2.r_zIndex = 999
+      e_b.r_wrap = true
+      e_b.r_opacity = 0.4
+      e_b.r_zIndex = 999
 // todo add an transparent logo in ball,
 //  when cursor hover ball, it was drag to wrap the logo,
 //  with cursor's background, logo was visible
@@ -190,11 +231,11 @@ export default {
             .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
             .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
       })
-      ball_3.addEventListener('mouseenter', function (e) {
-        ball_3
-            .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
-            .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
-      })
+      // ball_3.addEventListener('mouseenter', function (e) {
+      //   ball_3
+      //       .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
+      //       .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
+      // })
 
       // todo make cursor interact with card
       paper_1.addEventListener('click', function (e) {
@@ -381,6 +422,7 @@ a {
 
 .paper_block {
   position: absolute;
+  z-index: 3;
   opacity: 0;
   right: 0;
   bottom: 0;
@@ -426,6 +468,8 @@ a {
 .ball_block {
   position: absolute;
   opacity: 0;
+  right: 200px;
+  top: 200px;
   right: 0;
   top: 0;
 }
@@ -475,5 +519,59 @@ a {
   width: 100vw;
   height: 100vh;
   z-index: -3;
+}
+
+.ball_background {
+  opacity: 0;
+  position: absolute !important;
+  z-index: 4;
+  width: 200px;
+  height: 200px;
+  box-sizing: content-box;
+  border-radius: 100px;
+  background-color: rgb(128, 122, 218);
+  border-color: rgb(47, 29, 253);
+  top: -100px;
+  left: -100px;
+}
+
+.r_animate_background {
+  opacity: 0;
+  position: absolute !important;
+  z-index: 4;
+  width: 140px;
+  height: 40px;
+  top: -10px;
+  left: -125px;
+  box-sizing: content-box;
+  border-radius: 5px;
+  background-color: rgb(128, 122, 218);
+  border-color: rgb(47, 29, 253);
+}
+
+.r_animate_background:hover {
+  padding: 60px;
+  top: -70px;
+  left: -185px;
+}
+
+.email_background {
+  opacity: 0;
+  position: absolute !important;
+  z-index: 4;
+  width: 225px;
+  height: 40px;
+  top: -12px;
+  left: -215px;
+  box-sizing: content-box;
+  border-radius: 5px;
+  background-color: rgb(128, 122, 218);
+  border-color: rgb(47, 29, 253);
+}
+
+.email_background:hover {
+  padding: 60px;
+  top: -70px;
+  left: -275px;
 }
 </style>

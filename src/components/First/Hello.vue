@@ -19,7 +19,7 @@
     <div style="margin-left: 0" ref="name_part3">
       ader
     </div>
-    <span style="position: relative;opacity: 0">
+    <span style="position: relative;opacity: 1">
       <div class="r1ader_background" ref="r_b"></div>
     </span>
   </div>
@@ -147,23 +147,25 @@ export default {
 }
 
 .r1ader_background {
-  opacity: 1;
+  opacity: 0;
   position: absolute !important;
   z-index: 0;
   height: 100px;
   width: 256px;
-  right: -20px;
+  right: 0;
+  top: -50px;
   margin: 0;
-  padding: 20px;
-  top: -70px;
+  /*padding: 20px;*/
   box-sizing: content-box;
   border-radius: 20px;
   background-color: rgb(128, 122, 218);
   border-color: rgb(47, 29, 253);
-  transform: scale(0.8, 0.6);
+
 }
 
 .r1ader_background:hover {
-  transform: scale(1.2, 1.4);
+  padding: 50px;
+  right: -60px;
+  top: -100px;
 }
 </style>

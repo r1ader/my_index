@@ -13,10 +13,12 @@ export function getElSize(target) {
         padding,
         backgroundColor,
         borderColor,
+        borderRadius
     } = getComputedStyle(target)
     width = parseFloat(width.replace('px', ''))
     height = parseFloat(height.replace('px', ''))
     padding = parseFloat(padding.replace('px', ''))
+    borderRadius = parseFloat(borderRadius.replace('px', ''))
     return {
         width,
         height,
@@ -24,6 +26,7 @@ export function getElSize(target) {
         left,
         padding,
         backgroundColor,
-        borderColor
+        borderColor,
+        borderRadius
     }
 }

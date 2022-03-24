@@ -29,7 +29,7 @@ export function r_warn(msg) {
 
 export function isAnimationValid(str) {
     str = str.replace(/(\[((-|\.|\d)*?)~((-|\.|\d)+?)\])/g, '0')
-    const check_reg = /^((((-|\.|\d)*?|(\[(-*(\s|\.|\d)+?)~(-*(\s|\.|\d)+?)\]))(px)*)|(rgba*\((\s|\.|\d)+?,(\s|\.|\d)+?,(\s|\.|\d)+?(,(\s|\.|\d)+?)*\))|(((scale)|(translate)|(rotate)|(perspective))X*Y*Z*\(-*(\s|\.|\d)+?((px)|(deg))*(,-*(\s|\.|\d)+?((px)|(deg))*)*\)\s*)*)$/g
+    const check_reg = /^(?:(?:(?:-?(?:\d+\.*)*\d+?)(?:px|reg)?)|(?:rgba*\((?:\d+\.*)*\d+?(?:,\s?(?:\d+\.*)*\d+?){2,3}\))|(?:(?:scale|translate|rotate|perspective|skew|matrix)(?:X|Y|Z)?\(-?(?:\d+\.*)*\d+?(?:px|deg)?(?:,\s?-?(?:\d+\.*)*\d+?(?:px|deg)?){0,2}\)\s*)+)$/g
     if (check_reg.test(str)) {
         return true
     }

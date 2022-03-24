@@ -86,6 +86,8 @@ class R_animate_config {
     }
     // todo support the single item of transform
     //  and auto fill other item with update function
+
+    // todo support the unit change e.g.(em px vw vh)
     update(ref) {
         Object.keys(this).filter(o => class_prop.indexOf(o) === -1).forEach(key => {
             // todo replace all the [0~1] like pattern with a number

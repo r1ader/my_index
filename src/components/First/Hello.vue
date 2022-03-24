@@ -102,6 +102,7 @@ export default {
           .r_animate({ duration: 900 })
           .r_then(() => {
             this.$emit('enter_over')
+            this.init_cursor_interact()
           })
     },
     init_cursor_interact() {
@@ -121,7 +122,6 @@ export default {
   mounted() {
     this.$data.r_director = new R_director()
     this.$data.r_director.take(this)
-    this.init_cursor_interact()
   }
 }
 </script>

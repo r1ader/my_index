@@ -142,13 +142,6 @@ import _ from "lodash";
 import { debug } from '../../const/config'
 import { clog } from '../../utils/index'
 
-const debounce = (actor) => {
-  while (actor.queue.length >= 2) {
-    actor.queue.shift()
-    actor.queue.shift()
-  }
-}
-
 export default {
   name: 'First',
   components: {
@@ -239,7 +232,7 @@ export default {
 
       // todo make cursor interact with card
       paper_1.addEventListener('click', function (e) {
-        if (_this.$data.focus_on) return
+        if (_this.focus_on) return
         const card_position_x = Math.round(window.innerWidth / -2)
         const card_position_y = Math.round(window.innerHeight / -2)
         const paper_1_flip_in = {
@@ -262,7 +255,7 @@ export default {
         _this.turn_focus_on()
       })
       paper_2.addEventListener('click', function (e) {
-        if (_this.$data.focus_on) return
+        if (_this.focus_on) return
         const card_position_x = Math.round(window.innerWidth / -2)
         const card_position_y = Math.round(window.innerHeight / -2)
         const paper_2_flip_in = {
@@ -285,7 +278,7 @@ export default {
         _this.turn_focus_on()
       })
       paper_3.addEventListener('click', function (e) {
-        if (_this.$data.focus_on) return
+        if (_this.focus_on) return
         const card_position_x = Math.round(window.innerWidth / -2)
         const card_position_y = Math.round(window.innerHeight / -2)
         const paper_3_flip_in = {
@@ -313,7 +306,7 @@ export default {
       const _this = this
       const { shadow_block } = this.$refs
       const shadow_block_click_function = function (e) {
-        if (!_this.$data.focus_on) return
+        if (!_this.focus_on) return
         if (_.isFunction(_this['shadow_block_cancel_callback'])) {
           const cancel_promise = _this['shadow_block_cancel_callback']()
           if (cancel_promise instanceof Promise) {
@@ -329,8 +322,8 @@ export default {
       shadow_block.addEventListener('click', shadow_block_click_function)
     },
     turn_focus_on() {
-      if (this.$data.focus_on) return
-      this.$data.focus_on = true
+      if (this.focus_on) return
+      this.focus_on = true
       this.$refs.shadow_block
           .r_animate({
             zIndex: '[-1~2]',
@@ -343,8 +336,8 @@ export default {
 
     },
     turn_focus_off() {
-      if (!this.$data.focus_on) return
-      this.$data.focus_on = false
+      if (!this.focus_on) return
+      this.focus_on = false
       this.$refs.shadow_block.r_animate({
         background: 'rgba(0,0,0,[0.8~0])',
         duration: 1000
@@ -355,8 +348,8 @@ export default {
     }
   },
   mounted() {
-    this.$data.r_director = new R_director()
-    this.$data.r_director.take(this)
+    this.r_director = new R_director()
+    this.r_director.take(this)
     if (debug) {
       this.background_enter()
     }

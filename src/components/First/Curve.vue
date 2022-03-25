@@ -29,7 +29,7 @@
 
         <circle
             fill="url(#img1)"
-            r="40"
+            :r="scopeR"
             :cx="cursorX-curve_1_transform"
             :cy="cursorY"></circle>
       </pattern>
@@ -52,7 +52,7 @@
 
         <circle
             fill="url(#img2)"
-            r="40"
+            :r="scopeR"
             :cx="cursorX-curve_2_transform"
             :cy="cursorY"></circle>
       </pattern>
@@ -63,7 +63,7 @@
         </text>
         <circle
             fill="url(#img3)"
-            r="40"
+            :r="scopeR"
             :cx="cursorX-curve_3_transform"
             :cy="cursorY"></circle>
       </pattern>
@@ -95,14 +95,8 @@
 <script>
 import R_director from "../../utils/r_animate";
 import { debug } from '../../const/config'
-import { clog } from '../../utils/index'
+import { clog, debounce } from '../../utils/index'
 
-const debounce = (actor) => {
-  while (actor.queue.length >= 2) {
-    actor.queue.shift()
-    actor.queue.shift()
-  }
-}
 export default {
   name: "Curve",
   data() {
@@ -115,6 +109,7 @@ export default {
       curve_1_transform: -80,
       curve_2_transform: -80,
       curve_3_transform: -80,
+      scopeR: 40
     }
   },
   methods: {
@@ -150,14 +145,30 @@ export default {
       // curve_3.cursor_hidden = true
       curve.addEventListener('mousemove', function (e) {
         const scale_ratio = window.innerHeight / 400
-        _this.$data.cursorX = e.clientX / scale_ratio
-        _this.$data.cursorY = e.clientY / scale_ratio
+        _this.cursorX = e.clientX / scale_ratio
+        _this.cursorY = e.clientY / scale_ratio
+      })
+      curve.addEventListener('mousedown', function (e) {
+        _this.r_director.r_animate({
+          duration: 200,
+          parallel: (ratio) => {
+            _this.scopeR = 40 + 40 * ratio
+          }
+        })
+      })
+      curve.addEventListener('mouseup', function (e) {
+        _this.r_director.r_animate({
+          duration: 200,
+          parallel: (ratio) => {
+            _this.scopeR = 80 - 40 * ratio
+          }
+        })
       })
       curve_1.addEventListener('mouseenter', function (e) {
         curve_1.r_animate({
           ...translate_out,
           parallel: (ratio) => {
-            _this.$data.curve_1_transform = -80 + 80 * ratio
+            _this.curve_1_transform = -80 + 80 * ratio
           }
         })
       })
@@ -165,7 +176,7 @@ export default {
         curve_1.r_animate({
           ...translate_in,
           parallel: (ratio) => {
-            _this.$data.curve_1_transform = -80 * ratio
+            _this.curve_1_transform = -80 * ratio
           }
         })
 
@@ -174,7 +185,7 @@ export default {
         curve_2.r_animate({
           ...translate_out,
           parallel: (ratio) => {
-            _this.$data.curve_2_transform = -80 + 80 * ratio
+            _this.curve_2_transform = -80 + 80 * ratio
           }
         })
       })
@@ -182,7 +193,7 @@ export default {
         curve_2.r_animate({
           ...translate_in,
           parallel: (ratio) => {
-            _this.$data.curve_2_transform = -80 * ratio
+            _this.curve_2_transform = -80 * ratio
           }
         })
       })
@@ -190,7 +201,7 @@ export default {
         curve_3.r_animate({
           ...translate_out,
           parallel: (ratio) => {
-            _this.$data.curve_3_transform = -80 + 80 * ratio
+            _this.curve_3_transform = -80 + 80 * ratio
           }
         })
       })
@@ -198,17 +209,17 @@ export default {
         curve_3.r_animate({
           ...translate_in,
           parallel: (ratio) => {
-            _this.$data.curve_3_transform = -80 * ratio
+            _this.curve_3_transform = -80 * ratio
           }
         })
       })
     },
   },
   mounted() {
-    this.$data.r_director = new R_director()
-    this.$data.r_director.take(this)
-    this.$data.innerHeight = window.innerHeight
-    this.$data.innerWidth = window.innerWidth
+    this.r_director = new R_director()
+    this.r_director.take(this)
+    this.innerHeight = window.innerHeight
+    this.innerWidth = window.innerWidth
     this.init_interact()
   }
 }

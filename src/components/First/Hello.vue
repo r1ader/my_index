@@ -81,11 +81,11 @@ export default {
       }
 
       hello.r_animate({ duration: 500 }).r_animate(cylinder_enter)
-      dot.r_animate({ duration: 750 }).r_animate(cylinder_enter)
+      dot.r_animate({ duration: 1000 }).r_animate(cylinder_enter)
       introduce.r_animate({ duration: 1500 }).r_animate(cylinder_enter)
       name_part1.r_animate({ duration: 2500 }).r_animate(cylinder_enter)
 
-      this.$data.r_director.copy(name_part1, [
+      this.r_director.copy(name_part1, [
         name_part2,
         name_part3
       ])
@@ -120,8 +120,8 @@ export default {
   },
 
   mounted() {
-    this.$data.r_director = new R_director()
-    this.$data.r_director.take(this)
+    this.r_director = new R_director()
+    this.r_director.take(this)
   }
 }
 </script>

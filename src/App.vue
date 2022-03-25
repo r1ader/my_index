@@ -1,24 +1,16 @@
 <script>
 
 import First from './components/First/index.vue'
-import Hello2 from './components/Hello2.vue'
 import Introduce from './components/Introduce.vue'
 import { interpolation_functions } from "./utils/math_util";
 import _ from "lodash";
 import R_director from "./utils/r_animate";
 import { debug } from './const/config'
-import { clog, getElSize } from './utils/index'
+import { clog, getElSize, debounce } from './utils/index'
 
-const debounce = (actor) => {
-  while (actor.queue.length >= 2) {
-    actor.queue.shift()
-    actor.queue.shift()
-  }
-}
 export default {
   components: {
     First,
-    Hello2,
     Introduce
   },
   data() {
@@ -87,8 +79,7 @@ export default {
   methods: {
     init_windows() {
       this.window_queue = [
-        this.$refs.hello,
-        // this.$refs.hello2,
+        this.$refs.first,
         // this.$refs.introduce,
       ]
     },
@@ -137,7 +128,7 @@ export default {
       if (this.cursor_lock) return
       if (!this.is_begin) {
         this.is_begin = true
-        this.$refs.hello.beginning_motion()
+        this.$refs.first.beginning_motion()
       }
       this.cursor_chase()
       this.cursor_event_listen(e)
@@ -225,7 +216,7 @@ export default {
     setTimeout(() => {
       if (!this.is_begin) {
         this.is_begin = true
-        this.$refs.hello.beginning_motion()
+        this.$refs.first.beginning_motion()
       }
     }, debug ? 100 : 3000)
   }
@@ -234,11 +225,10 @@ export default {
 
 <template>
   <div>
-    <First ref="hello"/>
+    <First ref="first"/>
     <div ref="cursor_container" class="cursor_container">
       <div ref="cursor" class="cursor"></div>
     </div>
-    <!--    <Hello2 ref="hello2"/>-->
     <!--    <Introduce ref="introduce"/>-->
   </div>
 </template>

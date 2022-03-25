@@ -30,3 +30,10 @@ export function getElSize(target) {
         borderRadius
     }
 }
+
+export const debounce = (actor) => {
+    while (actor.queue.length >= 2) {
+        actor.queue.shift()
+        actor.queue.shift()
+    }
+}

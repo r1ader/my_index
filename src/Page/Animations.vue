@@ -1,5 +1,5 @@
+
 <script setup>
-import Examples from "../components/Example";
 import Template from "../components/Example/template.vue";
 
 const configs = [
@@ -35,14 +35,15 @@ const configs = [
     loop: true
   },
 ]
+
 </script>
 <template>
   <div class="playground">
-    <div v-for="Example in Examples" class="court">
-      <component :is="Example"/>
-    </div>
     <div v-for="config in configs">
-      <Template :config="config"/>
+      <Template :config="{
+        ...config,
+        loop: false
+      }"/>
     </div>
   </div>
 </template>

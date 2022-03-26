@@ -7,15 +7,16 @@ import R_director from "../../utils/r_animate"
 import './index.css'
 
 export default {
+  props: {
+    config: null
+  },
   mounted() {
     const director = new R_director()
     director.take(this)
 
-    this.$refs.ball.r_animate({
-      opacity: '[1~0]',
-      interpolation: 'Linear',
-      loop: 'alternate'
-    })
+    if (this.config) {
+      this.$refs.ball.r_animate(this.config)
+    }
   }
 }
 </script>

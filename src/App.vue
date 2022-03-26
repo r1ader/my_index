@@ -1,5 +1,6 @@
 <script setup>
 import Playground from "./Page/Playground.vue";
+import Animations from "./Page/Animations.vue";
 </script>
 <script>
 import Document from "./Page/Document.vue";
@@ -7,10 +8,11 @@ import _ from "lodash";
 import R_director from "./utils/r_animate";
 import { debug } from './const/config'
 import { clog } from './utils/index'
-
+// todo check Composition api
 const routes = {
   '/': Document,
-  'playground': Playground
+  'playground': Playground,
+  'animations': Animations
 }
 export default {
   components: {

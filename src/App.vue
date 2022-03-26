@@ -1,31 +1,42 @@
 <script>
-
+import Playground from "./Page/Playground.vue";
+import Document from "./Page/Document.vue";
 import _ from "lodash";
 import R_director from "./utils/r_animate";
 import { debug } from './const/config'
 import { clog } from './utils/index'
 
+const routes = {
+  '/': Document,
+  'playground': Playground
+}
 export default {
   components: {
+    Playground,
+    Document
   },
   data() {
     return {
+      currentPath: window.location.hash
     }
   },
-  watch: {
-  },
-  methods: {
+  computed: {
+    currentView() {
+      clog(this.currentPath.slice(1))
+      return routes[this.currentPath.slice(1) || '/'] || Document
+    }
   },
   mounted() {
-    const r_director = new R_director()
-    r_director.take(this)
+    window.addEventListener('hashchange', () => {
+      this.currentPath = window.location.hash
+    })
   }
 }
 </script>
 
 <template>
   <div>
-    <div>hello</div>
+    <component :is="currentView"/>
   </div>
 </template>
 

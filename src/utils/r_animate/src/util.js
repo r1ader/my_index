@@ -1,5 +1,4 @@
 import _ from "lodash";
-import { clog } from "../../index";
 
 export function deep_assign(target, origin) {
     Object.keys(origin).forEach(key => {

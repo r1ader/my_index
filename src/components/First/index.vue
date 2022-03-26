@@ -63,7 +63,7 @@
               </span>
               <span>
               <span style="font-size: 20px">
-                    Visit
+                    Refer to
                   </span>
               <a target="_blank" href="https://github.com/r1ader/r_animate">
                   <span style="margin-left:10px;font-size: 20px;color: #434394;position:relative;">

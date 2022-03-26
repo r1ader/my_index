@@ -1,5 +1,7 @@
-<script>
+<script setup>
 import Playground from "./Page/Playground.vue";
+</script>
+<script>
 import Document from "./Page/Document.vue";
 import _ from "lodash";
 import R_director from "./utils/r_animate";
@@ -12,8 +14,6 @@ const routes = {
 }
 export default {
   components: {
-    Playground,
-    Document
   },
   data() {
     return {
@@ -22,7 +22,6 @@ export default {
   },
   computed: {
     currentView() {
-      clog(this.currentPath.slice(1))
       return routes[this.currentPath.slice(1) || '/'] || Document
     }
   },

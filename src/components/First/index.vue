@@ -47,7 +47,7 @@
               <span style="font-size: 20px">
                 was supported by
               </span>
-              <a target="_blank" href="https://github.com/r1ader/r_animate">
+              <a target="_blank" href="https://github.com/r1ader/r_animate#r_animatejs">
                 <span style="font-size: 20px;color: #434394;position:relative;">
                   r_animate.js
                 </span>
@@ -65,7 +65,7 @@
               <span style="font-size: 20px">
                     Refer to
                   </span>
-              <a target="_blank" href="https://github.com/r1ader/r_animate">
+              <a target="_blank" href="https://github.com/r1ader/r_animate#r_animatejs">
                   <span style="margin-left:10px;font-size: 20px;color: #434394;position:relative;">
                     r_animate.js
                   </span>

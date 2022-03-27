@@ -126,10 +126,6 @@ export default {
       this.clientY = clientY
       this.cursor_target = e.path[0]
       if (this.cursor_lock) return
-      if (!this.is_begin) {
-        this.is_begin = true
-        this.$refs.first.beginning_motion()
-      }
       this.cursor_chase()
       this.cursor_event_listen(e)
     },
@@ -218,7 +214,7 @@ export default {
         this.is_begin = true
         this.$refs.first.beginning_motion()
       }
-    }, debug ? 100 : 3000)
+    }, 1300)
   }
 }
 </script>

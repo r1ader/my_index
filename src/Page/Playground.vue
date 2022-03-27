@@ -1,48 +1,31 @@
 <script setup>
 import Examples from "../components/Example";
 import Template from "../components/Example/template.vue";
+import '../components/Example/index.css'
+import { onMounted, ref } from 'vue'
 
-const configs = [
-  {
-    transform: 'scale([1~1.5])',
-    loop: 'alternate'
-  },
-  {
-    transform: 'translate([0~40]px)',
-    loop: 'alternate'
-  },
-  {
-    transform: 'rotateX([0~40]deg)',
-    loop: 'alternate'
-  },
-  {
-    transform: 'rotateX([0~-80]deg) rotateY([0~360]deg)',
-    loop: 'alternate'
-  },
-  {
-    borderRadius: '[50~0]px',
-    loop: 'alternate'
-  },
-  {
-    borderRadius: '[0~0]px',
-    transform: '  rotateY([0~90]deg) perspective(100px) rotateX([110~110]deg) rotateZ([45~45]deg)',
-    loop: 'alternate'
-  },
-  {
-    borderRadius: '[0~0]px',
-    transform: 'translateY(100px) perspective(200px) rotateY([0~90]deg)  translateY(-100px) rotateX(90deg) rotateZ(45deg)',
-    interpolation: 'Linear',
-    loop: true
-  },
-]
+const rotateForFiveRounds =
+    {
+      transform: 'translateY(100px) perspective(200px) rotateY([0~90]deg)  translateY(-100px) rotateX(90deg) rotateZ(45deg)',
+      // interpolation: 'Linear',
+      loop: 5
+    }
+
+import { r_register } from '../utils/r_animate'
+import { clog } from "../utils";
+
+const rect = ref()
+
+onMounted(()=>{
+  r_register(rect.value)
+  rect.value.r_animate(rotateForFiveRounds)
+})
 </script>
 <template>
   <div class="playground">
-    <div v-for="Example in Examples" class="court">
-      <component :is="Example"/>
-    </div>
-    <div v-for="config in configs">
-      <Template :config="config"/>
+    <div class="court">
+      <div ref="rect" class="rectangle"></div>
+      <!--      <Template shape="rectangle" :config="config"/>-->
     </div>
   </div>
 </template>
@@ -60,15 +43,27 @@ div {
   height: 100vh;
   background-color: #dadada;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: center;
 }
 
-.court, .playground > div {
-  width: 200px;
-  height: 200px;
+.court {
   border: 1px grey solid;
   border-radius: 5px;
   margin: 5px;
+}
+
+@media (min-width: 600px) {
+  .court {
+    width: 500px;
+    height: 500px;
+  }
+}
+
+@media (min-width: 300px) and (max-width: 600px) {
+  .court {
+    width: 300px;
+    height: 300px;
+  }
 }
 
 </style>

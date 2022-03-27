@@ -2,7 +2,7 @@
 
 import First from './components/First/index.vue'
 import Introduce from './components/Introduce.vue'
-import { interpolation_functions } from "./utils/math_util";
+import { ease_functions } from "./utils/math_util";
 import _ from "lodash";
 import { Director } from "r_animate";
 import { debug } from './const/config'
@@ -163,7 +163,7 @@ export default {
     },
     cursor_render() {
       const time = 20
-      const inter_func = interpolation_functions('easeOutCirc')
+      const inter_func = ease_functions('easeOutCirc')
       const [x, y] = [this.clientX, this.clientY]
       const { cursor_container } = this.$refs
       const cursor_x = parseFloat(cursor_container.style.left.replace('px', ''))

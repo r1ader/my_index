@@ -193,6 +193,7 @@ export default {
         transform: 'translate([300~-80]px, [300~-30]px) rotateZ(20deg)',
         duration
       })
+      this.init_interact()
     },
     init_interact() {
       const {
@@ -215,18 +216,18 @@ export default {
 
       ball_1.addEventListener('mouseenter', function (e) {
         ball_1
-            .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
-            .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
+            .r_animate({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeOutCirc' })
+            .r_animate({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeInCirc', reverse: true })
       })
       ball_2.addEventListener('mouseenter', function (e) {
         ball_2
-            .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
-            .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
+            .r_animate({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeOutCirc' })
+            .r_animate({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeInCirc', reverse: true })
       })
       // ball_3.addEventListener('mouseenter', function (e) {
       //   ball_3
-      //       .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })
-      //       .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeInCirc', reverse: true })
+      //       .r_animate({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeOutCirc' })
+      //       .r_animate({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeInCirc', reverse: true })
       // })
 
       // todo make cursor interact with card
@@ -239,7 +240,7 @@ export default {
           borderRadius: '[20~10]px',
           transform: `translate([-50~${ card_position_x }]px,[-100~${ card_position_y }]px) scale([0.7~1]) perspective([500~1000]px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)`,
           duration: 1500,
-          interpolation: 'easeInOutExpo',
+          ease: 'easeInOutExpo',
         }
         paper_1.r_animate(paper_1_flip_in)
         _this['shadow_block_cancel_callback'] = () => {
@@ -262,7 +263,7 @@ export default {
           borderRadius: '[20~10]px',
           transform: `translate([-70~${ card_position_x }]px, [-70~${ card_position_y }]px) scale([0.5~1]) perspective(500px) rotateY([40~0]deg) rotateX([0~-360]deg) rotateZ([-20~0]deg)`,
           duration: 1500,
-          interpolation: 'easeInOutExpo',
+          ease: 'easeInOutExpo',
         }
         paper_2.r_animate(paper_2_flip_in)
         _this['shadow_block_cancel_callback'] = () => {
@@ -285,7 +286,7 @@ export default {
           borderRadius: '[20~10]px',
           transform: `translate([-80~${ card_position_x }]px, [-30~${ card_position_y }]px) rotateZ([20~-360]deg)`,
           duration: 1500,
-          interpolation: 'easeInOutExpo',
+          ease: 'easeInOutExpo',
         }
         paper_3.r_animate(paper_3_flip_in)
         _this['shadow_block_cancel_callback'] = () => {
@@ -353,7 +354,6 @@ export default {
       this.background_enter()
     }
     this.init_focus_system()
-    this.init_interact()
   }
 }
 

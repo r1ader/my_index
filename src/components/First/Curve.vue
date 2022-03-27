@@ -128,13 +128,13 @@ export default {
       } = this.$refs
       const translate_out = {
         transform: 'translateX([-80~0]px)',
-        interpolation: 'easeInOutExpo',
+        ease: 'easeInOutExpo',
         duration: 750,
         name: 'translate_out'
       }
       const translate_in = {
         transform: 'translateX([0~-80]px)',
-        interpolation: 'easeInOutExpo',
+        ease: 'easeInOutExpo',
         duration: 750,
         name: 'translate_in',
         callback: debounce

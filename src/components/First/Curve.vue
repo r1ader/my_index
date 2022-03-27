@@ -153,7 +153,8 @@ export default {
           duration: 200,
           parallel: (ratio) => {
             _this.scopeR = 40 + 40 * ratio
-          }
+          },
+          callback: debounce
         })
       })
       curve.addEventListener('mouseup', function (e) {
@@ -161,7 +162,8 @@ export default {
           duration: 200,
           parallel: (ratio) => {
             _this.scopeR = 80 - 40 * ratio
-          }
+          },
+          callback: debounce
         })
       })
       curve_1.addEventListener('mouseenter', function (e) {

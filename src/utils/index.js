@@ -32,8 +32,8 @@ export function getElSize(target) {
 }
 
 export const debounce = (actor) => {
-    while (actor.queue.length >= 2) {
-        actor.queue.shift()
-        actor.queue.shift()
+    while (actor.r_schedule().length >= 2) {
+        actor.r_skip()
+        actor.r_skip()
     }
 }

@@ -5,7 +5,7 @@ import Animations from "./Page/Animations.vue";
 <script>
 import Document from "./Page/Document.vue";
 import _ from "lodash";
-import { Director } from "./utils/r_animate";
+import { Director } from "r_animate";
 import { debug } from './const/config'
 import { clog } from './utils/index'
 // todo check Composition api

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { Director } from "../../utils/r_animate"
+import { Director } from "r_animate"
 import './index.css'
 
 export default {

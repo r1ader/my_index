@@ -212,9 +212,7 @@ export default {
       e_b.r_wrap = true
       e_b.r_opacity = 0.4
       e_b.r_zIndex = 999
-// todo add an transparent logo in ball,
-//  when cursor hover ball, it was drag to wrap the logo,
-//  with cursor's background, logo was visible
+
       ball_1.addEventListener('mouseenter', function (e) {
         ball_1
             .r_animate({ transform: 'scale([1~1.1])', duration: 200, interpolation: 'easeOutCirc' })

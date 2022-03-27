@@ -7,7 +7,7 @@ import { onMounted, ref } from 'vue'
 const rotateForFiveRounds =
     {
       transform: 'translateY(100px) perspective(200px) rotateY([0~90]deg)  translateY(-100px) rotateX(90deg) rotateZ(45deg)',
-      interpolation: 'Linear',
+      ease: 'Linear',
       loop: 5
     }
 

@@ -13,7 +13,7 @@ export default {
 
     this.$refs.ball.r_animate({
       opacity: '[1~0]',
-      interpolation: 'Linear',
+      ease: 'Linear',
       loop: 'alternate'
     })
   }

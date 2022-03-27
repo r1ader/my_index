@@ -4,7 +4,7 @@ import First from './components/First/index.vue'
 import Introduce from './components/Introduce.vue'
 import { interpolation_functions } from "./utils/math_util";
 import _ from "lodash";
-import R_director from "./utils/r_animate";
+import { Director } from "r_animate";
 import { debug } from './const/config'
 import { clog, getElSize, debounce } from './utils/index'
 
@@ -204,7 +204,7 @@ export default {
     },
   },
   mounted() {
-    const r_director = new R_director()
+    const r_director = new Director()
     r_director.take(this)
     this.init_cursor()
     this.init_windows()

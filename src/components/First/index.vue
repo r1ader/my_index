@@ -136,7 +136,7 @@
 </template>
 
 <script>
-import R_director from '../../utils/r_animate'
+import { Director } from 'r_animate'
 import Curve from "./Curve.vue";
 import Hello from "./Hello.vue";
 import _ from "lodash";
@@ -349,7 +349,7 @@ export default {
     }
   },
   mounted() {
-    this.r_director = new R_director()
+    this.r_director = new Director()
     this.r_director.take(this)
     if (debug) {
       this.background_enter()

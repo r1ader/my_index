@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import R_director from "../../utils/r_animate";
+import { Director } from "r_animate";
 import { debug } from '../../const/config'
 
 export default {
@@ -122,7 +122,7 @@ export default {
   },
 
   mounted() {
-    this.r_director = new R_director()
+    this.r_director = new Director()
     this.r_director.take(this)
   }
 }

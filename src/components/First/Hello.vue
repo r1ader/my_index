@@ -17,11 +17,13 @@
       <span ref="name_part2_e">e</span>
     </div>
     <div style="margin-left: 0" ref="name_part3">
+      <span>
       ader
-    </div>
-    <span style="position: relative;opacity: 1">
+        </span>
+      <span style="position: relative;opacity: 1">
       <div class="r1ader_background" ref="r_b"></div>
     </span>
+    </div>
   </div>
 </template>
 
@@ -152,10 +154,9 @@ export default {
   z-index: 0;
   height: 100px;
   width: 256px;
-  right: 0;
-  top: -50px;
+  left: -238px;
+  top: -15px;
   margin: 0;
-  /*padding: 20px;*/
   box-sizing: content-box;
   border-radius: 20px;
   background-color: rgb(128, 122, 218);
@@ -164,8 +165,8 @@ export default {
 }
 
 .r1ader_background:hover {
-  padding: 50px;
-  right: -60px;
-  top: -100px;
+  padding: 150px;
+  left: -388px;
+  top: -165px;
 }
 </style>

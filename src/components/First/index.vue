@@ -95,11 +95,12 @@
                 My e-mail:
               </span>
                 <span style="font-size: 20px;color: #434394;">r1ader.v1@gmail.com</span>
-
                 <span style="position: relative;opacity: 1">
-                    <div class="email_background" ref="e_b"></div>
+                    <a  data-email="r1ader.v1@gmail.com" href="mailto:r1ader.v1@gmail.com">
+                      <div class="email_background" ref="e_b"></div>
+                    </a>
                 </span>
-                </span>
+              </span>
             </div>
           </div>
         </div>

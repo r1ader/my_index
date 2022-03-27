@@ -5,3 +5,4 @@ const app = createApp(App)
 app.mount('#app')
 
 // todo mobile page
+//  forbidden click event before showing

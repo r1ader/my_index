@@ -25,7 +25,7 @@ const configs = [
   },
   {
     borderRadius: '[0~0]px',
-    transform: '  rotateY([0~90]deg) perspective(100px) rotateX([110~110]deg) rotateZ([45~45]deg)',
+    transform: 'rotateY([0~90]deg) perspective(100px) rotateX([110~110]deg) rotateZ([45~45]deg)',
     loop: 'alternate'
   },
   {
@@ -42,7 +42,8 @@ const configs = [
     <div v-for="config in configs">
       <Template :config="{
         ...config,
-        loop: false
+        loop: 3,
+        loop_mode: 'alternate'
       }"/>
     </div>
   </div>

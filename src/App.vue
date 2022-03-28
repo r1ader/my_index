@@ -1,38 +1,25 @@
 <script setup>
 import Playground from "./Page/Playground.vue";
 import Animations from "./Page/Animations.vue";
-</script>
-<script>
-import Document from "./Page/Document.vue";
-import _ from "lodash";
-import { Director } from "r_animate";
-import { debug } from './const/config'
-import { clog } from './utils/index'
-// todo check Composition api
+import Docpage from "./Page/Document.vue";
+import { computed, onMounted, ref } from "vue";
+
 const routes = {
-  '/': Document,
+  '/': Docpage,
   'playground': Playground,
   'animations': Animations
 }
-export default {
-  components: {
-  },
-  data() {
-    return {
-      currentPath: window.location.hash
-    }
-  },
-  computed: {
-    currentView() {
-      return routes[this.currentPath.slice(1) || '/'] || Document
-    }
-  },
-  mounted() {
-    window.addEventListener('hashchange', () => {
-      this.currentPath = window.location.hash
-    })
-  }
-}
+const currentPath = ref(window.location.hash)
+const currentView = computed(() => {
+  return routes[currentPath.value.slice(1) || '/'] || Docpage
+})
+
+onMounted(() => {
+  window.addEventListener('hashchange', () => {
+    currentPath.value = window.location.hash
+  })
+})
+
 </script>
 
 <template>

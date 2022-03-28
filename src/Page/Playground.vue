@@ -7,18 +7,23 @@ import { onMounted, ref } from 'vue'
 const rotateForFiveRounds =
     {
       transform: 'translateY(100px) perspective(200px) rotateY([0~90]deg)  translateY(-100px) rotateX(90deg) rotateZ(45deg)',
-      ease: 'Linear',
-      loop: 5
+      loop: 2,
+      loop_mode: 'alternate'
     }
 
-import { r_register } from 'r_animate'
+import { r_register, act, r_default } from 'r_animate'
 import { clog } from "../utils";
 
 const rect = ref()
 
-onMounted(()=>{
+onMounted(() => {
   r_register(rect.value)
-  rect.value.r_animate(rotateForFiveRounds)
+  // r_default({ duration: 500 })
+  rect.value.r_default({
+    duration: 1500,
+    ease: 'Linear'
+  })
+  rect.value.r_animate(rotateForFiveRounds).r_animate(act.FADE_OUT).r_animate(act.FADE_IN)
 })
 </script>
 <template>

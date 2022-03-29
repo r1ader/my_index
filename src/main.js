@@ -6,3 +6,5 @@ app.mount('#app')
 
 // todo mobile page
 //  forbidden click event before showing
+
+// todo use rxjs

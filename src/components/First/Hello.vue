@@ -59,6 +59,7 @@ export default {
         name_part2_e.style.opacity = '0'
         name_part2_1.style.opacity = '1'
         name_part3.style.opacity = '1'
+        this.init_cursor_interact()
         return
       }
       const cylinder_enter = {

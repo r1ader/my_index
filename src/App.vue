@@ -1,36 +1,25 @@
 <script>
 
 import First from './components/First/index.vue'
-import Introduce from './components/Introduce.vue'
 import { ease_functions } from "./utils/math_util";
 import _ from "lodash";
-import { Director } from "r_animate";
+import { Director, r } from 'r_animate';
 import { debug } from './const/config'
 import { clog, getElSize, debounce } from './utils/index'
+import { fromEvent } from 'rxjs'
 
 export default {
   components: {
-    First,
-    Introduce
+    First
   },
   data() {
     return {
       cursor_lock: true,
-      scroll_lock: false,
       clientX: 0,
       clientY: 0,
-      cursorX: 0,
-      cursorY: 0,
-      scroll_index: 0,
-      window_queue: [],
-      is_begin: false,
-      cursor_in_animation: false,
       in_interact_area: false,
       cursor_render_Framer: null,
-      chase_target: null,
-      fit_target: null,
       cursor_target: null,
-      target_shake_offset: [0, 0]
     }
   },
   watch: {
@@ -77,48 +66,32 @@ export default {
     }
   },
   methods: {
-    init_windows() {
-      this.window_queue = [
-        this.$refs.first,
-        // this.$refs.introduce,
-      ]
-    },
     init_cursor() {
-      const cursor_show_time = debug ? 100 : 1000
-      this.$refs.cursor_container
+      const cursor_show_time = debug ? 2000 : 1000
+
+      r(this.$refs.cursor_container)
           .r_animate({
-            opacity: '[0~0]',
+            opacity: 0,
             top: `[0~${ window.innerHeight / 1.5 }]px`,
             left: `[0~${ window.innerWidth / 2 }]px`,
-            duration: 16,
-            callback: () => {
-              this.cursorX = window.innerWidth / 2
-              this.cursorY = window.innerHeight / 1.5
-            }
+            duration: 16
           })
-          .r_animate({ duration: cursor_show_time })
           .r_animate({
             opacity: '[0~1]',
             transform: 'scale([0~1])',
-            duration: 1000
+            delay: cursor_show_time,
+            duration: 100
           })
           .r_then(() => {
             this.cursor_lock = false
           })
-      if (debug) {
-        document.body.style.cursor = 'auto!important'
-      }
     },
     init_interaction() {
-      const _this = this
-      const wait_register_event = ['mousemove', 'mousedown', 'mouseup', 'mouseleave', 'mouseenter']
-      wait_register_event.forEach(event_name => {
-        document.addEventListener(event_name, function (e) {
-          if (_.isFunction(_this[`document_${ event_name }_function`])) {
-            _this[`document_${ event_name }_function`](e)
-          }
-        })
-      })
+      fromEvent(document,'mousemove').subscribe(this.document_mousemove_function)
+      fromEvent(document,'mousedown').subscribe(this.document_mousedown_function)
+      fromEvent(document,'mouseup').subscribe(this.document_mouseup_function)
+      fromEvent(document,'mouseleave').subscribe(this.document_mouseleave_function)
+      fromEvent(document,'mouseenter').subscribe(this.document_mouseenter_function)
     },
     document_mousemove_function(e) {
       const { clientX, clientY } = e
@@ -138,23 +111,13 @@ export default {
       const { path } = event
       const target = _.first(path)
       if (!target) return
-      const { cursor_container, cursor } = this.$refs
-      if (target.cursor_hidden) {
-        cursor_container.style.display = 'none'
-      } else {
-        cursor_container.style.display = ''
-      }
       this.in_interact_area = !!target.r_wrap;
       if (target.r_wrap) {
         let {
           width, height, padding, top, left
         } = getElSize(target)
-        this.target_shake_offset = [
-          left + width / 2 + padding - (left + width / 2 + padding - this.clientX) / 10,
-          top + height / 2 + padding - (top + height / 2 + padding - this.clientY) / 10,
-        ]
-        this.clientX = this.target_shake_offset[0]
-        this.clientY = this.target_shake_offset[1]
+        this.clientX = left + width / 2 + padding - (left + width / 2 + padding - this.clientX) / 10
+        this.clientY = top + height / 2 + padding - (top + height / 2 + padding - this.clientY) / 10
       }
     },
     cursor_chase() {
@@ -198,23 +161,14 @@ export default {
     document_mouseenter_function(e) {
       if (this.cursor_lock) return
       this.$refs.cursor_container.style.display = ''
-    },
-    begin() {
-
-    },
+    }
   },
   mounted() {
     const r_director = new Director()
     r_director.take(this)
     this.init_cursor()
-    this.init_windows()
     this.init_interaction()
-    setTimeout(() => {
-      if (!this.is_begin) {
-        this.is_begin = true
-        this.$refs.first.beginning_motion()
-      }
-    }, 1300)
+    this.$refs.first.beginning_motion()
   }
 }
 </script>
@@ -225,13 +179,10 @@ export default {
     <div ref="cursor_container" class="cursor_container">
       <div ref="cursor" class="cursor"></div>
     </div>
-    <!--    <Introduce ref="introduce"/>-->
   </div>
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Merienda&display=swap');
-
 @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
 
 body {

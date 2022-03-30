@@ -6,7 +6,7 @@ const path = require('path')
 export default defineConfig({
     resolve: {
         alias: {
-            'r_animate': path.resolve(__dirname, '../r_animate')
+            'r_animate': path.resolve(__dirname, '../r_animate/index.js')
         },
     },
     plugins: [vue()],

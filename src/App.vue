@@ -41,8 +41,8 @@ export default {
         }
         cancelAnimationFrame(this.cursor_render_Framer)
         this.cursor_render_Framer = null
-        cursor.r_cancel()
-        cursor.r_animate({
+        r(cursor).r_cancel()
+        r(cursor).r_animate({
           width,
           height,
           borderColor,
@@ -51,9 +51,9 @@ export default {
           duration: 500
         })
       } else {
-        cursor_container.style.zIndex = '999'
-        cursor.r_cancel()
-        cursor.r_animate({
+        r(cursor_container).style.zIndex = '999'
+        r(cursor).r_cancel()
+        r(cursor).r_animate({
           opacity: 1,
           width: 20,
           height: 20,
@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     init_cursor() {
-      const cursor_show_time = debug ? 2000 : 1000
+      const cursor_show_time = debug ? 100 : 1000
 
       r(this.$refs.cursor_container)
           .r_animate({
@@ -80,7 +80,7 @@ export default {
             opacity: '[0~1]',
             transform: 'scale([0~1])',
             delay: cursor_show_time,
-            duration: 100
+            duration: 1000
           })
           .r_then(() => {
             this.cursor_lock = false
@@ -142,14 +142,14 @@ export default {
     },
     document_mousedown_function(e) {
       const { cursor_container } = this.$refs
-      cursor_container.r_animate({
+      r(cursor_container).r_animate({
         transform: 'scale([1~1.1])', opacity: '[1~0.5]',
         duration: 200, callback: debounce
       })
     },
     document_mouseup_function(e) {
       const { cursor_container } = this.$refs
-      cursor_container.r_animate({
+      r(cursor_container).r_animate({
         transform: 'scale([1.1~1])', opacity: '[0.5~1]',
         duration: 200, callback: debounce
       })
@@ -164,8 +164,6 @@ export default {
     }
   },
   mounted() {
-    const r_director = new Director()
-    r_director.take(this)
     this.init_cursor()
     this.init_interaction()
     this.$refs.first.beginning_motion()

@@ -5,9 +5,23 @@
     background: #444444;
 }
 
-.rectangle{
+.rectangle {
     width: 100px;
     height: 100px;
-    background: #444444;
+    background: rgb(103, 82, 255);
+    border-radius: 10px;
     color: white;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.court {
+    border: 2px grey solid;
+    border-radius: 10px;
+    margin: 5px;
+    width: 300px;
+    height: 300px;
+    cursor: pointer;
 }

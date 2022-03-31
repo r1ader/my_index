@@ -6,26 +6,41 @@ import { onMounted, ref } from 'vue'
 import { r, act } from 'r_animate'
 import { clog } from "../utils";
 
-
-const rect = ref()
-const rect2 = ref()
-
+const in_configs = [
+  act.IN.BLUR,
+  act.IN.OPACITY,
+  act.IN.SCROLL_UP,
+  act.IN.SCROLL_DOWN,
+]
+const out_configs = [
+  act.OUT.BLUR,
+  act.OUT.OPACITY,
+  act.OUT.SCROLL_UP,
+  act.OUT.SCROLL_DOWN,
+]
+const em_configs = [
+  act.EMPHASIZE.SHAKE_X,
+  act.EMPHASIZE.SHAKE_Y,
+  act.EMPHASIZE.SHAKE_ROTATE
+]
 onMounted(() => {
-  r(rect.value).r_animate({ duration: 1000 })
-      .r_animate({ ...act.IN.SCROLL_DOWN })
-      // .r_animate({ ...act.BLUR_IN })
-  // .r_animate({ ...act.SHAKE_Y })
-  // .r_animate({ ...act.SHAKE_ROTATE })
 })
+
+const begin = function (e) {
+  console.log(e.target.children)
+}
 </script>
 <template>
   <div class="playground">
-    <div class="court">
-      <div ref="rect" class="rectangle">1</div>
+    <div>
+      <Template :init="{opacity:'0'}" v-for="config in in_configs" :config="config"></Template>
     </div>
-    <!--    <div class="court">-->
-    <!--      <div ref="rect2" class="rectangle"></div>-->
-    <!--    </div>-->
+    <div>
+      <Template :init="{opacity:'1'}" v-for="config in out_configs" :config="config"></Template>
+    </div>
+    <div>
+      <Template :init="{opacity:'1'}" v-for="config in em_configs" :config="config"></Template>
+    </div>
   </div>
 </template>
 
@@ -40,21 +55,21 @@ div {
 .playground {
   width: 100vw;
   height: 100vh;
-  background-color: #dadada;
+  background-color: #363636;
   flex-wrap: wrap;
   align-items: center;
 }
 
 .court {
-  border: 1px grey solid;
-  border-radius: 5px;
+  border: 2px grey solid;
+  border-radius: 10px;
   margin: 5px;
 }
 
 @media (min-width: 600px) {
   .court {
-    width: 500px;
-    height: 500px;
+    width: 300px;
+    height: 300px;
   }
 }
 

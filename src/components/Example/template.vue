@@ -1,6 +1,7 @@
 <template>
   <div ref="court" class="court">
     <div :style="init" :class="shape" ref="target"></div>
+    <div class="name">{{ config.name }}</div>
   </div>
 </template>
 
@@ -49,5 +50,10 @@ export default {
 </script>
 
 <style scoped>
-
+.name {
+  position: absolute;
+  color: #dadada;
+  font-weight: bolder;
+  bottom:30px
+}
 </style>

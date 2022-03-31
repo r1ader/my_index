@@ -8,5 +8,8 @@ export default defineConfig({
       'r_animate' : path.resolve(__dirname, '../r_animate')
     },
   },
-  plugins: [vue()]
+  plugins: [vue()],
+  build: {
+    outDir: '../Doc'
+  }
 })

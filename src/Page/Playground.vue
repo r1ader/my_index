@@ -3,35 +3,29 @@ import Examples from "../components/Example";
 import Template from "../components/Example/template.vue";
 import '../components/Example/index.css'
 import { onMounted, ref } from 'vue'
-
-const rotateForFiveRounds =
-    {
-      transform: 'translateY(100px) perspective(200px) rotateY([0~90]deg)  translateY(-100px) rotateX(90deg) rotateZ(45deg)',
-      loop: 2,
-      loop_mode: 'alternate'
-    }
-
-import { r_register, act, r_default } from 'r_animate'
+import { r, act } from 'r_animate'
 import { clog } from "../utils";
 
+
 const rect = ref()
+const rect2 = ref()
 
 onMounted(() => {
-  r_register(rect.value)
-  // r_default({ duration: 500 })
-  rect.value.r_default({
-    duration: 1500,
-    ease: 'Linear'
-  })
-  rect.value.r_animate(rotateForFiveRounds).r_animate(act.FADE_OUT).r_animate(act.FADE_IN)
+  r(rect.value).r_animate({ duration: 1000 })
+      .r_animate({ ...act.IN.SCROLL_DOWN })
+      // .r_animate({ ...act.BLUR_IN })
+  // .r_animate({ ...act.SHAKE_Y })
+  // .r_animate({ ...act.SHAKE_ROTATE })
 })
 </script>
 <template>
   <div class="playground">
     <div class="court">
-      <div ref="rect" class="rectangle"></div>
-      <!--      <Template shape="rectangle" :config="config"/>-->
+      <div ref="rect" class="rectangle">1</div>
     </div>
+    <!--    <div class="court">-->
+    <!--      <div ref="rect2" class="rectangle"></div>-->
+    <!--    </div>-->
   </div>
 </template>
 

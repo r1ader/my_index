@@ -22,9 +22,20 @@ const em_configs = [
   act.EMPHASIZE.SHAKE_X,
   act.EMPHASIZE.SHAKE_Y,
   act.EMPHASIZE.SHAKE_ROTATE,
-  act.EMPHASIZE.ROTATE_90,
   act.EMPHASIZE.RADAR,
   act.EMPHASIZE.BORDER_RADAR,
+  act.EMPHASIZE.LARGER,
+  act.EMPHASIZE.SMALLER,
+]
+const normal_configs = [
+  act.NORMAL.LARGER,
+  act.NORMAL.SMALLER,
+  act.NORMAL.ROTATE_45,
+  act.NORMAL.ROTATE_90,
+  act.NORMAL.ROTATE_180,
+  act.NORMAL.ROTATE_45_REVERSE,
+  act.NORMAL.ROTATE_90_REVERSE,
+  act.NORMAL.ROTATE_180_REVERSE,
 ]
 const copy = ref()
 const paste = function (name, e) {
@@ -43,15 +54,32 @@ const paste = function (name, e) {
 <template>
   <div class="header">
     <span style="color: #6752FF">r_animate.js</span>
-    <span>Act Pre-define Animations <span style="color: #8d8d8d">( Updating )</span></span>
+    <span class="page_title">Act Pre-define Animations <span style="color: #8d8d8d">( Updating )</span></span>
     <span></span>
   </div>
   <div class="playground">
-    <Template :init="{opacity:'0'}" v-for="config in in_configs" :config="config"
+    <div class="title">
+      act.IN
+    </div>
+    <Template :init="{opacity:'1'}" v-for="config in in_configs" :config="config"
               v-on:click="(e)=>paste(config.name,e)"></Template>
+
+    <div class="title">
+      act.OUT
+    </div>
     <Template :init="{opacity:'1'}" v-for="config in out_configs" :config="config"
               v-on:click="(e)=>paste(config.name,e)"></Template>
+
+    <div class="title">
+      act.EMPHASIZE
+    </div>
     <Template :init="{opacity:'1'}" v-for="config in em_configs" :config="config"
+              v-on:click="(e)=>paste(config.name,e)"></Template>
+
+    <div class="title">
+      act.NORMAL
+    </div>
+    <Template :init="{opacity:'1'}" v-for="config in normal_configs" :config="config"
               v-on:click="(e)=>paste(config.name,e)"></Template>
   </div>
   <div ref="copy" class="copy">
@@ -67,11 +95,19 @@ div {
   align-items: center;
 }
 
+.title{
+  width: 100vw;
+  color: #dadada;
+  font-weight: bolder;
+  font-size: 40px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
 .playground {
   background-color: #363636;
   flex-wrap: wrap;
   align-items: center;
-  padding-top: 50px;
   padding-bottom: 50px;
 }
 
@@ -101,5 +137,11 @@ div {
   border: 2px solid white;
   border-radius: 8px;
   opacity: 0;
+}
+
+@media (max-width: 600px) {
+  .page_title {
+    display: none;
+  }
 }
 </style>

@@ -29,8 +29,6 @@ onMounted(() => {
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Merienda&display=swap');
-
 @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
 
 body {
@@ -38,6 +36,7 @@ body {
   padding: 0;
   background-color: #363636;
   overflow-x: hidden;
+  font-family: Varela Round, Arial, sans-serif;
 }
 
 

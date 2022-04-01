@@ -36,6 +36,8 @@ import Animations from "./Page/Animations.vue";
 body {
   margin: 0;
   padding: 0;
+  background-color: #363636;
+  overflow-x: hidden;
 }
 
 

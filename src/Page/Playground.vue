@@ -6,51 +6,37 @@ import { onMounted, ref } from 'vue'
 import { r, act } from 'r_animate'
 import { clog } from "../utils";
 
-const in_configs = [
-  act.IN.BLUR,
-  act.IN.OPACITY,
-  act.IN.SCROLL_UP,
-  act.IN.SCROLL_DOWN,
-]
-const out_configs = [
-  act.OUT.BLUR,
-  act.OUT.OPACITY,
-  act.OUT.SCROLL_UP,
-  act.OUT.SCROLL_DOWN,
-]
-const em_configs = [
-  act.EMPHASIZE.SHAKE_X,
-  act.EMPHASIZE.SHAKE_Y,
-  act.EMPHASIZE.SHAKE_ROTATE,
-  act.EMPHASIZE.ROTATE_90
-]
-const copy = ref()
-const paste = function (name, e) {
-  const { clientX, clientY } = e
-  navigator.clipboard.writeText(name);
-  r(copy.value).r_cancel().r_animate({
-    top:`[${ clientY - 50 }~${ clientY - 50 }]px`,
-    left:`[${ clientX - 50 }~${ clientX - 50 }]px`,
-    opacity: '[0~1]',
-    transform: 'translateY([0~-30]px)'
-  }).r_animate({
-    opacity: '[1~0]',
-  })
-}
+const config = act.EMPHASIZE.BORDER_SWELL
+const el = ref()
+const el2 = ref()
+const el3 = ref()
+const el4 = ref()
+const el5 = ref()
+const el6 = ref()
+onMounted(() => {
+  el.value.begin()
+  el2.value.begin()
+  el3.value.begin()
+  el4.value.begin()
+  el5.value.begin()
+  el6.value.begin()
+})
 </script>
 <template>
   <div class="header">
     <span style="color: #6752FF">r_animate.js</span>
-    <span>Act Pre-define Animations <span style="color: #8d8d8d">( Updating )</span></span>
-    <span></span>
+    <span>Playground</span>
+    <span style="opacity: 0">r_animate.js</span>
   </div>
   <div class="playground">
-    <Template :init="{opacity:'0'}" v-for="config in in_configs" :config="config"
-              v-on:click="(e)=>paste(config.name,e)"></Template>
-    <Template :init="{opacity:'1'}" v-for="config in out_configs" :config="config"
-              v-on:click="(e)=>paste(config.name,e)"></Template>
-    <Template :init="{opacity:'1'}" v-for="config in em_configs" :config="config"
-              v-on:click="(e)=>paste(config.name,e)"></Template>
+    <Template ref="el" :config="config"></Template>
+    <Template :init="{width:'200px'}" ref="el2" :config="config"></Template>
+    <Template :init="{height:'200px'}" ref="el3" :config="config"></Template>
+    <div>
+      <Template :init="{width:'200px',height:'200px'}" ref="el4" :config="config"></Template>
+      <Template ref="el5" :init="{borderRadius:'50px'}" :config="config"></Template>
+      <Template ref="el6" :init="{width:'200px',height:'200px',borderRadius:'100px'}" :config="config"></Template>
+    </div>
   </div>
   <div ref="copy" class="copy">
     Copied!

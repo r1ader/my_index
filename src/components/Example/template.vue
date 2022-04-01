@@ -54,6 +54,6 @@ export default {
   position: absolute;
   color: #dadada;
   font-weight: bolder;
-  bottom:30px
+  bottom: 30px
 }
 </style>

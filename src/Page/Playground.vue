@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue'
 import { r, act } from 'r_animate'
 import { clog } from "../utils";
 
-const config = act.EMPHASIZE.BORDER_RADAR
+const config = act.EMPHASIZE.BORDER_STROKE
 const el = ref()
 const el2 = ref()
 const el3 = ref()

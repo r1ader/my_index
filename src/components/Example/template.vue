@@ -29,7 +29,7 @@ export default {
   methods: {
     begin() {
       if (this.config) {
-        const style = cloneDeep(this.$refs.target)
+        const style = {...this.$refs.target.style,...this.init}
         r(this.$refs.playing).r_cancel().r_animate({
           transform: 'scale([0~1])'
         })

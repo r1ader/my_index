@@ -5,45 +5,21 @@ import '../components/Example/index.css'
 import { onMounted, ref } from 'vue'
 import { r, act } from 'r_animate'
 import { clog } from "../utils";
+import { isObject } from "lodash";
 
-const in_configs = [
-  act.IN.BLUR,
-  act.IN.OPACITY,
-  act.IN.SCROLL_UP,
-  act.IN.SCROLL_DOWN,
-]
-const out_configs = [
-  act.OUT.BLUR,
-  act.OUT.OPACITY,
-  act.OUT.SCROLL_UP,
-  act.OUT.SCROLL_DOWN,
-]
-const em_configs = [
-  act.EMPHASIZE.SHAKE_X,
-  act.EMPHASIZE.SHAKE_Y,
-  act.EMPHASIZE.SHAKE_ROTATE,
-  act.EMPHASIZE.RADAR,
-  act.EMPHASIZE.BORDER_RADAR,
-  act.EMPHASIZE.LARGER,
-  act.EMPHASIZE.SMALLER,
-]
-const normal_configs = [
-  act.NORMAL.LARGER,
-  act.NORMAL.SMALLER,
-  act.NORMAL.ROTATE_45,
-  act.NORMAL.ROTATE_90,
-  act.NORMAL.ROTATE_180,
-  act.NORMAL.ROTATE_45_REVERSE,
-  act.NORMAL.ROTATE_90_REVERSE,
-  act.NORMAL.ROTATE_180_REVERSE,
-]
+
+const in_configs = Object.keys(act.IN).map(key => act.IN[key]).filter(o => isObject(o))
+const out_configs = Object.keys(act.OUT).map(key => act.OUT[key]).filter(o => isObject(o))
+const em_configs = Object.keys(act.EMPHASIZE).map(key => act.EMPHASIZE[key]).filter(o => isObject(o))
+const normal_configs = Object.keys(act.NORMAL).map(key => act.NORMAL[key]).filter(o => isObject(o))
+
 const copy = ref()
 const paste = function (name, e) {
   const { pageX, pageY } = e
   navigator.clipboard.writeText(name);
   r(copy.value).r_cancel().r_animate({
-    top:`[${ pageY - 50 }~${ pageY - 50 }]px`,
-    left:`[${ pageX - 50 }~${ pageX - 50 }]px`,
+    top: `[${ pageY - 50 }~${ pageY - 50 }]px`,
+    left: `[${ pageX - 50 }~${ pageX - 50 }]px`,
     opacity: '[0~1]',
     transform: 'translateY([0~-30]px)'
   }).r_animate({
@@ -95,7 +71,7 @@ div {
   align-items: center;
 }
 
-.title{
+.title {
   width: 100vw;
   color: #dadada;
   font-weight: bolder;

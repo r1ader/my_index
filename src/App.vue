@@ -5,13 +5,13 @@ import Docpage from "./Page/Document.vue";
 import { computed, onMounted, ref } from "vue";
 
 const routes = {
-  '/': Docpage,
+  '/': Animations,
   'playground': Playground,
   'animations': Animations
 }
 const currentPath = ref(window.location.hash)
 const currentView = computed(() => {
-  return routes[currentPath.value.slice(1) || '/'] || Docpage
+  return routes[currentPath.value.slice(1) || '/'] || Animations
 })
 
 onMounted(() => {

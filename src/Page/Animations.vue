@@ -22,7 +22,9 @@ const em_configs = [
   act.EMPHASIZE.SHAKE_X,
   act.EMPHASIZE.SHAKE_Y,
   act.EMPHASIZE.SHAKE_ROTATE,
-  act.EMPHASIZE.ROTATE_90
+  act.EMPHASIZE.ROTATE_90,
+  act.EMPHASIZE.RADAR,
+  act.EMPHASIZE.BORDER_RADAR,
 ]
 const copy = ref()
 const paste = function (name, e) {

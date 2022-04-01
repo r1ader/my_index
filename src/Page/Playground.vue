@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue'
 import { r, act } from 'r_animate'
 import { clog } from "../utils";
 
-const config = act.EMPHASIZE.BORDER_SWELL
+const config = act.EMPHASIZE.BORDER_RADAR
 const el = ref()
 const el2 = ref()
 const el3 = ref()
@@ -34,8 +34,8 @@ onMounted(() => {
     <Template :init="{height:'200px'}" ref="el3" :config="config"></Template>
     <div>
       <Template :init="{width:'200px',height:'200px'}" ref="el4" :config="config"></Template>
-      <Template ref="el5" :init="{borderRadius:'50px'}" :config="config"></Template>
-      <Template ref="el6" :init="{width:'200px',height:'200px',borderRadius:'100px'}" :config="config"></Template>
+      <Template ref="el5" :init="{borderRadius:'50%'}" :config="config"></Template>
+      <Template ref="el6" :init="{width:'200px',height:'200px',borderRadius:'50%'}" :config="config"></Template>
     </div>
   </div>
   <div ref="copy" class="copy">

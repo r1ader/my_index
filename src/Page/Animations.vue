@@ -28,7 +28,7 @@ const paste = function (name, e) {
 </script>
 <template>
   <div class="header">
-    <span style="color: #6752FF"><span style="font-size: 30px">r</span>acts.js</span>
+    <span style="color: #6752FF"><span style="font-size: 30px">r</span>act.js</span>
     <span class="page_title">acts: Pre-define Animations <span style="color: #8d8d8d">( Updating )</span></span>
     <span></span>
   </div>

@@ -3,7 +3,7 @@
 import First from './components/First/index.vue'
 import { ease_functions } from "./utils/math_util";
 import _ from "lodash";
-import { Director, r } from 'r_animate';
+import { r } from 'ractjs';
 import { debug } from './const/config'
 import { clog, getElSize, debounce } from './utils/index'
 import { fromEvent } from 'rxjs'
@@ -35,14 +35,13 @@ export default {
         if (target.r_zIndex) {
           cursor_container.style.zIndex = target.r_zIndex
         }
-        clog(target.r_opacity)
         if (target.r_opacity) {
           cursor.style.opacity = target.r_opacity
         }
         cancelAnimationFrame(this.cursor_render_Framer)
         this.cursor_render_Framer = null
-        r(cursor).r_cancel()
-        r(cursor).r_animate({
+        r(cursor).cancel()
+        r(cursor).act({
           width,
           height,
           borderColor,
@@ -52,8 +51,8 @@ export default {
         })
       } else {
         r(cursor_container).style.zIndex = '999'
-        r(cursor).r_cancel()
-        r(cursor).r_animate({
+        r(cursor).cancel()
+        r(cursor).act({
           opacity: 1,
           width: 20,
           height: 20,
@@ -70,19 +69,19 @@ export default {
       const cursor_show_time = debug ? 100 : 1000
 
       r(this.$refs.cursor_container)
-          .r_animate({
+          .act({
             opacity: 0,
             top: `[0~${ window.innerHeight / 1.5 }]px`,
             left: `[0~${ window.innerWidth / 2 }]px`,
             duration: 16
           })
-          .r_animate({
+          .act({
             opacity: '[0~1]',
             transform: 'scale([0~1])',
             delay: cursor_show_time,
             duration: 1000
           })
-          .r_then(() => {
+          .then(() => {
             this.cursor_lock = false
           })
     },
@@ -142,14 +141,14 @@ export default {
     },
     document_mousedown_function(e) {
       const { cursor_container } = this.$refs
-      r(cursor_container).r_animate({
+      r(cursor_container).act({
         transform: 'scale([1~1.1])', opacity: '[1~0.5]',
         duration: 200, callback: debounce
       })
     },
     document_mouseup_function(e) {
       const { cursor_container } = this.$refs
-      r(cursor_container).r_animate({
+      r(cursor_container).act({
         transform: 'scale([1.1~1])', opacity: '[0.5~1]',
         duration: 200, callback: debounce
       })

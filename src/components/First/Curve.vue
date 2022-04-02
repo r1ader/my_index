@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { Director } from "r_animate";
+import { r } from "ractjs";
 import { debug } from '../../const/config'
 import { clog, debounce } from '../../utils/index'
 
@@ -118,9 +118,9 @@ export default {
         curve_1, curve_2, curve_3
       } = this.$refs
       const duration = debug ? 500 : 2000
-      curve_1.r_animate({ transform: 'translate([-188~-80]px)', duration })
-      curve_2.r_animate({ transform: 'translate([-188~-80]px,[100~0]px)', duration })
-      curve_3.r_animate({ transform: 'translate([-188~-80]px,[200~0]px)', duration })
+      r(curve_1).act({ transform: 'translate([-188~-80]px)', duration })
+      r(curve_2).act({ transform: 'translate([-188~-80]px,[100~0]px)', duration })
+      r(curve_3).act({ transform: 'translate([-188~-80]px,[200~0]px)', duration })
     },
     init_interact() {
       const {
@@ -149,7 +149,7 @@ export default {
         _this.cursorY = e.clientY / scale_ratio
       })
       curve.addEventListener('mousedown', function (e) {
-        _this.r_director.r_animate({
+        r({}).act({
           duration: 200,
           parallel: (ratio) => {
             _this.scopeR = 40 + 40 * ratio
@@ -158,7 +158,7 @@ export default {
         })
       })
       curve.addEventListener('mouseup', function (e) {
-        _this.r_director.r_animate({
+        r({}).act({
           duration: 200,
           parallel: (ratio) => {
             _this.scopeR = 80 - 40 * ratio
@@ -167,7 +167,7 @@ export default {
         })
       })
       curve_1.addEventListener('mouseenter', function (e) {
-        curve_1.r_animate({
+        r(curve_1).act({
           ...translate_out,
           parallel: (ratio) => {
             _this.curve_1_transform = -80 + 80 * ratio
@@ -175,7 +175,7 @@ export default {
         })
       })
       curve_1.addEventListener('mouseleave', function (e) {
-        curve_1.r_animate({
+        r(curve_1).act({
           ...translate_in,
           parallel: (ratio) => {
             _this.curve_1_transform = -80 * ratio
@@ -184,7 +184,7 @@ export default {
 
       })
       curve_2.addEventListener('mouseenter', function (e) {
-        curve_2.r_animate({
+        r(curve_2).act({
           ...translate_out,
           parallel: (ratio) => {
             _this.curve_2_transform = -80 + 80 * ratio
@@ -192,7 +192,7 @@ export default {
         })
       })
       curve_2.addEventListener('mouseleave', function (e) {
-        curve_2.r_animate({
+        r(curve_2).act({
           ...translate_in,
           parallel: (ratio) => {
             _this.curve_2_transform = -80 * ratio
@@ -200,7 +200,7 @@ export default {
         })
       })
       curve_3.addEventListener('mouseenter', function (e) {
-        curve_3.r_animate({
+        r(curve_3).act({
           ...translate_out,
           parallel: (ratio) => {
             _this.curve_3_transform = -80 + 80 * ratio
@@ -208,7 +208,7 @@ export default {
         })
       })
       curve_3.addEventListener('mouseleave', function (e) {
-        curve_3.r_animate({
+        r(curve_3).act({
           ...translate_in,
           parallel: (ratio) => {
             _this.curve_3_transform = -80 * ratio
@@ -218,8 +218,6 @@ export default {
     },
   },
   mounted() {
-    this.r_director = new Director()
-    this.r_director.take(this)
     this.innerHeight = window.innerHeight
     this.innerWidth = window.innerWidth
     this.init_interact()

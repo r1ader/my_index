@@ -6,7 +6,6 @@ export function getElSize(target) {
     const viewportOffset = target.getBoundingClientRect();
     const top = viewportOffset.top;
     const left = viewportOffset.left;
-    // clog(viewportOffset)
     let {
         width,
         height,
@@ -32,8 +31,8 @@ export function getElSize(target) {
 }
 
 export const debounce = (actor) => {
-    while (actor.r_schedule().length >= 2) {
-        actor.r_skip()
-        actor.r_skip()
+    while (actor.schedule.length >= 2) {
+        actor.schedule.shift()
+        actor.schedule.shift()
     }
 }

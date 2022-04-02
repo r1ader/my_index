@@ -47,12 +47,12 @@
               <span style="font-size: 20px">
                 was supported by
               </span>
-              <a target="_blank" href="https://github.com/r1ader/r_animate#r_animatejs">
+              <a target="_blank" href="https://github.com/r1ader/ractjs#ractjs">
                 <span style="font-size: 20px;color: #434394;position:relative;">
-                  r_animate.js
+                  ract.js
                 </span>
                 <span style="position: relative;opacity: 1">
-                  <div class="r_animate_background" ref="r_a_b_1"></div>
+                  <div class="act_background" ref="r_a_b_1"></div>
                 </span>
               </a>
               <span style="font-size: 20px">
@@ -65,12 +65,12 @@
               <span style="font-size: 20px">
                     Refer to
                   </span>
-              <a target="_blank" href="https://github.com/r1ader/r_animate#r_animatejs">
+              <a target="_blank" href="https://github.com/r1ader/ractjs#ractjs">
                   <span style="margin-left:10px;font-size: 20px;color: #434394;position:relative;">
-                    r_animate.js
+                    ract.js
                   </span>
                   <span style="position: relative;opacity: 1">
-                  <div class="r_animate_background" ref="r_a_b_2"></div>
+                  <div class="act_background" ref="r_a_b_2"></div>
                 </span>
               </a>
               </span>
@@ -96,7 +96,7 @@
               </span>
                 <span style="font-size: 20px;color: #434394;">r1ader.v1@gmail.com</span>
                 <span style="position: relative;opacity: 1">
-                    <a  data-email="r1ader.v1@gmail.com" href="mailto:r1ader.v1@gmail.com">
+                    <a data-email="r1ader.v1@gmail.com" href="mailto:r1ader.v1@gmail.com">
                       <div class="email_background" ref="e_b"></div>
                     </a>
                 </span>
@@ -136,7 +136,7 @@
 </template>
 
 <script>
-import { Director } from 'r_animate'
+import { r } from 'ractjs'
 import Curve from "./Curve.vue";
 import Hello from "./Hello.vue";
 import _ from "lodash";
@@ -151,7 +151,6 @@ export default {
   },
   data() {
     return {
-      r_director: null,
       focus_on: false,
       cursorX: 100,
       cursorY: 0,
@@ -173,23 +172,21 @@ export default {
       const duration = debug ? 500 : 2000
       const opacity_on = { opacity: '[0~1]', duration: 100 }
       const scale_ratio = window.innerHeight / 360
-      curve_block.r_animate(opacity_on)
-      ball_block.r_animate(opacity_on)
-      paper_block.r_animate(opacity_on)
+      r(curve_block, ball_block, paper_block).act(opacity_on)
       this.$refs.curve.enter()
-      ball_1.r_animate({ transform: 'translate([200~0]px)', duration })
-      ball_2.r_animate({ transform: 'translateY([-150~0]px)', duration })
-      ball_3.r_animate({ transform: 'translate([100~0]px,[-200~0]px)', duration })
-      github.r_animate({ transform: 'translate([100~0]px,[-200~0]px)', duration }).r_animate(opacity_on)
-      paper_1.r_animate({
+      r(ball_1).act({ transform: 'translate([200~0]px)', duration })
+      r(ball_2).act({ transform: 'translateY([-150~0]px)', duration })
+      r(ball_3).act({ transform: 'translate([100~0]px,[-200~0]px)', duration })
+      r(github).act({ transform: 'translate([100~0]px,[-200~0]px)', duration }).act(opacity_on)
+      r(paper_1).act({
         transform: 'translate([300~-50]px,-100px) scale(0.7) perspective(500px) rotateY(-40deg) rotateX(20deg) rotateZ(-50deg)',
         duration
       })
-      paper_2.r_animate({
+      r(paper_2).act({
         transform: 'translate(-70px, [240~-70]px) scale(0.5) perspective(500px) rotateY(40deg) rotateZ(-20deg)',
         duration
       })
-      paper_3.r_animate({
+      r(paper_3).act({
         transform: 'translate([300~-80]px, [300~-30]px) rotateZ(20deg)',
         duration
       })
@@ -215,21 +212,15 @@ export default {
       e_b.r_zIndex = 999
 
       ball_1.addEventListener('mouseenter', function (e) {
-        ball_1
-            .r_animate({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeOutCirc' })
-            .r_animate({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeInCirc', reverse: true })
+        r(ball_1)
+            .act({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeOutCirc' })
+            .act({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeInCirc', reverse: true })
       })
       ball_2.addEventListener('mouseenter', function (e) {
-        ball_2
-            .r_animate({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeOutCirc' })
-            .r_animate({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeInCirc', reverse: true })
+        r(ball_2)
+            .act({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeOutCirc' })
+            .act({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeInCirc', reverse: true })
       })
-      // ball_3.addEventListener('mouseenter', function (e) {
-      //   ball_3
-      //       .r_animate({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeOutCirc' })
-      //       .r_animate({ transform: 'scale([1~1.1])', duration: 200, ease: 'easeInCirc', reverse: true })
-      // })
-
       // todo make cursor interact with card
       paper_1.addEventListener('click', function (e) {
         if (_this.focus_on) return
@@ -242,14 +233,14 @@ export default {
           duration: 1500,
           ease: 'easeInOutExpo',
         }
-        paper_1.r_animate(paper_1_flip_in)
+        r(paper_1).act(paper_1_flip_in)
         _this['shadow_block_cancel_callback'] = () => {
           return new Promise((resolve, eject) => {
-            paper_1.r_animate({
+            r(paper_1).act({
               ...paper_1_flip_in,
               // transform: `translate([-50~${ card_position_x }]px,[-100~${ card_position_y }]px) scale([1~2]) perspective(229px) rotateY([-40~360]deg) rotateX([20~0]deg) rotateZ([-50~0]deg)`,
               reverse: true
-            }).r_then(resolve)
+            }).then(() => resolve())
           })
         }
         _this.turn_focus_on()
@@ -265,14 +256,13 @@ export default {
           duration: 1500,
           ease: 'easeInOutExpo',
         }
-        paper_2.r_animate(paper_2_flip_in)
+        r(paper_2).act(paper_2_flip_in)
         _this['shadow_block_cancel_callback'] = () => {
           return new Promise((resolve, eject) => {
-            paper_2.r_animate({
+            r(paper_2).act({
               ...paper_2_flip_in,
-              // transform: `translate([-70~${ card_position_x }]px, [-70~${ card_position_y }]px) rotateX([20~360]deg) rotateZ([-20~0]deg)`,
               reverse: true
-            }).r_then(resolve)
+            }).then(() => resolve())
           })
         }
         _this.turn_focus_on()
@@ -288,19 +278,17 @@ export default {
           duration: 1500,
           ease: 'easeInOutExpo',
         }
-        paper_3.r_animate(paper_3_flip_in)
+        r(paper_3).act(paper_3_flip_in)
         _this['shadow_block_cancel_callback'] = () => {
           return new Promise((resolve, eject) => {
-            paper_3.r_animate({
+            r(paper_3).act({
               ...paper_3_flip_in,
-              // transform: `translate([-70~${ card_position_x }]px, [-70~${ card_position_y }]px) rotateX([20~360]deg) rotateZ([-20~0]deg)`,
               reverse: true
-            }).r_then(resolve)
+            }).then(() => resolve())
           })
         }
         _this.turn_focus_on()
       })
-      paper_1.hover_event = true
     },
     init_focus_system() {
       const _this = this
@@ -324,12 +312,12 @@ export default {
     turn_focus_on() {
       if (this.focus_on) return
       this.focus_on = true
-      this.$refs.shadow_block
-          .r_animate({
+      r(this.$refs.shadow_block)
+          .act({
             zIndex: '[-1~2]',
             duration: 16
           })
-          .r_animate({
+          .act({
             background: 'rgba(0,0,0,[0~0.8])',
             duration: 1000
           })
@@ -338,18 +326,16 @@ export default {
     turn_focus_off() {
       if (!this.focus_on) return
       this.focus_on = false
-      this.$refs.shadow_block.r_animate({
+      r(this.$refs.shadow_block).act({
         background: 'rgba(0,0,0,[0.8~0])',
         duration: 1000
-      }).r_animate({
+      }).act({
         zIndex: '[2~-1]',
         duration: 16
       })
     }
   },
   mounted() {
-    this.r_director = new Director()
-    this.r_director.take(this)
     if (debug) {
       this.background_enter()
     }
@@ -527,24 +513,24 @@ a {
   left: -100px;
 }
 
-.r_animate_background {
+.act_background {
   opacity: 0;
   position: absolute !important;
   z-index: 4;
-  width: 140px;
+  width: 95px;
   height: 40px;
   top: -10px;
-  left: -125px;
+  left: -75px;
   box-sizing: content-box;
   border-radius: 5px;
   background-color: rgb(128, 122, 218);
   border-color: rgb(47, 29, 253);
 }
 
-.r_animate_background:hover {
-  padding: 60px;
-  top: -70px;
-  left: -185px;
+.act_background:hover {
+  padding: 100px;
+  top: -110px;
+  left: -170px;
 }
 
 .email_background {

@@ -28,14 +28,13 @@
 </template>
 
 <script>
-import { Director } from "r_animate";
+import { r } from "ractjs";
 import { debug } from '../../const/config'
 
 export default {
   name: "Hello",
   data: function () {
     return {
-      r_director: null,
     }
   },
   methods: {
@@ -83,27 +82,23 @@ export default {
         duration: 400
       }
 
-      hello.r_animate({ duration: 500 }).r_animate(cylinder_enter)
-      dot.r_animate({ duration: 1000 }).r_animate(cylinder_enter)
-      introduce.r_animate({ duration: 1500 }).r_animate(cylinder_enter)
-      name_part1.r_animate({ duration: 2500 }).r_animate(cylinder_enter)
+      r(hello).act({ duration: 500 }).act(cylinder_enter)
+      r(dot).act({ duration: 1000 }).act(cylinder_enter)
+      r(introduce).act({ duration: 1500 }).act(cylinder_enter)
+      r(name_part1, name_part2, name_part3).act({ duration: 2500 }).act(cylinder_enter)
 
-      this.r_director.copy(name_part1, [
-        name_part2,
-        name_part3
-      ])
 
-      name_part2
-          .r_animate(spread_width)
-          .r_animate({ duration: 100 })
-          .r_then(() => {
-            name_part2_1.r_animate(cylinder_enter)
-            name_part2_e.r_animate(cylinder_out)
+      r(name_part2)
+          .act(spread_width)
+          .act({ duration: 100 })
+          .then(() => {
+            r(name_part2_1).act(cylinder_enter)
+            r(name_part2_e).act(cylinder_out)
           })
-          .r_animate({ duration: 900 })
-          .r_animate(shrink_width)
-          .r_animate({ duration: 900 })
-          .r_then(() => {
+          .act({ duration: 900 })
+          .act(shrink_width)
+          .act({ duration: 900 })
+          .then(() => {
             this.$emit('enter_over')
             this.init_cursor_interact()
           })
@@ -123,8 +118,6 @@ export default {
   },
 
   mounted() {
-    this.r_director = new Director()
-    this.r_director.take(this)
   }
 }
 </script>

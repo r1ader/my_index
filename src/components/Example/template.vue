@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { r } from "r_animate"
+import { r } from "ractjs"
 import './index.css'
 import { cloneDeep } from "lodash";
 
@@ -30,12 +30,12 @@ export default {
     begin() {
       if (this.config) {
         const style = {...this.$refs.target.style,...this.init}
-        r(this.$refs.playing).r_cancel().r_animate({
+        r(this.$refs.playing).cancel().act({
           transform: 'scale([0~1])'
         })
-        r(this.$refs.target).r_animate(this.config).r_then(() => {
+        r(this.$refs.target).cancel().act(this.config).then(() => {
           this.$refs.target.style = style
-          r(this.$refs.playing).r_cancel().r_animate({
+          r(this.$refs.playing).cancel().act({
             transform: 'scale([1~0])'
           })
         })

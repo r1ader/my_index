@@ -1,59 +1,58 @@
 <script setup>
-import Examples from "../components/Example";
 import Template from "../components/Example/template.vue";
 import '../components/Example/index.css'
 import { onMounted, ref } from 'vue'
-import { r, act } from 'r_animate'
+import { r, acts } from 'ractjs'
 import { clog } from "../utils";
 import { isObject } from "lodash";
 
 
-const in_configs = Object.keys(act.IN).map(key => act.IN[key]).filter(o => isObject(o))
-const out_configs = Object.keys(act.OUT).map(key => act.OUT[key]).filter(o => isObject(o))
-const em_configs = Object.keys(act.EMPHASIZE).map(key => act.EMPHASIZE[key]).filter(o => isObject(o))
-const normal_configs = Object.keys(act.NORMAL).map(key => act.NORMAL[key]).filter(o => isObject(o))
+const in_configs = Object.keys(acts.IN).map(key => acts.IN[key]).filter(o => isObject(o))
+const out_configs = Object.keys(acts.OUT).map(key => acts.OUT[key]).filter(o => isObject(o))
+const em_configs = Object.keys(acts.EMPHASIZE).map(key => acts.EMPHASIZE[key]).filter(o => isObject(o))
+const normal_configs = Object.keys(acts.NORMAL).map(key => acts.NORMAL[key]).filter(o => isObject(o))
 
 const copy = ref()
 const paste = function (name, e) {
   const { pageX, pageY } = e
   navigator.clipboard.writeText(name);
-  r(copy.value).r_cancel().r_animate({
+  r(copy.value).cancel().act({
     top: `[${ pageY - 50 }~${ pageY - 50 }]px`,
     left: `[${ pageX - 50 }~${ pageX - 50 }]px`,
     opacity: '[0~1]',
     transform: 'translateY([0~-30]px)'
-  }).r_animate({
+  }).act({
     opacity: '[1~0]',
   })
 }
 </script>
 <template>
   <div class="header">
-    <span style="color: #6752FF">r_animate.js</span>
-    <span class="page_title">Act Pre-define Animations <span style="color: #8d8d8d">( Updating )</span></span>
+    <span style="color: #6752FF"><span style="font-size: 30px">r</span>acts.js</span>
+    <span class="page_title">Pre-define Animations <span style="color: #8d8d8d">( Updating )</span></span>
     <span></span>
   </div>
   <div class="playground">
     <div class="title">
-      act.IN
+      acts.IN
     </div>
     <Template :init="{opacity:'1'}" v-for="config in in_configs" :config="config"
               v-on:click="(e)=>paste(config.name,e)"></Template>
 
     <div class="title">
-      act.OUT
+      acts.OUT
     </div>
     <Template :init="{opacity:'1'}" v-for="config in out_configs" :config="config"
               v-on:click="(e)=>paste(config.name,e)"></Template>
 
     <div class="title">
-      act.EMPHASIZE
+      acts.EMPHASIZE
     </div>
     <Template :init="{opacity:'1'}" v-for="config in em_configs" :config="config"
               v-on:click="(e)=>paste(config.name,e)"></Template>
 
     <div class="title">
-      act.NORMAL
+      acts.NORMAL
     </div>
     <Template :init="{opacity:'1'}" v-for="config in normal_configs" :config="config"
               v-on:click="(e)=>paste(config.name,e)"></Template>

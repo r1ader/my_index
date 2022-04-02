@@ -1,12 +1,11 @@
 <script setup>
-import Examples from "../components/Example";
 import Template from "../components/Example/template.vue";
 import '../components/Example/index.css'
 import { onMounted, ref } from 'vue'
-import { r, act } from 'r_animate'
+import { r, acts } from 'ractjs'
 import { clog } from "../utils";
 
-const config = act.EMPHASIZE.BORDER_STROKE
+const config = acts.EMPHASIZE.BORDER_STROKE
 const el = ref()
 const el2 = ref()
 const el3 = ref()
@@ -24,9 +23,9 @@ onMounted(() => {
 </script>
 <template>
   <div class="header">
-    <span style="color: #6752FF">r_animate.js</span>
+    <span style="color: #6752FF">ract.js</span>
     <span>Playground</span>
-    <span style="opacity: 0">r_animate.js</span>
+    <span style="opacity: 0">ract.js</span>
   </div>
   <div class="playground">
     <Template ref="el" :config="config"></Template>

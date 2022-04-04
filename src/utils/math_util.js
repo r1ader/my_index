@@ -95,3 +95,9 @@ export function ease_functions(method) {
             }
     }
 }
+
+if (import.meta.hot) {
+    import.meta.hot.accept(() => {
+        console.log('updated')
+    });
+}

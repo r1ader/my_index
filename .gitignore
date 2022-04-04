@@ -26,3 +26,4 @@ package-lock.json
 .vscode
 coverage
 src/utils/r_animate
+local

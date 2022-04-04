@@ -1,6 +1,7 @@
 <script>
 
 import First from './components/First/index.vue'
+import Second from './components/Second/index.vue'
 import { ease_functions } from "./utils/math_util";
 import _ from "lodash";
 import { r } from 'ractjs';
@@ -10,7 +11,8 @@ import { fromEvent } from 'rxjs'
 
 export default {
   components: {
-    First
+    First,
+    Second
   },
   data() {
     return {
@@ -86,11 +88,11 @@ export default {
           })
     },
     init_interaction() {
-      fromEvent(document,'mousemove').subscribe(this.document_mousemove_function)
-      fromEvent(document,'mousedown').subscribe(this.document_mousedown_function)
-      fromEvent(document,'mouseup').subscribe(this.document_mouseup_function)
-      fromEvent(document,'mouseleave').subscribe(this.document_mouseleave_function)
-      fromEvent(document,'mouseenter').subscribe(this.document_mouseenter_function)
+      fromEvent(document, 'mousemove').subscribe(this.document_mousemove_function)
+      fromEvent(document, 'mousedown').subscribe(this.document_mousedown_function)
+      fromEvent(document, 'mouseup').subscribe(this.document_mouseup_function)
+      fromEvent(document, 'mouseleave').subscribe(this.document_mouseleave_function)
+      fromEvent(document, 'mouseenter').subscribe(this.document_mouseenter_function)
     },
     document_mousemove_function(e) {
       const { clientX, clientY } = e
@@ -165,7 +167,9 @@ export default {
   mounted() {
     this.init_cursor()
     this.init_interaction()
-    this.$refs.first.beginning_motion()
+    if (this.$refs.first) {
+      this.$refs.first.beginning_motion()
+    }
   }
 }
 </script>
@@ -173,6 +177,8 @@ export default {
 <template>
   <div>
     <First ref="first"/>
+    11
+    <!--    <Second ref="Second"/>-->
     <div ref="cursor_container" class="cursor_container">
       <div ref="cursor" class="cursor"></div>
     </div>

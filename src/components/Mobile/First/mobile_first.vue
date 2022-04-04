@@ -29,12 +29,16 @@
               style="font-size:10px;position:absolute;width: 20vh;height: 60vw;display:flex;align-items:center;justify-content: space-between;">
             <span>All these animations</span>
             <span>was supported by</span>
-            <span>ract.js</span>
+            <span style="background-color: rgba(67,67,148,0.45);padding: 4px 10px;border-radius: 3px">
+              " ract.js "
+            </span>
             <span>It's easy</span>
             <span>and</span>
             <span>fully documented</span>
             <span>Wish you</span>
-            <span>have a try</span>
+            <a :href="doc_link">
+              <span ref="have_try" class="have_try">Have a try</span>
+            </a>
           </div>
         </div>
       </div>
@@ -49,7 +53,7 @@
 
 <script>
 
-import { r } from 'ractjs'
+import { r, acts } from 'ractjs'
 import { isFunction } from "lodash";
 
 export default {
@@ -61,6 +65,7 @@ export default {
       touch_with: null,
       touch_start: 0,
       touch_end: 0,
+      doc_link: '#'
     }
   },
   methods: {
@@ -90,8 +95,6 @@ export default {
         },
       }
     },
-    to_init() {
-    },
     show_me() {
       const {
         cat,
@@ -116,7 +119,7 @@ export default {
     show_ract() {
       const {
         cat,
-        me, ract,
+        me, ract, have_try,
         ract_background,
       } = this.$refs
       const {
@@ -125,12 +128,24 @@ export default {
       r(ract).act(ract_act)
       r(ract_background).act(ract_background_act)
       r(me).act({ transform: 'translateY([-25~-60]vh)' })
-      r(cat).act({ transform: 'translateY([25~60]vh)' })
+      r(cat).act({ transform: 'translateY([25~60]vh)' }).then(() => {
+        r(have_try).act({
+          background: 'rgba(66, 185, 131, [0~1])',
+          padding: '[0~10]px [0~30]px [0~10]px [0~30]px'
+        })
+        this.$data.doc_link = 'https://r1ader.gitbook.io/ractjs_cn/'
+      })
       this.cancel_callback = () => {
         r(ract).act({ ...ract_act, reverse: true })
         r(ract_background).act({ ...ract_background_act, reverse: true })
         r(me).act({ transform: 'translateY([-25~-60]vh)', reverse: true })
         r(cat).act({ transform: 'translateY([25~60]vh)', reverse: true })
+        r(have_try).act({
+          background: 'rgba(66, 185, 131, [0~1])',
+          padding: '[0~10]px [0~30]px [0~10]px [0~30]px', reverse: true
+        }).then(() => {
+          this.$data.doc_link = '#'
+        })
       }
     },
     show_cat() {
@@ -157,13 +172,15 @@ export default {
       const {
         cat,
         me, ract,
-        screen
+        screen,
+        have_try
       } = this.$refs
       const _this = this
 
       r(cat).default.ease = 'easeInOutExpo'
       r(me).default.ease = 'easeInOutExpo'
       r(ract).default.ease = 'easeInOutExpo'
+      r(have_try).default.ease = 'easeInOutExpo'
       screen.addEventListener('touchstart', function (e) {
         _this.touch_start = performance.now()
         _this.touch_with = e.target
@@ -177,6 +194,15 @@ export default {
         _this.touch_on = false
       }, true)
 
+    },
+    enter() {
+      const {
+        cat,
+        me, ract,
+      } = this.$refs
+      r(me).act(acts.IN.SCROLL_UP).act({transform: 'translateY([0~-25]vh)'})
+      r(cat).act(acts.IN.SCROLL_UP).act({transform: 'translateY([0~25]vh)'})
+      r(ract).act(acts.IN.SCROLL_UP)
     }
   },
   watch: {
@@ -206,6 +232,7 @@ export default {
   },
   mounted() {
     this.init_interact()
+    this.enter()
     // r(this.$refs.cat).act(this.cat_act)
   }
 }
@@ -292,5 +319,13 @@ div {
   color: white;
   transform: rotateZ(-90deg);
   background: rgba(0, 0, 0, 0);
+}
+
+.have_try {
+  display: inline-block;
+  color: white;
+  /*background: rgba(66, 185, 131, 0.82);*/
+  /*padding: 10px;*/
+  border-radius: 5px;
 }
 </style>

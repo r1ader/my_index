@@ -185,8 +185,6 @@ export default {
         _this.touch_start = performance.now()
         _this.touch_with = e.target
         _this.touch_on = true
-
-
       }, true)
       screen.addEventListener('touchend', function (e) {
         _this.touch_end = performance.now()
@@ -200,8 +198,8 @@ export default {
         cat,
         me, ract,
       } = this.$refs
-      r(me).act(acts.IN.SCROLL_UP).act({transform: 'translateY([0~-25]vh)'})
-      r(cat).act(acts.IN.SCROLL_UP).act({transform: 'translateY([0~25]vh)'})
+      r(me).act(acts.IN.SCROLL_UP).act({ transform: 'translateY([0~-25]vh)' })
+      r(cat).act(acts.IN.SCROLL_UP).act({ transform: 'translateY([0~25]vh)' })
       r(ract).act(acts.IN.SCROLL_UP)
     }
   },

@@ -64,8 +64,13 @@ export default {
       touch_on: false,
       touch_with: null,
       touch_start: 0,
+      touch_start_position: [0, 0],
+      touch_end_position: [0, 0],
       touch_end: 0,
-      doc_link: '#'
+      doc_link: '#',
+      clientX: 0,
+      clientY: 0,
+      interact_lock: false
     }
   },
   methods: {
@@ -160,12 +165,17 @@ export default {
       r(cat).act(cat_act)
       r(cat_pic).act(cat_pic_act)
       r(me).act({ transform: 'translateY([-25~-60]vh)' })
-      r(ract).act({ transform: 'translateY([0~-60]vh)' })
+      r(ract).act({ transform: 'translateY([0~-60]vh)' }).then(() => {
+        cat.addEventListener('touchmove', this.cat_move_event, true)
+        cat.addEventListener('touchend', this.cat_end_event)
+      })
       this.cancel_callback = () => {
         r(cat).act({ ...cat_act, reverse: true })
         r(cat_pic).act({ ...cat_pic_act, reverse: true })
         r(me).act({ transform: 'translateY([-25~-60]vh)', reverse: true })
         r(ract).act({ transform: 'translateY([0~-60]vh)', reverse: true })
+        cat.removeEventListener('touchmove', this.cat_move_event, true)
+        cat.removeEventListener('touchend', this.cat_end_event)
       }
     },
     init_interact() {
@@ -173,25 +183,31 @@ export default {
         cat,
         me, ract,
         screen,
-        have_try
+        have_try,
+        cat_pic
       } = this.$refs
       const _this = this
-
       r(cat).default.ease = 'easeInOutExpo'
       r(me).default.ease = 'easeInOutExpo'
       r(ract).default.ease = 'easeInOutExpo'
       r(have_try).default.ease = 'easeInOutExpo'
       screen.addEventListener('touchstart', function (e) {
+        if (_this.interact_lock) return
         _this.touch_start = performance.now()
+        _this.touch_start_position = [e.touches[0].clientX, e.touches[0].clientY]
         _this.touch_with = e.target
         _this.touch_on = true
-      }, true)
+      })
       screen.addEventListener('touchend', function (e) {
+        if (_this.interact_lock) return
         _this.touch_end = performance.now()
         _this.touch_with = e.target
         _this.touch_on = false
+      })
+      screen.addEventListener('touchmove', function (e) {
+        if (_this.interact_lock) return
+        _this.touch_end_position = [e.touches[0].clientX, e.touches[0].clientY]
       }, true)
-
     },
     enter() {
       const {
@@ -201,6 +217,28 @@ export default {
       r(me).act(acts.IN.SCROLL_UP).act({ transform: 'translateY([0~-25]vh)' })
       r(cat).act(acts.IN.SCROLL_UP).act({ transform: 'translateY([0~25]vh)' })
       r(ract).act(acts.IN.SCROLL_UP)
+    },
+    cat_move_event(e) {
+      e.stopPropagation()
+      if (this.interact_lock) return
+      const { clientX, clientY } = e.touches[0]
+      const [startX, startY] = this.touch_start_position
+      if (startX === 0 && startY === 0) return
+      this.$refs.cat_pic.style.backgroundPosition = `calc(-10vw - ${ 255 - (clientY - startY) / 10 }px) calc(-20vh - ${ 300 + (clientX - startX) / 10 }px)`
+    },
+    cat_end_event(e) {
+      const [endX, endY] = this.touch_end_position
+      const [startX, startY] = this.touch_start_position
+      if (endX === 0 && endY === 0) return
+      if (startX === 0 && startY === 0) return
+      this.interact_lock = true
+      r(this.$refs.cat_pic).act({
+        backgroundPosition: `calc(-10vw - [${ 255 - (endY - startY) / 10 }~255]px) calc(-20vh - [${ 300 + (endX - startX) / 10 }~300]px)`
+      }).then(() => {
+        this.interact_lock = false
+      })
+      this.touch_start_position = [0, 0]
+      this.touch_end_position = [0, 0]
     }
   },
   watch: {

@@ -32,6 +32,10 @@ export default {
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
 
+a {
+  text-decoration: none;
+}
+
 body {
   margin: 0;
   padding: 0;

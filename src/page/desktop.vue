@@ -29,6 +29,8 @@ export default {
       in_interact_area: false,
       cursor_render_Framer: null,
       cursor_target: null,
+      last_tick: 0,
+      target_style: {},
     }
   },
   watch: {
@@ -37,8 +39,12 @@ export default {
       const target = this.cursor_target
       let {
         width, height,
-        borderColor, backgroundColor, borderRadius
+        borderColor, backgroundColor, borderRadius,
+        padding, top, left
       } = getElSize(target)
+      this.target_style = {
+        width, height, padding, top, left
+      }
       if (new_value) {
         cursor_container.style.zIndex = '1'
         if (target.r_zIndex) {
@@ -102,6 +108,7 @@ export default {
       fromEvent(document, 'mouseenter').subscribe(this.document_mouseenter_function)
     },
     document_mousemove_function(e) {
+      this.tick()
       const { clientX, clientY } = e
       this.clientX = clientX
       this.clientY = clientY
@@ -123,7 +130,7 @@ export default {
       if (target.r_wrap) {
         let {
           width, height, padding, top, left
-        } = getElSize(target)
+        } = this.target_style
         this.clientX = left + width / 2 + padding - (left + width / 2 + padding - this.clientX) / 10
         this.clientY = top + height / 2 + padding - (top + height / 2 + padding - this.clientY) / 10
       }
@@ -169,6 +176,11 @@ export default {
     document_mouseenter_function(e) {
       if (this.cursor_lock) return
       this.$refs.cursor_container.style.display = ''
+    },
+    tick() {
+      // const time = Math.round((performance.now() - this.last_tick) * 10) / 10
+      // console.log(time)
+      // this.last_tick = performance.now()
     }
   },
   mounted() {

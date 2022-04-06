@@ -1,7 +1,7 @@
 <template>
   <div ref="screen" class="main_container">
     <div style="position:absolute;">
-      <div ref="me" class="welcome">
+      <div v-focus ref="me" class="welcome">
         <div style="position:absolute;">
           About me
         </div>
@@ -212,11 +212,16 @@ export default {
     enter() {
       const {
         cat,
-        me, ract,
+        me, ract, screen
       } = this.$refs
-      r(me).act(acts.IN.SCROLL_UP).act({ transform: 'translateY([0~-25]vh)' })
-      r(cat).act(acts.IN.SCROLL_UP).act({ transform: 'translateY([0~25]vh)' })
-      r(ract).act(acts.IN.SCROLL_UP)
+      cat.style.opacity = 0
+      me.style.opacity = 0
+      ract.style.opacity = 0
+      r(screen).act(acts.IN.OPACITY).then(() => {
+        r(me).act(acts.IN.SCROLL_UP).act({ transform: 'translateY([0~-25]vh)' })
+        r(cat).act(acts.IN.SCROLL_UP).act({ transform: 'translateY([0~25]vh)' })
+        r(ract).act(acts.IN.SCROLL_UP)
+      })
     },
     cat_move_event(e) {
       e.stopPropagation()
@@ -284,6 +289,7 @@ div {
 }
 
 .main_container {
+  opacity: 0;
   box-sizing: border-box;
   width: 100vw;
   height: 100vh;

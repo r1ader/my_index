@@ -1,1 +1,1 @@
-export const debug = true
+export const debug = import.meta.env.MODE === 'development'

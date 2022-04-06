@@ -20,7 +20,7 @@
           <span style="position: relative;opacity: 1">
 
             <a target="_blank" href="https://github.com/r1ader/my_index">
-              <div class="ball_background" ref="b_b"></div>
+              <div class="ball_background" v-catchCursor></div>
             </a>
           </span>
         </div>
@@ -52,7 +52,7 @@
                   ract.js
                 </span>
                 <span style="position: relative;opacity: 1">
-                  <div class="act_background" ref="r_a_b_1"></div>
+                  <div class="act_background" v-catchCursor:top></div>
                 </span>
               </a>
               <span style="font-size: 20px">
@@ -70,7 +70,7 @@
                     ract.js
                   </span>
                   <span style="position: relative;opacity: 1">
-                  <div class="act_background" ref="r_a_b_2"></div>
+                  <div class="act_background" v-catchCursor:top></div>
                 </span>
               </a>
               </span>
@@ -97,7 +97,7 @@
                 <span style="font-size: 20px;color: #434394;">r1ader.v1@gmail.com</span>
                 <span style="position: relative;opacity: 1">
                     <a data-email="r1ader.v1@gmail.com" href="mailto:r1ader.v1@gmail.com">
-                      <div class="email_background" ref="e_b"></div>
+                      <div class="email_background" ref="e_b" v-catchCursor:top></div>
                     </a>
                 </span>
               </span>
@@ -189,27 +189,17 @@ export default {
       r(paper_3).act({
         transform: 'translate([300~-80]px, [300~-30]px) rotateZ(20deg)',
         duration
+      }).then(()=>{
+        this.init_interact()
       })
-      this.init_interact()
     },
     init_interact() {
       const {
         ball_1, ball_2, ball_3,
         paper_1, paper_2, paper_3,
         paper_1_content, shadow_block,
-        b_b, r_a_b_1, r_a_b_2, e_b
       } = this.$refs
       const _this = this
-      b_b.r_wrap = true
-      r_a_b_1.r_wrap = true
-      r_a_b_1.r_opacity = 0.4
-      r_a_b_1.r_zIndex = 999
-      r_a_b_2.r_wrap = true
-      r_a_b_2.r_opacity = 0.4
-      r_a_b_2.r_zIndex = 999
-      e_b.r_wrap = true
-      e_b.r_opacity = 0.4
-      e_b.r_zIndex = 999
 
       ball_1.addEventListener('mouseenter', function (e) {
         r(ball_1)

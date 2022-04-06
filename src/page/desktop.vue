@@ -15,6 +15,7 @@ import { r } from 'ractjs';
 import { debug } from '../const/config'
 import { clog, getElSize, debounce } from '../utils/index'
 import { fromEvent } from 'rxjs'
+import { CURSOR_WRAP } from "../const/symbol";
 
 export default {
   components: {
@@ -126,8 +127,8 @@ export default {
       const { path } = event
       const target = _.first(path)
       if (!target) return
-      this.in_interact_area = !!target.r_wrap;
-      if (target.r_wrap) {
+      this.in_interact_area = !!target[CURSOR_WRAP];
+      if (target[CURSOR_WRAP]) {
         let {
           width, height, padding, top, left
         } = this.target_style

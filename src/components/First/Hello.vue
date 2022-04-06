@@ -21,7 +21,7 @@
       ader
         </span>
       <span style="position: relative;opacity: 1">
-      <div class="r1ader_background" ref="r_b"></div>
+      <div class="r1ader_background" v-cloak v-on:click="clickName" v-catchCursor></div>
     </span>
     </div>
   </div>
@@ -34,8 +34,7 @@ import { debug } from '../../const/config'
 export default {
   name: "Hello",
   data: function () {
-    return {
-    }
+    return {}
   },
   methods: {
     beginning_motion() {
@@ -58,7 +57,6 @@ export default {
         name_part2_e.style.opacity = '0'
         name_part2_1.style.opacity = '1'
         name_part3.style.opacity = '1'
-        this.init_cursor_interact()
         return
       }
       const cylinder_enter = {
@@ -100,20 +98,10 @@ export default {
           .act({ duration: 900 })
           .then(() => {
             this.$emit('enter_over')
-            this.init_cursor_interact()
           })
     },
-    init_cursor_interact() {
-      const { r_b } = this.$refs
-      r_b.r_wrap = true
-      r_b.r_style = {
-        borderColor: 'rgb(47,29,253)',
-        backgroundColor: 'rgb(128,122,218)',
-      }
-      const _this = this
-      r_b.addEventListener('click', function (e) {
-        _this.$emit('click_name')
-      })
+    clickName() {
+      this.$emit('click_name')
     }
   },
 
@@ -143,7 +131,7 @@ export default {
 }
 
 .r1ader_background {
-  opacity: 0;
+  opacity: 0.4;
   position: absolute !important;
   z-index: 0;
   height: 100px;
@@ -151,7 +139,6 @@ export default {
   left: -238px;
   top: -15px;
   margin: 0;
-  box-sizing: content-box;
   border-radius: 20px;
   background-color: rgb(128, 122, 218);
   border-color: rgb(47, 29, 253);

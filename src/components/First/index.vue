@@ -525,6 +525,7 @@ a {
   border-radius: 5px;
   background-color: rgb(128, 122, 218);
   border-color: rgb(47, 29, 253);
+  cursor: none;
 }
 
 .act_background:hover {

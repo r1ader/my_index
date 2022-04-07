@@ -1,7 +1,7 @@
 <template>
   <div ref="screen" class="main_container">
     <div style="position:absolute;">
-      <div v-focus ref="me" class="welcome">
+      <div ref="me" class="welcome">
         <div style="position:absolute;">
           About me
         </div>

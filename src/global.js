@@ -1,7 +1,24 @@
 import { CURSOR_WRAP } from "./const/symbol";
 import { isFunction } from "lodash";
+import { createStore } from "vuex";
 
-export function beforeMounted(app) {
+function use_vuex(app) {
+    const store = createStore({
+        state() {
+            return {
+                count: 0
+            }
+        },
+        mutations: {
+            increase(state) {
+                state.count++
+            }
+        }
+    })
+    app.use(store)
+}
+
+function add_directive(app) {
     app.directive('catchCursor',
         {
             mounted: (el, binding, vnode, prevnode) => {
@@ -14,4 +31,9 @@ export function beforeMounted(app) {
             }
         }
     )
+}
+
+export function beforeMounted(app) {
+    use_vuex(app)
+    add_directive(app)
 }

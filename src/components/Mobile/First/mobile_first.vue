@@ -109,16 +109,13 @@ export default {
       const {
         me_act, me_background_act
       } = this.get_acts()
+      r(me, me_background, ract, cat).record()
       r(me).act(me_act)
       r(me_background).act(me_background_act)
       r(ract).act({ transform: 'translateY([0~60]vh)' })
       r(cat).act({ transform: 'translateY([25~60]vh)' })
       this.cancel_callback = () => {
-        r(me).act({ ...me_act, reverse: true })
-        r(me_background).act({ ...me_background_act, reverse: true })
-        r(ract).act({ transform: 'translateY([0~60]vh)', reverse: true })
-        r(cat).act({ transform: 'translateY([25~60]vh)', reverse: true })
-
+        r(me, me_background, ract, cat).reverse()
       }
     },
     show_ract() {
@@ -130,6 +127,7 @@ export default {
       const {
         ract_act, ract_background_act,
       } = this.get_acts()
+      r(me, ract_background, ract, cat, have_try).record()
       r(ract).act(ract_act)
       r(ract_background).act(ract_background_act)
       r(me).act({ transform: 'translateY([-25~-60]vh)' })
@@ -141,16 +139,7 @@ export default {
         this.$data.doc_link = 'https://r1ader.gitbook.io/ractjs_cn/'
       })
       this.cancel_callback = () => {
-        r(ract).act({ ...ract_act, reverse: true })
-        r(ract_background).act({ ...ract_background_act, reverse: true })
-        r(me).act({ transform: 'translateY([-25~-60]vh)', reverse: true })
-        r(cat).act({ transform: 'translateY([25~60]vh)', reverse: true })
-        r(have_try).act({
-          background: 'rgba(66, 185, 131, [0~1])',
-          padding: '[0~10]px [0~30]px [0~10]px [0~30]px', reverse: true
-        }).then(() => {
-          this.$data.doc_link = '#'
-        })
+        r(me, ract_background, ract, cat, have_try).reverse()
       }
     },
     show_cat() {
@@ -162,6 +151,7 @@ export default {
       const {
         cat_act, cat_pic_act
       } = this.get_acts()
+      r(me, cat_pic, ract, cat).record()
       r(cat).act(cat_act)
       r(cat_pic).act(cat_pic_act)
       r(me).act({ transform: 'translateY([-25~-60]vh)' })
@@ -170,10 +160,7 @@ export default {
         cat.addEventListener('touchend', this.cat_end_event)
       })
       this.cancel_callback = () => {
-        r(cat).act({ ...cat_act, reverse: true })
-        r(cat_pic).act({ ...cat_pic_act, reverse: true })
-        r(me).act({ transform: 'translateY([-25~-60]vh)', reverse: true })
-        r(ract).act({ transform: 'translateY([0~-60]vh)', reverse: true })
+        r(me, cat_pic, ract, cat).reverse()
         cat.removeEventListener('touchmove', this.cat_move_event, true)
         cat.removeEventListener('touchend', this.cat_end_event)
       }
@@ -187,10 +174,7 @@ export default {
         cat_pic
       } = this.$refs
       const _this = this
-      r(cat).default.ease = 'easeInOutExpo'
-      r(me).default.ease = 'easeInOutExpo'
-      r(ract).default.ease = 'easeInOutExpo'
-      r(have_try).default.ease = 'easeInOutExpo'
+      r(cat, me, ract, have_try).setDefault({ ease: 'easeInOutExpo' })
       screen.addEventListener('touchstart', function (e) {
         if (_this.interact_lock) return
         _this.touch_start = performance.now()

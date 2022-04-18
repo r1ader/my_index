@@ -27,6 +27,8 @@ export default {
       cursor_lock: true,
       clientX: 0,
       clientY: 0,
+      virtual_clientX: 0,
+      virtual_clientY: 0,
       in_interact_area: false,
       cursor_render_Framer: null,
       cursor_target: null,
@@ -83,21 +85,19 @@ export default {
   methods: {
     init_cursor() {
       const cursor_show_time = debug ? 100 : 1000
-
       r(this.$refs.cursor_container)
           .act({
             opacity: 0,
-            top: `[0~${ window.innerHeight / 1.5 }]px`,
-            left: `[0~${ window.innerWidth / 2 }]px`,
             duration: 16
           })
           .act({
             opacity: '[0~1]',
-            transform: 'scale([0~1])',
+            transform: `translate(${ window.innerWidth / 2 }px,${ window.innerHeight / 1.5 }px) scale([0~1])`,
             delay: cursor_show_time,
             duration: 1000
           })
           .then(() => {
+            this.cursor_move(window.innerWidth / 2, window.innerHeight / 1.5)
             this.cursor_lock = false
           })
     },
@@ -119,9 +119,10 @@ export default {
       this.cursor_event_listen(e)
     },
     cursor_move(x, y) {
+      this.virtual_clientX = x
+      this.virtual_clientY = y
       const { cursor_container } = this.$refs
-      cursor_container.style.left = `${ x }px`
-      cursor_container.style.top = `${ y }px`
+      cursor_container.style.transform = `translate(${ x }px,${ y }px)`
     },
     cursor_event_listen(event) {
       const { path } = event
@@ -144,9 +145,7 @@ export default {
       const time = 20
       const inter_func = ease_functions('easeOutCirc')
       const [x, y] = [this.clientX, this.clientY]
-      const { cursor_container } = this.$refs
-      const cursor_x = parseFloat(cursor_container.style.left.replace('px', ''))
-      const cursor_y = parseFloat(cursor_container.style.top.replace('px', ''))
+      const [cursor_x, cursor_y] = [this.virtual_clientX, this.virtual_clientY]
       let distance_x = (x - cursor_x > 0 ? 1 : -1) * inter_func(Math.abs((x - cursor_x) / window.innerWidth)) * window.innerWidth / time
       let distance_y = (y - cursor_y > 0 ? 1 : -1) * inter_func(Math.abs((y - cursor_y) / window.innerHeight)) * window.innerWidth / time
       if (Math.abs(x - cursor_x) + Math.abs(y - cursor_y) < 2) {
@@ -157,16 +156,16 @@ export default {
       }
     },
     document_mousedown_function(e) {
-      const { cursor_container } = this.$refs
-      r(cursor_container).act({
-        transform: 'scale([1~1.1])', opacity: '[1~0.5]',
+      const { cursor } = this.$refs
+      r(cursor).act({
+        transform: 'translate(-50%, -50%) scale([1~1.1])', opacity: '[1~0.5]',
         duration: 200, callback: debounce
       })
     },
     document_mouseup_function(e) {
-      const { cursor_container } = this.$refs
-      r(cursor_container).act({
-        transform: 'scale([1.1~1])', opacity: '[0.5~1]',
+      const { cursor } = this.$refs
+      r(cursor).act({
+        transform: 'translate(-50%, -50%) scale([1.1~1])', opacity: '[0.5~1]',
         duration: 200, callback: debounce
       })
     },
@@ -214,6 +213,8 @@ div {
   position: fixed;
   pointer-events: none;
   z-index: 99;
+  left: 0;
+  top: 0
 }
 
 .cursor {

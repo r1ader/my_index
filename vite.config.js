@@ -6,7 +6,7 @@ const path = require('path')
 export default defineConfig({
     resolve: {
         alias: {
-            'ractjs': path.resolve(__dirname, '../ractjs/index.js')
+            'ractjs': path.resolve(__dirname, '../ractjs/dist/index.js')
         },
     },
     plugins: [vue()],

@@ -1,17 +1,21 @@
 <script setup>
 import Desktop from './page/desktop.vue'
 import Mobile from './page/mobile.vue'
-import { useWindowSize } from "@vueuse/core/index";
-const { width: innerWidth, height } = useWindowSize()
+import Three from './page/three_js_demo.vue'
+import { useWindowSize } from "@vueuse/core/index"
+import { useRouteHash } from "./utils/hooks";
 
+const { width: innerWidth } = useWindowSize()
+const hash = useRouteHash()
 </script>
 
 <template>
-  <div class="desktop">
-    <Desktop v-if="innerWidth>1100"/>
+  <div v-if="innerWidth>1100" class="desktop">
+    <Three v-if="hash==='threejs'"/>
+    <Desktop v-else/>
   </div>
-  <div class="mobile">
-    <Mobile v-if="innerWidth<=1100"/>
+  <div v-if="innerWidth<=1100" class="mobile">
+    <Mobile/>
   </div>
 </template>
 

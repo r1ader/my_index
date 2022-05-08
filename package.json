@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.16.11",
+    "@vueuse/core": "^8.4.2",
     "babel-jest": "^27.5.1",
     "lodash": "^4.17.21",
     "ractjs": "^1.0.1",

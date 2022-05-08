@@ -1,23 +1,9 @@
-<script>
-
+<script setup>
 import Desktop from './page/desktop.vue'
 import Mobile from './page/mobile.vue'
+import { useWindowSize } from "@vueuse/core/index";
+const { width: innerWidth, height } = useWindowSize()
 
-export default {
-  components: {
-    Desktop,
-    Mobile
-  },
-  data: function () {
-    return {
-      innerWidth: window.innerWidth
-    }
-  },
-  methods: {},
-
-  mounted() {
-  }
-}
 </script>
 
 <template>

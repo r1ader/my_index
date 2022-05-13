@@ -44,6 +44,7 @@ export const marked = (text) => {
         .replace(/#####(.+)/g, `<h5>$1</h5>`)
         .replace(/####(.+)/g, `<h4>$1</h4>`)
         .replace(/###(.+)/g, `<h3>$1</h3>`)
-        .replace(/##(.+)/g, `<h2>$1</h2>`)
-        .replace(/#(.+)/g, `<h1>$1</h1>`)
+        .replace(/## (.+)/g, `<h2>$1</h2>`)
+        .replace(/# (.+)/g, `<h1>$1</h1>`)
+        .replace(/\n\n+/g, `<br>`)
 }

@@ -2,7 +2,7 @@
 import { useMarked } from "../utils/hooks";
 import { ref } from "vue";
 
-const text = ref(`#default
+const text = ref(`# default
 
 ##h2
 
@@ -67,5 +67,8 @@ const rendered_markdown = useMarked(text)
   padding: 0 5px;
   background: #ef8a8d;
   color: white;
+}
+.marked h1,h2,h3,h4,h5 {
+  margin: 0;
 }
 </style>

@@ -1,21 +1,11 @@
 <script setup>
 import { useMarked } from "../utils/hooks";
 import { ref } from "vue";
+import MarkdownEditor from "../components/MarkdownEditor/index.vue";
 
-const text = ref(`# default
-
-##h2
-
-\`\`\`code\`\`\`
-
-
-\`\`\`codcj
-
-de\`\`\`
-
-\`codcjde\`
-`)
+const text = ref(`# asdc`)
 const rendered_markdown = useMarked(text)
+const viewState = ref('edit')
 </script>
 
 <template>
@@ -23,8 +13,17 @@ const rendered_markdown = useMarked(text)
     <div class="left">
       <textarea v-model="text"/>
     </div>
-    <div class="blog_body marked" v-html="rendered_markdown"/>
-    <div>
+    <div class="blog_body marked">
+      <div v-if="viewState==='view'" v-html="rendered_markdown"></div>
+      <MarkdownEditor
+          v-if="viewState==='edit'"
+          @input="text=$event"
+          v-bind:value="text"
+      />
+    </div>
+    <div class="right">
+      <button @click="viewState='edit'">edit</button>
+      <button @click="viewState='view'">view</button>
     </div>
   </div>
 </template>
@@ -49,9 +48,19 @@ const rendered_markdown = useMarked(text)
   padding: 30px 0 30px 30px;
 }
 
+.right {
+  padding: 30px 30px 30px 0;
+}
+
 .left textarea {
   height: 100%;
   width: 100%;
+}
+
+.right button {
+  height: 40px;
+  width: 100%;
+  margin-bottom: 10px;
 }
 </style>
 <style>
@@ -68,7 +77,8 @@ const rendered_markdown = useMarked(text)
   background: #ef8a8d;
   color: white;
 }
-.marked h1,h2,h3,h4,h5 {
+
+.marked h1, h2, h3, h4, h5 {
   margin: 0;
 }
 </style>

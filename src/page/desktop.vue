@@ -1,5 +1,5 @@
 <template>
-  <First ref="first"/>
+  <First class="no_cursor" ref="first"/>
   <div ref="cursor_container" class="cursor_container">
     <div ref="cursor" class="cursor"></div>
   </div>
@@ -194,6 +194,11 @@ export default {
 </script>
 
 <style scoped>
+
+.no_cursor{
+  cursor: None !important;
+  overflow: hidden;
+}
 
 a {
   cursor: None !important;

@@ -44,8 +44,6 @@ a {
 body {
   margin: 0;
   padding: 0;
-  cursor: None !important;
-  overflow: hidden;
   font-family: 'Varela Round', sans-serif;
 }
 

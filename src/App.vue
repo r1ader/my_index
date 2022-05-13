@@ -1,18 +1,33 @@
 <script setup>
-import Desktop from './page/desktop.vue'
+import Welcome from './page/desktop.vue'
 import Mobile from './page/mobile.vue'
 import Three from './page/three_js_demo.vue'
+import Blog from './page/blog.vue'
+import Playground from './page/playground.vue'
 import { useWindowSize } from "@vueuse/core/index"
 import { useRouteHash } from "./utils/hooks";
+import { computed } from "vue";
 
 const { width: innerWidth } = useWindowSize()
 const hash = useRouteHash()
+const Desktop = computed(() => {
+  return {
+    three: Three,
+    playground: Playground,
+    blog: Blog,
+  }[hash.value] || Welcome
+})
+
 </script>
 
 <template>
   <div v-if="innerWidth>1100" class="desktop">
-    <Three v-if="hash==='threejs'"/>
-    <Desktop v-else/>
+    <div class="header">
+      <a class="link" href="#blog">blog</a>
+      <a class="link" href="#playground">playground</a>
+      <a class="link" href="#three">three</a>
+    </div>
+    <Desktop/>
   </div>
   <div v-if="innerWidth<=1100" class="mobile">
     <Mobile/>
@@ -32,6 +47,14 @@ body {
   cursor: None !important;
   overflow: hidden;
   font-family: 'Varela Round', sans-serif;
+}
+
+.header{
+  background: #d5d5d5;
+}
+.link {
+  padding: 20px;
+  line-height: 50px;
 }
 
 @media (min-width: 1100px) {

@@ -3,7 +3,7 @@ import { useMarked } from "../utils/hooks";
 import { ref } from "vue";
 import MarkdownEditor from "../components/MarkdownEditor/index.vue";
 
-const text = ref(`# asdc`)
+const text = ref(``)
 const rendered_markdown = useMarked(text)
 const viewState = ref('edit')
 </script>
@@ -16,6 +16,7 @@ const viewState = ref('edit')
     <div class="blog_body marked">
       <div v-if="viewState==='view'" v-html="rendered_markdown"></div>
       <MarkdownEditor
+          autofocus="true"
           v-if="viewState==='edit'"
           @input="text=$event"
           v-bind:value="text"

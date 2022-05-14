@@ -37,15 +37,45 @@ export const debounce = (actor) => {
     }
 }
 
-export const marked = (text) => {
+export const marked = (text, output_type = 'dom') => {
+    return output_type === 'dom' ?
+        text.replace(/```([\s\S]+?)```/g, `<div class="code">$1</div>`)
+            .replace(/`(.*)`(\S+?\s)/g, `<span style="background: $2" class="code_span">$1</span>`)
+            .replace(/`(.*)`(#[\d\w]+?\s)/g, `<span style="background: $2" class="code_span">$1</span>`)
+            .replace(/#####[\u202F\u00A0\s](.*)/g, `<h5>$1</h5>`)
+            .replace(/####[\u202F\u00A0\s](.*)/g, `<h4>$1</h4>`)
+            .replace(/###[\u202F\u00A0\s](.*)/g, `<h3>$1</h3>`)
+            .replace(/##[\u202F\u00A0\s](.*)/g, `<h2>$1</h2>`)
+            .replace(/#[\u202F\u00A0\s](.*)/g, `<h1>$1</h1>`)
+            .replace(/\n\n+/g, `<br>`)
+        :
+        text.replace(/```([\s\S]+?)```/g, `$1`)
+            .replace(/`(.*)`(\S+?\s)/g, `$1`)
+            .replace(/`(.*)`(#[\d\w]+?\s)/g, `$1`)
+            .replace(/#####[\u202F\u00A0\s](.*)/g, `$1`)
+            .replace(/####[\u202F\u00A0\s](.*)/g, `$1`)
+            .replace(/###[\u202F\u00A0\s](.*)/g, `$1`)
+            .replace(/##[\u202F\u00A0\s](.*)/g, `$1`)
+            .replace(/#[\u202F\u00A0\s](.*)/g, `$1`)
+            .replace(/\n\n+/g, `<br>`)
+}
+
+export const unMarked = (text) => {
     return text
-        .replace(/```([\s\S]+?)```/g, `<div class="code">$1</div>`)
-        .replace(/`(.+)`(\S+?\s)/g, `<span style="background: $2" class="code_span">$1</span>`)
-        .replace(/`(.+)`(#[\d\w]+?\s)/g, `<span style="background: $2" class="code_span">$1</span>`)
-        .replace(/#####(.+)/g, `<h5>$1</h5>`)
-        .replace(/####(.+)/g, `<h4>$1</h4>`)
-        .replace(/###(.+)/g, `<h3>$1</h3>`)
-        .replace(/## (.+)/g, `<h2>$1</h2>`)
-        .replace(/# (.+)/g, `<h1>$1</h1>`)
-        .replace(/\n\n+/g, `<br>`)
+        .replace(/<h1>(.*)<\/h1>/g, `# $1`)
+}
+
+export const reverseMarked = (text, md_type) => {
+    switch (md_type) {
+        case 'h1': return `# ${ text }`
+        case 'h2': return `## ${ text }`
+        case 'h3': return `### ${ text }`
+        case 'h4': return `#### ${ text }`
+        case 'h5': return `##### ${ text }`
+        default: return text
+    }
+}
+
+export const format_space = (text) => {
+    return decodeURI(encodeURI(text).replace('%C2%A0', '%20'))
 }

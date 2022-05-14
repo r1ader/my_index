@@ -67,15 +67,27 @@ export const unMarked = (text) => {
 
 export const reverseMarked = (text, md_type) => {
     switch (md_type) {
-        case 'h1': return `# ${ text }`
-        case 'h2': return `## ${ text }`
-        case 'h3': return `### ${ text }`
-        case 'h4': return `#### ${ text }`
-        case 'h5': return `##### ${ text }`
-        default: return text
+        case 'h1':
+            return `# ${ text }`
+        case 'h2':
+            return `## ${ text }`
+        case 'h3':
+            return `### ${ text }`
+        case 'h4':
+            return `#### ${ text }`
+        case 'h5':
+            return `##### ${ text }`
+        default:
+            return text
     }
 }
 
 export const format_space = (text) => {
     return decodeURI(encodeURI(text).replace('%C2%A0', '%20'))
+}
+
+export const textSplice = (text, position, deleteNum, ...items) => {
+    return text.slice(0, position) +
+        items.join('') +
+        text.slice(position + deleteNum)
 }

@@ -18,6 +18,9 @@ export const MD_PATTERNS = [
     { PATTERN: H3_PATTERN, MD_TYPE: "h3", STYLE: H3_STYLE },
     { PATTERN: H4_PATTERN, MD_TYPE: "h4", STYLE: H4_STYLE },
     { PATTERN: H5_PATTERN, MD_TYPE: "h5", STYLE: H5_STYLE },
+    { PATTERN: /.*/, MD_TYPE: "text", STYLE: PLAIN_STYLE },
 ]
 export const ANCHOR_OFFSET_START = 0
 export const ANCHOR_OFFSET_END = 1
+export const INDENT = '    '
+export const NEED_PREVENT_KEY = ['Enter', 'Tab']

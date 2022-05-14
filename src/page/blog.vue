@@ -1,11 +1,22 @@
 <script setup>
 import { useMarked } from "../utils/hooks";
-import { ref } from "vue";
+import { onMounted, ref, unref } from "vue";
 import MarkdownEditor from "../components/MarkdownEditor/index.vue";
+import { ANCHOR_OFFSET_END } from '../const'
 
 const text = ref(``)
+const body = ref(null)
 const rendered_markdown = useMarked(text)
 const viewState = ref('edit')
+
+onMounted(() => {
+  unref(body).addEventListener('click', function (e) {
+    if (e.target !== unref(body)) return
+    const target_el = unref(body).children[0]
+    target_el.innerText.length === 0 ? target_el.focus() :
+        getSelection().setBaseAndExtent(target_el, ANCHOR_OFFSET_END, target_el, ANCHOR_OFFSET_END)
+  })
+})
 </script>
 
 <template>
@@ -13,7 +24,7 @@ const viewState = ref('edit')
     <div class="left">
       <textarea v-model="text"/>
     </div>
-    <div class="blog_body marked">
+    <div ref="body" class="blog_body marked">
       <div v-if="viewState==='view'" v-html="rendered_markdown"></div>
       <MarkdownEditor
           autofocus="true"

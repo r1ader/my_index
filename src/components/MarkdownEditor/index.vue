@@ -14,7 +14,7 @@ const onInput = function (e) {
   const text = format_space(el.innerText)
   if (md_type.value === 'text' && e.data === ' ') {
     PATTERNS.forEach(({ PATTERN, MD_TYPE, STYLE }) => {
-      if (text.startsWith(PATTERN)) {
+      if (PATTERN.test(text)) {
         md_type.value = MD_TYPE
         Object.assign(el.style, STYLE)
         emit('input', reverseMarked(marked(text, 'text'), unref(md_type)))
@@ -41,13 +41,18 @@ const onKeydown = function (e) {
 }
 
 onMounted(() => {
-  Object.assign(edit_el.value.style, PLAIN_STYLE)
+  PATTERNS.forEach(({ PATTERN, MD_TYPE, STYLE }) => {
+    if (PATTERN.test(props.value)) {
+      console.log(PATTERN, MD_TYPE, STYLE)
+      md_type.value = MD_TYPE
+      Object.assign(unref(edit_el).style, STYLE)
+    }
+  })
 })
 
 </script>
 
 <template>
-  <div>
     <div
         :autofocus="props.autofocus"
         ref="edit_el"
@@ -57,7 +62,6 @@ onMounted(() => {
         contenteditable="true">
       {{ marked(props.value, 'text') }}
     </div>
-  </div>
 </template>
 
 <style scoped>

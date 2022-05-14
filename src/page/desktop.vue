@@ -196,6 +196,7 @@ export default {
 <style scoped>
 
 .no_cursor{
+  position:relative;
   cursor: None !important;
   overflow: hidden;
 }

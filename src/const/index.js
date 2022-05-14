@@ -12,7 +12,7 @@ export const H5_STYLE = { fontSize: '20px' }
 export const PLAIN_STYLE = {
     fontSize: '20px'
 }
-export const PATTERNS = [
+export const MD_PATTERNS = [
     { PATTERN: H1_PATTERN, MD_TYPE: "h1", STYLE: H1_STYLE },
     { PATTERN: H2_PATTERN, MD_TYPE: "h2", STYLE: H2_STYLE },
     { PATTERN: H3_PATTERN, MD_TYPE: "h3", STYLE: H3_STYLE },

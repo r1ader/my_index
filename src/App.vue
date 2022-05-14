@@ -22,7 +22,7 @@ const Desktop = computed(() => {
 
 <template>
   <div v-if="innerWidth>1100" class="desktop">
-    <div class="header">
+    <div class="header" v-if="hash!==''">
       <a class="link" href="#blog">blog</a>
       <a class="link" href="#playground">playground</a>
       <a class="link" href="#three">three</a>
@@ -47,9 +47,10 @@ body {
   font-family: 'Varela Round', sans-serif;
 }
 
-.header{
+.header {
   background: #d5d5d5;
 }
+
 .link {
   padding: 20px;
   line-height: 50px;

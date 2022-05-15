@@ -110,7 +110,7 @@ export const get_cursor = () => {
         focusNode,
         focusOffset
     } = getSelection()
-    const { data } = anchorNode
+    const { textContent } = anchorNode
     return {
         anchorNode,
         anchorOffset,
@@ -118,9 +118,9 @@ export const get_cursor = () => {
         isSelected: !(focusNode === anchorNode && anchorOffset === focusOffset),
         isCursorAtHead: anchorOffset === 0,
         isCursorAtEnd: anchorOffset === anchorNode.length,
-        textBeforeCursor: data.slice(0, anchorOffset),
-        textAfterCursor: data.slice(anchorOffset),
-        characterBeforeCursor: data[anchorOffset - 1],
-        characterAfterCursor: data[anchorOffset],
+        textBeforeCursor: textContent.slice(0, anchorOffset),
+        textAfterCursor: textContent.slice(anchorOffset),
+        characterBeforeCursor: textContent[anchorOffset - 1],
+        characterAfterCursor: textContent[anchorOffset],
     }
 }

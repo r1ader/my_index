@@ -91,3 +91,36 @@ export const textSplice = (text, position, deleteNum, ...items) => {
         items.join('') +
         text.slice(position + deleteNum)
 }
+
+export const set_cursor_position = (el, offset) => {
+    if (!el.childNodes.length) return el.focus()
+    const range = document.createRange()
+    const sel = window.getSelection()
+
+    range.setStart(el.childNodes[0], offset)
+    range.collapse(true)
+    sel.removeAllRanges()
+    sel.addRange(range)
+}
+
+export const get_cursor = () => {
+    const {
+        anchorNode,
+        anchorOffset,
+        focusNode,
+        focusOffset
+    } = getSelection()
+    const { data } = anchorNode
+    return {
+        anchorNode,
+        anchorOffset,
+        focusOffset,
+        isSelected: !(focusNode === anchorNode && anchorOffset === focusOffset),
+        isCursorAtHead: anchorOffset === 0,
+        isCursorAtEnd: anchorOffset === anchorNode.length,
+        textBeforeCursor: data.slice(0, anchorOffset),
+        textAfterCursor: data.slice(anchorOffset),
+        characterBeforeCursor: data[anchorOffset - 1],
+        characterAfterCursor: data[anchorOffset],
+    }
+}

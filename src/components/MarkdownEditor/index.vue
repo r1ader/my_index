@@ -5,7 +5,7 @@ import { MD_PATTERNS, INDENT, NEED_PREVENT_KEY } from "../../const";
 import { reverseMarked, marked, textSplice, set_cursor_position, get_cursor } from "../../utils";
 
 const props = defineProps(['value', 'autofocus'])
-const emit = defineEmits(['input'])
+const emit = defineEmits(['input', 'new'])
 const edit_el = ref(null)
 const md_type = ref('text')
 
@@ -16,6 +16,8 @@ const post_content = (text = get_display_text()) => {
 const update_content = (text = props.value, offset = 0) => {
   const position_saved = getSelection().anchorOffset
   unref(edit_el).innerHTML = text.replace(/\s/g, '&nbsp;')
+
+  getSelection().anchorNode === unref(edit_el) &&
   set_cursor_position(unref(edit_el), position_saved + offset)
 }
 
@@ -37,7 +39,7 @@ const set_md_type = (type) => {
   )
 }
 
-const check_and_convert_md_type = (text) => {
+const check_and_convert_md_type = (text = props.value) => {
   return MD_PATTERNS.find(({ PATTERN, MD_TYPE, STYLE, CURSOR_OFFSET }) => {
     if (PATTERN.test(text)) {
       set_md_type(MD_TYPE)
@@ -48,15 +50,16 @@ const check_and_convert_md_type = (text) => {
 }
 
 const onInput = function (e) {
-  const text = get_display_text()
+  post_content()
   md_type.value === 'text' && e.data === ' ' &&
-  check_and_convert_md_type(text)
-
-  nextTick(() => post_content())
+  nextTick(() => check_and_convert_md_type())
 }
 
 const onEnterDown = function (e) {
-  console.log(get_cursor())
+  const {
+    isCursorAtEnd
+  } = get_cursor()
+  isCursorAtEnd && emit('new')
 }
 
 const onTabDown = function (e) {
@@ -65,7 +68,7 @@ const onTabDown = function (e) {
   const textInsertedIndent = textSplice(text, anchorOffset, 0, INDENT)
   update_content(textInsertedIndent, 4)
   post_content(textInsertedIndent)
-  nextTick(() => check_and_convert_md_type(props.value))
+  nextTick(() => check_and_convert_md_type())
 }
 
 const onBackspaceDown = function (e) {
@@ -89,14 +92,15 @@ const onKeydown = function (e) {
 }
 
 onMounted(() => {
-  check_and_convert_md_type(props.value)
+  props.value && update_content()
+  props.value && check_and_convert_md_type()
+  // !props.value && unref(edit_el).focus()
 })
 
 </script>
 
 <template>
-  <div
-      :autofocus="props.autofocus"
+  <span
       ref="edit_el"
       @input="onInput"
       @keydown="onKeydown"

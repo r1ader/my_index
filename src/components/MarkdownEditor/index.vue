@@ -1,8 +1,8 @@
 <script setup>
 
 import { nextTick, onMounted, ref, unref } from "vue";
-import { MD_PATTERNS, PLAIN_STYLE, INDENT, NEED_PREVENT_KEY } from "../../const";
-import { reverseMarked, marked, format_space, textSplice } from "../../utils";
+import { MD_PATTERNS, INDENT, NEED_PREVENT_KEY } from "../../const";
+import { reverseMarked, marked, textSplice, set_cursor_position, get_cursor } from "../../utils";
 
 const props = defineProps(['value', 'autofocus'])
 const emit = defineEmits(['input'])
@@ -13,8 +13,10 @@ const post_content = (text = get_display_text()) => {
   emit('input', reverseMarked(text, unref(md_type)))
 }
 
-const update_content = (text = props.value) => {
+const update_content = (text = props.value, offset = 0) => {
+  const position_saved = getSelection().anchorOffset
   unref(edit_el).innerHTML = text.replace(/\s/g, '&nbsp;')
+  set_cursor_position(unref(edit_el), position_saved + offset)
 }
 
 const get_display_text = () => {
@@ -22,20 +24,23 @@ const get_display_text = () => {
 }
 
 const set_md_type = (type) => {
-  console.log('convert to ', type)
+  if (md_type.value === type) return
   md_type.value = type
+  const MD_CONFIG = MD_PATTERNS.find(o => o.MD_TYPE === type)
   Object.assign(
       unref(edit_el).style,
-      MD_PATTERNS.find(o => o.MD_TYPE === type)?.STYLE
+      MD_CONFIG?.STYLE
+  )
+  update_content(
+      marked(get_display_text(), 'text'),
+      MD_CONFIG?.CURSOR_OFFSET
   )
 }
 
 const check_and_convert_md_type = (text) => {
-  return MD_PATTERNS.find(({ PATTERN, MD_TYPE, STYLE }) => {
-    console.log(PATTERN, text, PATTERN.test(text))
+  return MD_PATTERNS.find(({ PATTERN, MD_TYPE, STYLE, CURSOR_OFFSET }) => {
     if (PATTERN.test(text)) {
-      md_type.value !== MD_TYPE && set_md_type(MD_TYPE)
-      update_content(marked(text, 'text'))
+      set_md_type(MD_TYPE)
       return true
     }
     return false
@@ -46,18 +51,19 @@ const onInput = function (e) {
   const text = get_display_text()
   md_type.value === 'text' && e.data === ' ' &&
   check_and_convert_md_type(text)
+
   nextTick(() => post_content())
 }
 
 const onEnterDown = function (e) {
-
+  console.log(get_cursor())
 }
 
 const onTabDown = function (e) {
   const text = get_display_text()
   const { anchorOffset } = getSelection()
   const textInsertedIndent = textSplice(text, anchorOffset, 0, INDENT)
-
+  update_content(textInsertedIndent, 4)
   post_content(textInsertedIndent)
   nextTick(() => check_and_convert_md_type(props.value))
 }

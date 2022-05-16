@@ -1,10 +1,10 @@
 <script setup>
 import { useMarked } from "../utils/hooks";
-import { onMounted, ref, unref } from "vue";
-import MarkdownEditor from "../components/MarkdownEditor/index.vue";
+import { nextTick, onMounted, ref, unref, watch } from "vue";
+import MarkdownEditor from "../components/MarkdownEditor/Block.vue";
 import { ANCHOR_OFFSET_END } from '../const'
 
-const text = ref(`123456789`)
+const text = ref(`# Untitle`)
 const body = ref(null)
 const rendered_markdown = useMarked(text)
 const viewState = ref('edit')
@@ -22,11 +22,12 @@ onMounted(() => {
 <template>
   <div class="main_container">
     <div class="left">
-      <textarea v-model="text"/>
+      <textarea v-model="text" @input="nextTick(() => body.update_content())"/>
     </div>
-    <div ref="body" class="blog_body marked">
+    <div class="blog_body marked">
       <div v-if="viewState==='view'" v-html="rendered_markdown"></div>
       <MarkdownEditor
+          ref="body"
           v-if="viewState==='edit'"
           @input="text=$event"
           v-bind:value="text"
@@ -50,7 +51,7 @@ onMounted(() => {
 .blog_body {
   background: white;
   max-width: 1000px;
-  /*padding: 30px;*/
+  padding: 30px;
   margin: 30px;
   border-radius: 5px;
 }

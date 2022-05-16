@@ -23,4 +23,4 @@ export const MD_PATTERNS = [
 export const ANCHOR_OFFSET_START = 0
 export const ANCHOR_OFFSET_END = 1
 export const INDENT = '    '
-export const NEED_PREVENT_KEY = ['Enter', 'Tab']
+export const NEED_PREVENT_KEY = ['Tab']

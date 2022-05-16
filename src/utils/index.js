@@ -66,6 +66,7 @@ export const unMarked = (text) => {
 }
 
 export const reverseMarked = (text, md_type) => {
+    text = text.replace(/\n/g, '\n\n')
     switch (md_type) {
         case 'h1':
             return `# ${ text }`

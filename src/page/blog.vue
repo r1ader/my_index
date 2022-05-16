@@ -4,18 +4,18 @@ import { onMounted, ref, unref } from "vue";
 import MarkdownEditor from "../components/MarkdownEditor/index.vue";
 import { ANCHOR_OFFSET_END } from '../const'
 
-const text = ref(``)
+const text = ref(`123456789`)
 const body = ref(null)
 const rendered_markdown = useMarked(text)
 const viewState = ref('edit')
 
 onMounted(() => {
-  unref(body).addEventListener('click', function (e) {
-    if (e.target !== unref(body)) return
-    const target_el = unref(body).children[0]
-    target_el.innerText.length === 0 ? target_el.focus() :
-        getSelection().setBaseAndExtent(target_el, ANCHOR_OFFSET_END, target_el, ANCHOR_OFFSET_END)
-  })
+  // unref(body).addEventListener('click', function (e) {
+  //   if (e.target !== unref(body)) return
+  //   const target_el = unref(body).children[0]
+  //   target_el.innerText.length === 0 ? target_el.focus() :
+  //       getSelection().setBaseAndExtent(target_el, ANCHOR_OFFSET_END, target_el, ANCHOR_OFFSET_END)
+  // })
 })
 </script>
 
@@ -27,7 +27,6 @@ onMounted(() => {
     <div ref="body" class="blog_body marked">
       <div v-if="viewState==='view'" v-html="rendered_markdown"></div>
       <MarkdownEditor
-          autofocus="true"
           v-if="viewState==='edit'"
           @input="text=$event"
           v-bind:value="text"
@@ -51,7 +50,7 @@ onMounted(() => {
 .blog_body {
   background: white;
   max-width: 1000px;
-  padding: 30px;
+  /*padding: 30px;*/
   margin: 30px;
   border-radius: 5px;
 }

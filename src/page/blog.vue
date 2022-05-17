@@ -3,20 +3,12 @@ import { useMarked } from "../utils/hooks";
 import { nextTick, onMounted, ref, unref, watch } from "vue";
 import MarkdownEditor from "../components/MarkdownEditor/Block.vue";
 import { ANCHOR_OFFSET_END } from '../const'
+import { useLocalStorage } from "@vueuse/core/index";
 
-const text = ref(`# Untitle`)
+const text = ref(useLocalStorage('blog:text1', '# '))
 const body = ref(null)
 const rendered_markdown = useMarked(text)
 const viewState = ref('edit')
-
-onMounted(() => {
-  // unref(body).addEventListener('click', function (e) {
-  //   if (e.target !== unref(body)) return
-  //   const target_el = unref(body).children[0]
-  //   target_el.innerText.length === 0 ? target_el.focus() :
-  //       getSelection().setBaseAndExtent(target_el, ANCHOR_OFFSET_END, target_el, ANCHOR_OFFSET_END)
-  // })
-})
 </script>
 
 <template>
@@ -73,24 +65,5 @@ onMounted(() => {
   height: 40px;
   width: 100%;
   margin-bottom: 10px;
-}
-</style>
-<style>
-.marked .code {
-  background: #f5f5f5;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 5px;
-}
-
-.marked .code_span {
-  border-radius: 2px;
-  padding: 0 5px;
-  background: #ef8a8d;
-  color: white;
-}
-
-.marked h1, h2, h3, h4, h5 {
-  margin: 0;
 }
 </style>

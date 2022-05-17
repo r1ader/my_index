@@ -38,43 +38,50 @@ export const debounce = (actor) => {
 }
 
 export const marked = (text, output_type = 'dom') => {
-    return output_type === 'dom' ?
-        text.replace(/```([\s\S]+?)```/g, `<div class="code">$1</div>`)
-            .replace(/`(.*)`(\S+?\s)/g, `<span style="background: $2" class="code_span">$1</span>`)
-            .replace(/`(.*)`(#[\d\w]+?\s)/g, `<span style="background: $2" class="code_span">$1</span>`)
-            .replace(/#####[\u202F\u00A0\s](.*)\n*/g, `<h5>$1</h5>`)
-            .replace(/####[\u202F\u00A0\s](.*)\n*/g, `<h4>$1</h4>`)
-            .replace(/###[\u202F\u00A0\s](.*)\n*/g, `<h3>$1</h3>`)
-            .replace(/##[\u202F\u00A0\s](.*)\n*/g, `<h2>$1</h2>`)
-            .replace(/(?:^|\n)#[\u202F\u00A0\s](.*)\n*/g, `<h1>$1</h1>`)
-            .replace(/\n\n+/g, `<br>`)
-        :
-        text.replace(/```([\s\S]+?)```/g, `$1`)
-            .replace(/`(.*)`(\S+?\s)/g, `$1`)
-            .replace(/`(.*)`(#[\d\w]+?\s)/g, `$1`)
-            .replace(/#####[\u202F\u00A0\s](.*)/g, `$1`)
-            .replace(/####[\u202F\u00A0\s](.*)/g, `$1`)
-            .replace(/###[\u202F\u00A0\s](.*)/g, `$1`)
-            .replace(/##[\u202F\u00A0\s](.*)/g, `$1`)
-            .replace(/#[\u202F\u00A0\s](.*)/g, `$1`)
-            .replace(/\n\n+/g, `<br>`)
-}
-
-export const unMarked = (text) => {
+    // h1
     return text
-        .replace(/<h1>(.*)<\/h1>/g, `# $1`)
+        .replace( // h1
+            /(?:^|\n)#[\u202F\u00A0\s](.*)\n*/g,
+            (match, ...p) => `<h1>${ p[0].replace(/\s/g, '&nbsp;') }</h1>`
+        )
+        .replace( // code
+            /```\n*([\s\S]+?)```/g,
+            (match, ...p) => {
+                return `<div class="code">${
+                    p[0].replace(/\n/g, '<br>').replace(/\s/g, '&nbsp;')
+                }</div>`
+            }
+        )
+        .replace( // code
+            /`(.*)`(\S+?\s)/g,
+            (match, ...p) => {
+                return `<code style="background: ${ p[1] }">${ p[0].replace(/\s/g, '&nbsp;') }</code>`
+            }
+        )
+        .replace( // code
+            /`(.*)`(#[\d\w]+?\s)/g,
+            (match, ...p) => {
+                return `<code style="background: ${ p[1] }">${ p[0].replace(/\s/g, '&nbsp;') }</code>`
+            }
+        )
+        .replace(
+            / ( +)/g, (match, ...p) => {
+                return ` ${ '&nbsp;'.repeat(p[0].length) }`
+            }
+        )
 }
 
 export const reverseMarked = (text) => {
-    // text = text.replace(/\n/g, '\n\n')
     return text
-        .replace(/<div>(.*?)<\/div>/g, `$1\n\n`)
-        .replace(/<h1>(.*?)<\/h1>/g, `\n# $1\n\n`)
-        .replace(/<h2>(.*?)<\/h2>/g, `\n## $1\n\n`)
-        .replace(/<h3>(.*?)<\/h3>/g, `\n### $1\n\n`)
-        .replace(/<h4>(.*?)<\/h4>/g, `\n#### $1\n\n`)
-        .replace(/<h5>(.*?)<\/h5>/g, `\n##### $1\n\n`)
-        .replace(/<br>/g, `\n\n`)
+        .replace(/<h1>(.*?)<\/h1>/g, (match, ...p) => {
+            return `\n# ${ p[0] }\n\n`
+        })
+        .replace(/<div class="code">(.*?)<\/div>/g, (match, ...p) => {
+            return `\`\`\`\n${ p[0].replace(/<br>/g, '\n') }\`\`\`\n`
+        })
+        .replace(/<code style="background: (.*?)">(.*?)<\/code>/g, (match, ...p) => {
+            return `\`${ p[1] }\`${ p[0] }`
+        })
 }
 
 export const format_space = (text) => {

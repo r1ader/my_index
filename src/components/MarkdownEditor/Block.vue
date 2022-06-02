@@ -13,11 +13,12 @@ import {
 } from "../../utils";
 
 const props = defineProps(['value', 'autofocus'])
-const emit = defineEmits(['input', 'new'])
+const emit = defineEmits(['input', 'htmlChange'])
 const edit_el = ref(null)
 
 const post_content = (text = get_display_text()) => {
   emit('input', reverseMarked(text))
+  emit('htmlChange', text)
 }
 
 const update_content = (text = props.value, offset = 0) => {
@@ -35,6 +36,8 @@ defineExpose({ update_content })
 const get_display_text = () => {
   return unref(edit_el).innerHTML
       .replace(/&nbsp;/g, ' ')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
 }
 
 const onInput = function (e) {
@@ -125,7 +128,7 @@ onMounted(() => {
 }
 
 .marked code {
-  font-size: 15px;
+  /*font-size: 15px;*/
   font-weight: bolder;
   border-radius: 2px;
   padding: 0 5px;

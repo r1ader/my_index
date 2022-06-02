@@ -38,11 +38,14 @@ export const debounce = (actor) => {
 }
 
 export const marked = (text, output_type = 'dom') => {
+    // console.clear()
+    // console.log('marked')
+    // console.log(text)
     // h1
-    return text
+    const result = text
         .replace( // h1
             /(?:^|\n)#[\u202F\u00A0\s](.*)\n*/g,
-            (match, ...p) => `<h1>${ p[0].replace(/\s/g, '&nbsp;') }</h1>`
+            (match, ...p) => `<h1>${ p[0] }</h1>`
         )
         .replace( // code
             /```\n*([\s\S]+?)```/g,
@@ -53,25 +56,64 @@ export const marked = (text, output_type = 'dom') => {
             }
         )
         .replace( // code
-            /`(.*)`(\S+?\s)/g,
+            /`(.*?)`(\w+?(\s))/g,
             (match, ...p) => {
-                return `<code style="background: ${ p[1] }">${ p[0].replace(/\s/g, '&nbsp;') }</code>`
+                return `<code style="background: ${ p[1] }">${ p[0].replace(/\s/g, '&nbsp;') }</code>${ p[2] }`
             }
         )
         .replace( // code
-            /`(.*)`(#[\d\w]+?\s)/g,
+            /`(.*?)`(#[\d\w]+?\s)/g,
             (match, ...p) => {
-                return `<code style="background: ${ p[1] }">${ p[0].replace(/\s/g, '&nbsp;') }</code>`
+                return `<code style="background: ${ p[1] }">${ p[0].replace(/\s/g, '&nbsp;') }</code>&nbsp;`
             }
         )
         .replace(
-            / ( +)/g, (match, ...p) => {
-                return ` ${ '&nbsp;'.repeat(p[0].length) }`
-            }
+            /\n{2,}/,
+            '<br>'
         )
+    // .replace(
+    //     / ( +)/g, (match, ...p) => {
+    //         return ` ${ '&nbsp;'.repeat(p[0].length) }`
+    //     }
+    // )
+    // console.log(result)
+    return result
 }
 
 export const reverseMarked = (text) => {
+    // console.clear()
+    let result = ''
+
+    const virtual_node = document.createElement('div')
+    virtual_node.innerHTML = text
+    Array.from(virtual_node.childNodes).forEach(o => {
+        console.log(o, o.nodeName, o.className)
+        if (o.nodeName === '#text') {
+            result += o.textContent
+        } else {
+            if (o.nodeName === 'H1') {
+                result += `# ${ reverseMarked(o.innerHTML) }\n\n`
+            }
+            if (o.nodeName === 'CODE') {
+                const color = o.style.backgroundColor
+                result += `\`${ reverseMarked(o.innerHTML) }\`${ color } `
+            }
+            if (o.nodeName === 'BR') {
+                result += `\n\n`
+            }
+            if (o.nodeName === 'DIV' && o.className.indexOf('code') > -1) {
+                result += `\`\`\`${ reverseMarked(o.innerHTML) }\`\`\``
+            }
+            // if (o.nodeName === 'DIV' && o.class) {
+            //     result += `\n\n`
+            // }
+
+            // result += reverseMarked(o.innerHTML)
+        }
+        //
+    })
+    console.log(result)
+    // return result
     return text
         .replace(/<h1>(.*?)<\/h1>/g, (match, ...p) => {
             return `\n# ${ p[0] }\n\n`
@@ -82,6 +124,10 @@ export const reverseMarked = (text) => {
         .replace(/<code style="background: (.*?)">(.*?)<\/code>/g, (match, ...p) => {
             return `\`${ p[1] }\`${ p[0] }`
         })
+        .replace(/<div>(.*?)<\/div>/g, (match, ...p) => {
+            return `\n${ p[0] }\n`
+        })
+        .replace(/<br>/g, '\n\n')
 }
 
 export const format_space = (text) => {
